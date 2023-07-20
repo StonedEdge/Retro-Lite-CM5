@@ -13,7 +13,7 @@ TBD
 
 TBD
 
-## Requirements to Build the Retro Lite CM4
+## Requirements to Build the Retro Lite CM5
 
 ### Code 
 
