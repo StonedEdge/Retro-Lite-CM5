@@ -1,6 +1,11 @@
 # Retro-Lite-CM5
 The Retro Lite CM5 is an upgrade to the Retro Lite CM4 handheld - another attempt at creating a more powerful, open source Linux handheld. 
-Powered by the RK3588s compute module from Radxa, which is an SBC SOM module with an ARMv8 64-bit processor. Features 8 cores/threads - 4 x ARM Cortex-A55/A76 cores with A55 cores clocked at 1.8GHz, and A76 cores clocked at 2.4GHz. The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via USB Type-C, USB 3.0 & HDMI 2.1. Built in PCIe WiFI 6.0 & BT 5.2, as well as a new 720p IPS display @ 5.5" with touchscreen support & dual tact trigger buttons for GameCube support make this a much more viable low powered ARM SBC gaming PC than the Raspberry Pi 4. The perating system will be based on Armbian with custom device tree for hardware interfacing & RetroPie pre-installed. This handheld should be able to play the entire PS2 library at at least 1x native resolution as well as GameCube at 1x on Linux. Android is currently more performant due to Vulkan drivers however Linux Vulkan blobs should come in the near future. 
+
+Powered by the RK3588s compute module from Radxa, which is an SBC SOM module with an ARMv8 64-bit processor. Features 8 cores/threads - 4 x ARM Cortex-A55/A76 cores with A55 cores clocked at 1.8GHz, and A76 cores clocked at 2.4GHz. 
+
+The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via USB Type-C, USB 3.0 & HDMI 2.1. Built in PCIe WiFI 6.0 & BT 5.2, as well as a new 720p IPS display @ 5.5" with touchscreen support & dual tact trigger buttons for GameCube support make this a much more viable low powered ARM SBC gaming PC than the Raspberry Pi 4. 
+
+The operating system will be based on Armbian, with custom device tree for hardware interfacing & RetroPie pre-installed. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux. Android is currently more performant due to Vulkan drivers however Linux Vulkan blobs should come in the near future. 
 
 ![Image of Retro Lite CM5](https://i.imgur.com/EQzkV89.png)
 # Retro Lite CM5: Radxa RK3588s Handheld 
