@@ -43,7 +43,7 @@ TBD
 
 ### To-do
 - [x] Hardware familiarization - Orange Pi 5/Radxa CM5/IO board schematics 
-- [ ] Design a CM5 carrier board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle 15W of power 
+- [x] Design a CM5 carrier board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle 15W of power 
 - [ ] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [ ] Integrate new 5.5 inch MIPI DSI display. This includes, enabling the ILI9881C display driver, device tree customizations for the display
 - [ ] Test and verify display functionality, including proper backlight & 60 FPS
@@ -57,6 +57,7 @@ TBD
 - [ ] Test and verify emulators work correctly with Mali blobs via EmulationStation front end
 - [ ] Implement an on screen battery indicator using the MAX17055 IC. Add on-screen battery indicator that can be toggled from settings menu 
 - [ ] Understand ATMEGA32u4 controller code & port to Radxa CM5 
+- [ ] Integrate an IMU into the controller PCB for gyro functionality
 - [ ] Implement an on screen indicator for volume control (i.e when GPIOs pressed, show volume level)
 - [ ] Create headphone icons to switch to headphone image when headphones plugged in
 - [ ] Implement an on screen indicator for brightness control
