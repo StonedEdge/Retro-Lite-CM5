@@ -53,8 +53,8 @@ TBD
 - [ ] Port C code base from Raspberry Pi 4 to RK3588s. Cross compile and run Retro Lite CM5 code
 - [ ] Integrate orangeOP (wiringPi equivalent) library to work with CM5
 - [ ] Add RetroPie software package
-- [ ] Setup Mali Open GL blob drivers
-- [ ] Test and verify emulators work correctly with Mali blobs via EmulationStation front end
+- [ ] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available 
+- [ ] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
 - [ ] Implement an on screen battery indicator using the MAX17055 IC. Add on-screen battery indicator that can be toggled from settings menu 
 - [ ] Understand ATMEGA32u4 controller code & port to Radxa CM5 
 - [ ] Integrate an IMU into the controller PCB for gyro functionality (mainly for game streaming) 
