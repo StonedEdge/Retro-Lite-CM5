@@ -7,7 +7,8 @@ The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via U
 
 The operating system will be based on Armbian, with custom device tree for hardware interfacing & RetroPie pre-installed. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux. Android is currently more performant due to Vulkan drivers however Linux Vulkan blobs should come in the near future. 
 
-![Image of Retro Lite CM5](https://i.imgur.com/EQzkV89.png)
+![Image of Retro Lite CM5](https://i.imgur.com/evUsqqW.png)
+![Image of Retro Lite CM52](https://i.imgur.com/OTbErjX.png)
 # Retro Lite CM5: Radxa RK3588s Handheld 
 
 ## Description
@@ -45,7 +46,7 @@ TBD
 - [x] Hardware familiarization - Orange Pi 5/Radxa CM5/IO board schematics 
 - [x] Design a CM5 carrier main board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle 15W of power 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
-- [ ] Integrate new 5.5 inch MIPI DSI display. This includes, enabling the ILI9881C display driver, device tree customizations for the display
+- [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
 - [ ] Test and verify display functionality, including proper backlight & 60 FPS. Verify display works with Armbian 
 - [ ] WM8960 codec integration via Orange Pi 5/CM5 IO for testing. Integrate the WM8960 i2c code driver including any device tree customizations for codec. Finally, test and verify audio works correctly 
 - [ ] Identify and setup cross compiler for RK3588s to compile the code for the CM5. This incldues setup of the GCC cross compiler
