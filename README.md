@@ -48,12 +48,12 @@ TBD
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
 - [x] Test and verify display functionality, including proper backlight & 60 FPS. Verify display works with Armbian 
-- [ ] WM8960 codec integration via Orange Pi 5/CM5 IO for testing. Integrate the WM8960 i2c code driver including any device tree customizations for codec. Finally, test and verify audio works correctly 
+- [x] WM8960 codec integration via Orange Pi 5/CM5 IO for testing. Integrate the WM8960 i2c code driver including any device tree customizations for codec. Finally, test and verify audio works correctly 
 - [ ] Identify and setup cross compiler for RK3588s to compile the code for the CM5. This incldues setup of the GCC cross compiler
 - [ ] Compile a sample C program and run it in the board
 - [ ] Port C code base from Raspberry Pi 4 to RK3588s. Cross compile and run Retro Lite CM5 code
 - [ ] Integrate orangeOP (wiringPi equivalent) library to work with CM5
-- [ ] Add RetroPie software package
+- [x] Add RetroPie software package
 - [ ] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available 
 - [ ] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
 - [ ] Implement an on screen battery indicator using the MAX17055 IC. Add on-screen battery indicator that can be toggled from settings menu 
