@@ -43,22 +43,26 @@ TBD
 -------------------------------------------------------------------------------------------------------
 
 ### To-do
-- [x] Hardware familiarization - Orange Pi 5/Radxa CM5/IO board schematics 
-- [x] Design a CM5 carrier main board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle 15W of power 
+- [x] Hardware familiarization - Orange Pi 5/Radxa CM5/IO board schematics
+- [x] Design v1 prototype controller PCBs
+- [x] Design v1 DSI test display board
+- [ ] Design v1 Power Management/DisplayPort/USB-C PD test board
+- [ ] Design a CM5 carrier main board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle 15W of power 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
 - [x] Test and verify display functionality, including proper backlight & 60 FPS. Verify display works with Armbian 
-- [x] WM8960 codec integration via Orange Pi 5/CM5 IO for testing. Integrate the WM8960 i2c code driver including any device tree customizations for codec. Finally, test and verify audio works correctly 
+- [x] WM8960 codec integration via Orange Pi 5/CM5 IO for testing. Integrate the WM8960 i2c code driver including any device tree customizations for codec. Finally, test and verify audio works correctly
+- [x] Integrate touch/verify via the GT911 IC works in Armbian 
+- [x] Add RetroPie software package
+- [ ] Understand ATMEGA32u4 controller code & port to Radxa CM5 
+- [ ] Integrate an IMU into the controller PCB for gyro functionality (mainly for game streaming) 
 - [ ] Identify and setup cross compiler for RK3588s to compile the code for the CM5. This incldues setup of the GCC cross compiler
 - [ ] Compile a sample C program and run it in the board
 - [ ] Port C code base from Raspberry Pi 4 to RK3588s. Cross compile and run Retro Lite CM5 code
 - [ ] Integrate orangeOP (wiringPi equivalent) library to work with CM5
-- [x] Add RetroPie software package
 - [ ] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available 
 - [ ] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
 - [ ] Implement an on screen battery indicator using the MAX17055 IC. Add on-screen battery indicator that can be toggled from settings menu 
-- [ ] Understand ATMEGA32u4 controller code & port to Radxa CM5 
-- [ ] Integrate an IMU into the controller PCB for gyro functionality (mainly for game streaming) 
 - [ ] Implement an on screen indicator for volume control (i.e when GPIOs pressed, show volume level)
 - [ ] Create headphone icons to switch to headphone image when headphones plugged in
 - [ ] Implement an on screen indicator for brightness control
