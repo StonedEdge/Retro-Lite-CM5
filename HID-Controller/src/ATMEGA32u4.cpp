@@ -24,7 +24,6 @@
 #include <EEPROM.h>
 #include <Wire.h>
 #include <Joystick.h> //https://github.com/MHeironimus/ArduinoJoystickLibrary
-//#include "Keyboard.h"
 #include "Mouse.h"
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps612.h"
@@ -109,19 +108,12 @@ int midRightY = 529; //EEPROM Adr = 17
 int minRightX = 300; //EEPROM Adr = 19
 int maxRightX = 780; //EEPROM Adr = 21
 int midRightX = 525; //EEPROM Adr = 23
-/*
-//Joystick LookUp Tables, compiled at startup or after joystick calibration.
-byte leftXLUT[350];
-byte leftYLUT[350];
-byte rightXLUT[350];
-byte rightYLUT[350];
-*/
+
 //All variables below general use, not used for configuration.
 boolean calibrationMode = false;
 int calibrationStep = 1;
 //unsigned long keyboardTimer;
 boolean L3Pressed = false;
-//boolean menuEnabled = false;
 boolean povHatMode = true; //Enable to use POV Hat for Dpad instead of analog
 
 //Mouse Variables
@@ -278,12 +270,6 @@ void initDmp() {
   devStatus = mpu.dmpInitialize();
 
   // supply your own gyro offsets here, scaled for min sensitivity
-  //mpu.setXGyroOffset(51);
-  //mpu.setYGyroOffset(8);
-  //mpu.setZGyroOffset(21);
-  //mpu.setXAccelOffset(1150);
-  //mpu.setYAccelOffset(-50);
-  //mpu.setZAccelOffset(1060);
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
     // Calibration Time: generate offsets and calibrate our MPU6050
@@ -342,40 +328,7 @@ byte rightXLUT(int i) {
 byte rightYLUT(int i) {
   return LUT(i, minRightY, midRightY, maxRightY, earlyRightY, deadBandRight);
 }
-/*
-void serialEvent(){
-  while(Serial.available()){
-    char inChar = (char)Serial.read();
-    if(inChar == 27){ //Escape
-      Keyboard.press(KEY_ESC);
-    } else if(inChar == 8){ //Backspace
-      Keyboard.press(KEY_BACKSPACE);
-    } else if(inChar == 13){ //Enter
-      Keyboard.press(KEY_RETURN);
-    } else if(inChar == 14){ //Right
-      Keyboard.press(KEY_RIGHT_ARROW);
-    } else if(inChar == 15){ //Left
-      Keyboard.press(KEY_LEFT_ARROW);
-    } else if(inChar == 17){ //Up
-      Keyboard.press(KEY_UP_ARROW);
-    } else if(inChar == 18){ //Down
-      Keyboard.press(KEY_DOWN_ARROW);
-    } else if(inChar == calibrationStepOne){
-      calibrationMode = true;
-    } else if(inChar == menuClose){
-      menuEnabled = false;
-    } else if(inChar == povModeDisable){
-      povHatMode = false;
-    } else if(inChar == povModeEnable){
-      povHatMode = true;
-    } else {
-      Keyboard.press(inChar);
-    }
-    delay(10);
-    Keyboard.releaseAll();
-  }
-}
-*/
+
 int readJoystick(int joystickPin, boolean invertOutput){ //Reads raw joystick values and inverts if required
   int var = analogRead(joystickPin);
   if(invertOutput){
@@ -433,61 +386,7 @@ void mouseControl() {
     }
   }
 }
-/*
-void menuMode(){
-  if(dpadPinsState[0] == 1){
-    Serial.write(osKeyboardUp);
-    delay(serialButtonDelay);
-  } else if(dpadPinsState[2] == 1){
-    Serial.write(osKeyboardDn);
-    delay(serialButtonDelay);
-  } else if(dpadPinsState[1] == 1){
-    Serial.write(osKeyboardRight);
-    delay(serialButtonDelay);
-  } else if(dpadPinsState[3] == 1){
-    Serial.write(osKeyboardLeft);
-    delay(serialButtonDelay);
-  } else if(lastButtonState[1] == 1){
-    Serial.write(osKeyboardSelect);
-    delay(serialButtonDelay);
-  }
-}
 
-void joystickBuildLUT(byte output[350], int minIn, int midIn, int maxIn, int earlyStop, int deadBand){ //This function builds a lookup table for the given axis.
-  //Shift all joystick values to a base of zero. All values are halved due to ram limitations on the 32u4.
-  int shiftedMin = 0;
-  int shiftedMid = (midIn - minIn) /2;
-  int shiftedMax = (maxIn - minIn) /2;
-  int temp;
-  
-  for(int i = 0; i < 350; i++){
-    if(i < shiftedMid){
-      if(i > shiftedMin + earlyStop){
-        temp = map(i, shiftedMin, shiftedMid - deadBand, 0, 127);
-      } else {
-        temp = 0;
-      }
-    } else {
-      if(i < shiftedMax - earlyStop){
-        temp = map(i, shiftedMid + deadBand, shiftedMax, 127, 254);
-      } else {
-        temp = 254;
-      }
-    }
-    if(i < shiftedMid + deadBand && i > shiftedMid - deadBand){
-      temp = 127;
-    }
-    output[i] = temp;
-  }
-}
-
-void rebuildLUTs(){
-  joystickBuildLUT(leftXLUT, minLeftX, midLeftX, maxLeftX, earlyLeftX, deadBandLeft);
-  joystickBuildLUT(leftYLUT, minLeftY, midLeftY, maxLeftY, earlyLeftY, deadBandLeft);
-  joystickBuildLUT(rightXLUT, minRightX, midRightX, maxRightX, earlyRightX, deadBandRight);
-  joystickBuildLUT(rightYLUT, minRightY, midRightY, maxRightY, earlyRightY, deadBandRight);
-}
-*/
 void buttonRead(){ //Read button inputs and set state arrays.
   for (int i = 0; i < buttonCount; i++){
     int input = !digitalRead(buttonPins[i]);
@@ -501,28 +400,6 @@ void buttonRead(){ //Read button inputs and set state arrays.
       dpadPinsState[i] = input;
     }
   }
-  /*
-  for (int i = 0; i < 32; i++) {
-    char buf[16];
-    int input = !digitalRead(i);
-    sprintf(buf, "  %d-%d", i, input);
-    Serial.print(buf);
-  }
-  char buf[16];
-  int var = readJoystick(rightJoyY, invertRightY);
-  sprintf(buf, "  A0-%d", var);
-  Serial.print(buf);
-  var = readJoystick(rightJoyX, invertRightX);
-  sprintf(buf, "  A1-%d", var);
-  Serial.print(buf);
-  var = readJoystick(leftJoyY, invertLeftY);
-  sprintf(buf, "  A2-%d", var);
-  Serial.print(buf);
-  var = readJoystick(leftJoyX, invertLeftX);
-  sprintf(buf, "  A3-%d", var);
-  Serial.print(buf);
-  Serial.println();
-  */
 }
 
 void joypadButtons(){ //Set joystick buttons for USB output
@@ -682,7 +559,6 @@ void joystickCalibration(){ //Very rough at the moment but it works. Read usage 
       RXLED0;
       delay(200);
       writeJoystickConfig(); //Update EEPROM
-      //rebuildLUTs();
       Serial.write(calibrationComplete);
       delay(50);
       calibrationStep = 1;
@@ -720,9 +596,7 @@ void setup() {
   Joystick.setRzAxisRange(0, 2);
 
   Serial.begin(baudrate);
-  //while (!Serial); //Needed on 32u4 based arduinos for predictable serial output.
   Joystick.begin(false); //Initialise joystick mode with auto sendState disabled as it has a huge processor time penalty for seemingly no benefit.
-  //Keyboard.begin(); //Initialise keyboard for on screen keyboard input
   Mouse.begin(); //Initialise mouse control
   
   for(int i = 0; i < buttonCount; i++){ //Set all button pins as input pullup. Change to INPUT if using external resistors.
@@ -733,26 +607,21 @@ void setup() {
   }
   
   eepromLoad(); //Check for stored joystick settings and load if applicable.
-  //rebuildLUTs(); //Build joystick LUT's from stored calibration values.
-
-  initDmp();
+  //initDmp();
 }
 
 void loop() {
   buttonRead();
 
-  if(!calibrationMode /*&& !menuEnabled*/){
+  if(!calibrationMode){
     joypadButtons();
     joystickInput();
     dPadInput();
     Joystick.sendState(); //Update input changes
   } else if(calibrationMode){
     joystickCalibration();
-  }/* else if(menuEnabled){
-    serialEvent();
-    menuMode();
-  }*/
-  
+  }
+
   //Mouse Toggle
   if(lastButtonState[12] == HIGH){ //Left joystick click toggles the mouse cursor to an on/off state
     if(!mouseModeTimerStarted){
@@ -789,17 +658,4 @@ void loop() {
     Serial.write(brightnessDn);
     delay(serialButtonDelay);
   }
-  /*
-  if(lastButtonState[8] == HIGH && lastButtonState[0] == HIGH){ //If this combination of buttons is pressed, Open Menu. (Select and right joystick button)
-    if(menuEnabled){
-      Serial.write(menuClose);
-      delay(200);
-      menuEnabled = false;
-    } else {
-      Serial.write(menuOpen);
-      delay(200);
-      menuEnabled = true;
-    }
-  }
-  */
 }
