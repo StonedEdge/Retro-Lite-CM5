@@ -3,10 +3,10 @@
  * Default configuration - 2 Joysticks, 14 Buttons, 1 Dpad.
  * 
  * Joystick calibration:
- * 1: Press the buttons on pins D0 and D3 simultaneously to put the controller into calibration mode.
- * 2: Centre both joysticks and press the button on pin D1 to record mid position, RX LED will blink once to confirm step complete.
+ * 1: Press the buttons Start and R3 simultaneously to put the controller into calibration mode.
+ * 2: Centre both joysticks and press the A button  to record mid position, RX LED will blink once to confirm step complete.
  * 3: Move both joysticks to full extents of travel several times to record maximum axis values.
- * 4: Press button on D1 again. RX LED will blink once more to confirm.
+ * 4: Press button A again. RX LED will blink once more to confirm.
  * 5: Calibration is now complete and stored.
  * 
  * If you're using this controller with Windows, you will also need to run the windows joypad calibration once you've completed the internal calibration.
@@ -475,10 +475,8 @@ void mouseControl() {
   }
 }
 
-static void turnOffPWM(uint8_t timer)
-{
-  switch (timer)
-  {
+static void turnOffPWM(uint8_t timer) {
+  switch (timer) {
     case TIMER1A: cbi(TCCR1A, COM1A1); break;
     case TIMER1B: cbi(TCCR1A, COM1B1); break;
     case TIMER1C: cbi(TCCR1A, COM1C1); break;
@@ -493,8 +491,7 @@ static void turnOffPWM(uint8_t timer)
   }
 }
 
-int atDigitalRead(uint8_t pin)
-{
+int atDigitalRead(uint8_t pin) {
   uint8_t port = pinout[pin].port;
   uint8_t bit = (1 << pinout[pin].bit);
   uint8_t timer = pinout[pin].timer;
@@ -633,10 +630,10 @@ void eepromLoad() { // Loads stored settings from EEPROM
 
 void joystickCalibration() { // Very rough at the moment but it works. Read usage instructions at top of page.
   if (calibrationStep == 1) {
-    if (lastButtonState[1] == HIGH) {
-      RXLED1;
+    if (lastButtonState[BTN_A] == HIGH) {
+      //RXLED1;
       delay(100);
-      RXLED0;
+      //RXLED0;
       midLeftX = readJoystick(leftJoyX, invertLeftX);
       midLeftY = readJoystick(leftJoyY, invertLeftY);
       midRightX = readJoystick(rightJoyX, invertRightX);
@@ -646,9 +643,9 @@ void joystickCalibration() { // Very rough at the moment but it works. Read usag
       delay(50);
     }
   } else if (calibrationStep == 2) {
-      RXLED1;
+      //RXLED1;
       delay(100);
-      RXLED0;
+      //RXLED0;
       minLeftX = midLeftX;
       minLeftY = midLeftY;
       maxLeftX = 0;
@@ -672,11 +669,10 @@ void joystickCalibration() { // Very rough at the moment but it works. Read usag
     var = readJoystick(rightJoyY, invertRightY);
     if (var > maxRightY) maxRightY = var;
     if (var < minRightY) minRightY = var;
-    buttonRead();
-    if (lastButtonState[1] == HIGH) { // Complete Calibration
-      RXLED1;
+    if (lastButtonState[BTN_A] == HIGH) { // Complete Calibration
+      //RXLED1;
       delay(100);
-      RXLED0;
+      //RXLED0;
       delay(200);
       writeJoystickConfig(); // Update EEPROM
       Serial.write(calibrationComplete);
@@ -706,8 +702,7 @@ void joystickInput() {
   Joystick.setXAxis(leftXLUT(var));
 }
 
-void atPinModeInputPullup(uint8_t pin)
-{
+void atPinModeInputPullup(uint8_t pin) {
   uint8_t port = pinout[pin].port;
   uint8_t bit = (1 << pinout[pin].bit);
 
@@ -750,13 +745,13 @@ void setup() {
 void loop() {
   buttonRead();
 
-  if (!calibrationMode) {
+  if (calibrationMode) {
+    joystickCalibration();
+  } else {
     joypadButtons();
     joystickInput();
     dPadInput();
     Joystick.sendState(); // Update input changes
-  } else if (calibrationMode) {
-    joystickCalibration();
   }
 
   // Mouse Toggle
@@ -794,5 +789,10 @@ void loop() {
   if (lastButtonState[BTN_SELECT] == HIGH && dpadPinsState[DPAD_DOWN] == HIGH) {
     Serial.write(brightnessDn);
     delay(serialButtonDelay);
+  }
+
+  if (lastButtonState[BTN_R3] == HIGH && lastButtonState[BTN_START] == HIGH) { // Start+R3 for jostick calibration
+    calibrationStep = 1;
+    calibrationMode = true;
   }
 }
