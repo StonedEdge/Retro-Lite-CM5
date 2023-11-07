@@ -146,9 +146,9 @@ byte dpadPins[4] = {
 #define DPAD_RIGHT 3
 
 // Button state arrays
-byte dpadPinsState[4];  // Empty State array for dPad
-byte lastButtonState[13]; // Empty State array for buttons last sent state. Must be same length as buttonPins
-byte currentButtonState[13]; // Empty State array for buttons. Must be same length as buttonPins
+byte dpadPinsState[4];       // Empty State array for dPad
+byte lastButtonState[14];    // Empty State array for buttons last sent state. Must be same length as buttonPins
+byte currentButtonState[14]; // Empty State array for buttons. Must be same length as buttonPins
 
 // Define Analog Pins for joysticks
 const int leftJoyX = A3;
