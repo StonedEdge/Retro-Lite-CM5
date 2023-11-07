@@ -3,7 +3,11 @@ From: Ivan Podogov <ginkage@***x.ru>
 Date: Mon, 30 Oct 2023 19:00:17 +0000
 Subject: Add WM8960 and KD055HDFIA001
 
+<<<<<<< HEAD
 Signed-off-by: Igor Pecovnik <ginkage@***x.ru>
+=======
+Signed-off-by: Ivan Podogov <ginkage@***x.ru>
+>>>>>>> ce0b89a... Update patch author
 ---
  arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts | 238 +++++++++-
  drivers/gpu/drm/panel/panel-ilitek-ili9881c.c         | 231 ++++++++-
