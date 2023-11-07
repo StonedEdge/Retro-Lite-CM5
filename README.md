@@ -60,8 +60,8 @@ TBD
 - [x] Integrate touch/verify via the GT911 controller 
 - [x] Add RetroPie software package
 - [ ] Compile and run Citra (1918 nightly) compatible with OpenGLES 3.2 
-- [ ] Understand ATMEGA32u4 controller code & port to Radxa CM5 
-- [ ] Integrate an IMU into the controller PCB for gyro functionality
+- [x] Understand ATMEGA32u4 controller code & port to Radxa CM5 
+- [x] Integrate an IMU into the controller PCB for gyro functionality
 - [ ] Standby and wakeup implementation via ATtiny84/MAX17055 integration 
 - [ ] Identify and setup cross compiler for RK3588s to compile the code for the CM5. This incldues setup of the GCC cross compiler
 - [ ] Compile a sample C program and run it in the board
