@@ -727,7 +727,7 @@ void setup() {
   Joystick.setRzAxisRange(0, 2);
 
   Serial.begin(baudrate);
-  while (!Serial);
+  //while (!Serial);
   Joystick.begin(false); // Initialise joystick mode with auto sendState disabled as it has a huge processor time penalty for seemingly no benefit.
   Mouse.begin(); // Initialise mouse control
 
