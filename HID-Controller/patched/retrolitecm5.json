@@ -1,0 +1,55 @@
+{
+  "build": {
+    "core": "arduino",
+    "extra_flags": "-DARDUINO_AVR_MICRO",
+    "f_cpu": "16000000L",
+    "hwids": [
+      [
+        "0x2341",
+        "0x8037"
+      ],
+      [
+        "0x2341",
+        "0x0037"
+      ],
+      [
+        "0x2A03",
+        "0x0037"
+      ],
+      [
+        "0x2A03",
+        "0x8037"
+      ]
+    ],
+    "mcu": "atmega32u4",
+    "usb_product": "CM5 Gamepad",
+    "variant": "micro"
+  },
+  "bootloader": {
+    "efuse": "0xCB",
+    "file": "caterina/Caterina-Micro.hex",
+    "hfuse": "0xD8",
+    "lock_bits": "0x2F",
+    "lfuse": "0xFF",
+    "unlock_bits": "0x3F"
+  },
+  "debug": {
+    "simavr_target": "atmega32u4"
+  },
+  "frameworks": [
+    "arduino"
+  ],
+  "name": "CM5 Gamepad",
+  "upload": {
+    "disable_flushing": true,
+    "maximum_ram_size": 2560,
+    "maximum_size": 28672,
+    "protocol": "avr109",
+    "require_upload_port": true,
+    "speed": 57600,
+    "use_1200bps_touch": true,
+    "wait_for_upload_port": true
+  },
+  "url": "https://www.arduino.cc/en/Main/ArduinoBoardMicro",
+  "vendor": "Retro Lite"
+}
