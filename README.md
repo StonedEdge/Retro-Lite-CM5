@@ -47,11 +47,12 @@ TBD
 
 ### To-do
 - [x] Hardware familiarization - Orange Pi 5/Radxa CM5/IO board schematics
-- [x] Design v1 prototype controller PCBs
+- [x] Design v1 prototype left/right controller PCBs (ATMEGA32u4 based)
 - [x] Design v1 DSI test display board
 - [x] Design v1 Power Management/DisplayPort/USB-C PD test board
 - [x] Order v1 Power Management/DisplayPort/USB-C PD test board
-- [ ] Test v1 Power Management/DisplayPort/USB-C PD test board 
+- [ ] Design v2 prototype left/right controller PCBs (RP2040 based)
+- [ ] Test v1 Power Management/DisplayPort/USB-C PD test board functionality 
 - [ ] Design CM5 carrier main board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle potential max 15W of power 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
@@ -59,21 +60,22 @@ TBD
 - [x] WM8960 codec integration via Orange Pi 5/CM5 IO for testing. Integrate the WM8960 i2c code driver including any device tree customizations for codec. Finally, test and verify audio works correctly
 - [x] Integrate touch/verify via the GT911 controller 
 - [x] Add RetroPie software package
-- [ ] Compile and run Citra compatible with OpenGLES 3.2 
-- [x] Understand ATMEGA32u4 controller code & port to Radxa CM5 
-- [x] Integrate an IMU into the controller PCB for gyro functionality
-- [ ] Standby and wakeup implementation via ATtiny84/MAX17055 integration 
-- [ ] Identify and setup cross compiler for RK3588s to compile the code for the CM5. This incldues setup of the GCC cross compiler
-- [ ] Compile a sample C program and run it in the board
-- [ ] Port C code base from Raspberry Pi 4 to RK3588s. Cross compile and run Retro Lite CM5 code
-- [ ] Integrate wiringPi/GPIO equivalent library to work with CM5 GPIO pins
-- [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
-- [ ] Prepare reference implementation of Wayland image via Weston 
 - [x] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
-- [ ] Implement an on-screen battery indicator using the MAX17055 IC. Add on-screen battery indicator that can be toggled from settings menu 
-- [ ] Implement an on-screen indicator for volume control (i.e when GPIOs pressed, show volume level)
-- [ ] Create headphone icons to switch to headphone image when headphones plugged in
-- [ ] Implement an on-screen indicator for brightness control
+- [ ] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
+- [ ] Write HID controller code for RP2040, based on GP2040-CE
+- [ ] Integrate an IMU into the controller PCB for gyro functionality (RP2040)
+- [ ] Integrate brightness display toggle via GPIO PWM control 
+- [ ] Redesign housing (increase 3mm all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
+- [ ] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
+- [ ] Redeisgn housing to use original switch lite fan enclosure 
+- [ ] Standby and wakeup RK3588s SoC implementation via ATtiny84 and button press
+- [ ] Power on/power off via ATtiny84 and button press 
+- [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD if possible to draw to screen FB) 
+- [ ] Port any necessary C code base from Retro Lite CM4 to RK3588 (if appropriate) 
+- [ ] Prepare reference implementation of Wayland image via Weston for launching games 
+- [ ] Implement an on-screen indicator for volume control via GPIOs
+- [ ] Implement an on-screen indicator for brightness control in fixed steps
+- [ ] Create a headphone icon to indicate headphones hotplugged 
 - [ ] Other optimizations/improvements/bug fixes 
-- [ ] Final GitHub open source release announcement
+- [ ] Final GitHub open source release & announcement
 
