@@ -1,0 +1,58 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Pico Debug (Cortex-Debug)",
+      "cwd": "${workspaceFolder}",
+      "executable": "${command:cmake.launchTargetPath}",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "gdbPath": "arm-none-eabi-gdb",
+      "device": "RP2040",
+      "configFiles": [
+        "interface/cmsis-dap.cfg",
+        "target/rp2040.cfg"
+      ],
+      "svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
+      "runToEntryPoint": "main",
+      "openOCDLaunchCommands": [
+        "adapter speed 5000"
+      ]
+    },
+    {
+      "name": "Pico Debug (Cortex-Debug with external OpenOCD)",
+      "cwd": "${workspaceFolder}",
+      "executable": "${command:cmake.launchTargetPath}",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "external",
+      "gdbTarget": "localhost:3333",
+      "gdbPath": "arm-none-eabi-gdb",
+      "device": "RP2040",
+      "svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
+      "runToEntryPoint": "main"
+    },
+    {
+      "name": "Pico Debug (C++ Debugger)",
+      "type": "cppdbg",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "${command:cmake.launchTargetPath}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "arm-none-eabi-gdb",
+      "miDebuggerServerAddress": "localhost:3333",
+      "debugServerPath": "openocd",
+      "debugServerArgs": "-f interface/cmsis-dap.cfg -f target/rp2040.cfg -c \"adapter speed 5000\"",
+      "serverStarted": "Listening on port .* for gdb connections",
+      "filterStderr": true,
+      "stopAtEntry": true,
+      "hardwareBreakpoints": {
+        "require": true,
+        "limit": 4
+      },
+      "preLaunchTask": "Flash",
+      "svdPath": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd"
+    }
+  ]
+}

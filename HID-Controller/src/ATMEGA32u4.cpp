@@ -672,8 +672,6 @@ void setup() {
 
   // initialize device
   mpu.initialize();
-  mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
-  mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);
 
   // verify connection
   if (mpu.testConnection()) {
@@ -685,12 +683,12 @@ void setup() {
     mpu.setYGyroOffset(yGyroOffset);
     mpu.setZGyroOffset(zGyroOffset);
 
-    // Calibration Time: generate offsets and calibrate our MPU6050
-    mpu.CalibrateAccel(6);
-    mpu.CalibrateGyro(6);
-    mpu.PrintActiveOffsets();
-
     if (calibrateMPU) {
+      // Calibration Time: generate offsets and calibrate our MPU6050
+      mpu.CalibrateAccel(6);
+      mpu.CalibrateGyro(6);
+      mpu.PrintActiveOffsets();
+
       int offsets[6];
       calibrateIMU(&mpu, offsets); // takes a couple minutes to complete
       xAccelOffset = offsets[0];
@@ -701,6 +699,9 @@ void setup() {
       zGyroOffset = offsets[5];
       writeJoystickConfig(); // Update EEPROM
     }
+
+    mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
+    mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);
   }
 }
 

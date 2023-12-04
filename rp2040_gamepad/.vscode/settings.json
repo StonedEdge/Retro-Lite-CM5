@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "time.h": "c",
+        "cmath": "cpp"
+    }
+}
