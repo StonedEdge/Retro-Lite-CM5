@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Pico ARM GCC",
+    "description": "Pico SDK Toolchain with GCC arm-none-eabi",
+    "toolchainFile": "${env:PICO_SDK_PATH}/cmake/preload/toolchains/pico_arm_gcc.cmake"
+  }
+]

@@ -24,10 +24,12 @@
 #include "wiring_private.h"
 #include <EEPROM.h>
 #include <Wire.h>
-#include <Joystick.h> // https://github.com/MHeironimus/ArduinoJoystickLibrary
+#include "Keyboard.h"
 #include "Mouse.h"
+#include <Joystick.h> // https://github.com/MHeironimus/ArduinoJoystickLibrary
+#include "Multiaxis.h"
 #include "I2Cdev.h"
-#include "MPU6050_6Axis_MotionApps612.h"
+#include "MPU6050.h"
 #include <math.h>
 
 // Serial Comms
@@ -77,7 +79,8 @@ at_pin pinout[] = {
   { 5, 6, NOT_ON_TIMER },
   { 2, 1, NOT_ON_TIMER },
   { 2, 2, NOT_ON_TIMER },
-  { 6, 1, NOT_ON_TIMER }
+  { 6, 1, NOT_ON_TIMER },
+  { 4, 5, NOT_ON_TIMER },
 };
 
 #define PIN_A       0
@@ -98,10 +101,11 @@ at_pin pinout[] = {
 #define PIN_L1      15
 #define PIN_L3      16
 #define PIN_R3      17
+#define PIN_HOTKEY  18
 
 // Define buttons
-byte buttonCount = 14; // Number of buttons in use. Change length of buttonPins, lastButtonState and currentButtonState to match.
-byte buttonPins[14] = {
+byte buttonCount = 15; // Number of buttons in use. Change length of buttonPins, lastButtonState and currentButtonState to match.
+byte buttonPins[15] = {
   PIN_A,
   PIN_B,
   PIN_X,
@@ -115,7 +119,8 @@ byte buttonPins[14] = {
   PIN_R1,
   PIN_L1,
   PIN_L3,
-  PIN_R3
+  PIN_R3,
+  PIN_HOTKEY
 }; // Array to store digital pins used for buttons. Length must be the same as buttonCount.
 
 #define BTN_A       0
@@ -132,6 +137,7 @@ byte buttonPins[14] = {
 #define BTN_L1      11
 #define BTN_L3      12
 #define BTN_R3      13
+#define BTN_HOTKEY  14
 
 byte dpadPins[4] = {
   PIN_D_UP,
@@ -147,8 +153,8 @@ byte dpadPins[4] = {
 
 // Button state arrays
 byte dpadPinsState[4];       // Empty State array for dPad
-byte lastButtonState[14];    // Empty State array for buttons last sent state. Must be same length as buttonPins
-byte currentButtonState[14]; // Empty State array for buttons. Must be same length as buttonPins
+byte lastButtonState[15];    // Empty State array for buttons last sent state. Must be same length as buttonPins
+byte currentButtonState[15]; // Empty State array for buttons. Must be same length as buttonPins
 
 // Define Analog Pins for joysticks
 const int leftJoyX = A3;
@@ -171,7 +177,7 @@ const int earlyRightX = 30;      //---------------------------------------------
 boolean scaledJoystickOutput = true; // Enable joystick scaling. Needed for switch joysticks due to uneven axis travels. Disabling will save some compute time if your joystick works well without it.
 
 // Main Joystick setup
-Joystick_ Joystick(
+Joystick_ joystick(
   JOYSTICK_DEFAULT_REPORT_ID,
   JOYSTICK_TYPE_GAMEPAD,
   buttonCount, 1,       // Button Count, Hat Switch Count
@@ -179,6 +185,9 @@ Joystick_ Joystick(
   true, true, true,     // Rx, Ry, Rz
   false, false,         // Rudder, Throttle
   false, false, false); // Accelerator, Brake, Steering
+
+// Main Joystick setup
+Multiaxis_ sensors;
 
 // Default Joystick calibration settings and EEPROM storage Address
 int minLeftX = 330; // EEPROM Adr = 1
@@ -197,208 +206,57 @@ int minRightX = 300; // EEPROM Adr = 19
 int maxRightX = 780; // EEPROM Adr = 21
 int midRightX = 525; // EEPROM Adr = 23
 
+int xAccelOffset = 1055;  // EEPROM Adr = 25
+int yAccelOffset = -3053; // EEPROM Adr = 27
+int zAccelOffset = 1149;  // EEPROM Adr = 29
+int xGyroOffset = 16;     // EEPROM Adr = 31
+int yGyroOffset = -20;    // EEPROM Adr = 33
+int zGyroOffset = 42;     // EEPROM Adr = 35
+
 // All variables below general use, not used for configuration.
 boolean calibrationMode = false;
 int calibrationStep = 1;
 // unsigned long keyboardTimer;
 boolean L3Pressed = false;
+boolean menuEnabled = false;
 boolean povHatMode = true; // Enable to use POV Hat for Dpad instead of analog
 
 // Mouse Variables
 boolean mouseEnabled = false;
-boolean airMouse = true;
 int mouseDivider = 8; // Adjust this value to control mouse sensitivity. Higher number = slower response.
 unsigned long mouseTimer;
 int mouseInterval = 10; // Interval in MS between mouse updates
 unsigned long mouseModeTimer;
 boolean mouseModeTimerStarted = false;
 
-static const float CURSOR_SPEED = 1024.0 / (M_PI / 4);
-static const float STABILIZE_BIAS = 16.0;
-
-float gYaw = 0;
-float gPitch = 0;
-float gdYaw = 0;
-float gdPitch = 0;
-bool firstRead = true;
-bool stabilize = true; // Adaptive high-pass filter for air mouse mode
+boolean calibrateMPU = false;
 
 MPU6050 mpu;
 
-// MPU control/status vars
-bool dmpReady = false;  // set true if DMP init was successful
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
-
-float clamp(float val) {
-  while (val <= -M_PI) {
-    val += 2 * M_PI;
-  }
-  while (val >= M_PI) {
-    val -= 2 * M_PI;
-  }
-  return val;
-}
-
-float highpass(float oldVal, float newVal) {
-  if (!stabilize) {
-    return newVal;
-  }
-  float delta = clamp(oldVal - newVal);
-  float alpha = max(0.0f, 1 - pow(fabsf(delta) * CURSOR_SPEED / STABILIZE_BIAS, 3.0f));
-  return newVal + alpha * delta;
-}
-
-void sendCurrentState() {
-  float dX = gdYaw * CURSOR_SPEED;
-  float dY = gdPitch * CURSOR_SPEED;
-
-  // Scale the shift down to fit the protocol.
-  if (dX > 127) {
-    dY *= 127.0 / dX;
-    dX = 127;
-  }
-  if (dX < -127) {
-    dY *= -127.0 / dX;
-    dX = -127;
-  }
-  if (dY > 127) {
-    dX *= 127.0 / dY;
-    dY = 127;
-  }
-  if (dY < -127) {
-    dX *= -127.0 / dY;
-    dY = -127;
-  }
-
-  const int8_t x = (int8_t)floor(dX + 0.5);
-  const int8_t y = (int8_t)floor(dY + 0.5);
-
-  Mouse.move(x, y, 0);
-
-  // Only subtract the part of the error that was already sent.
-  if (x != 0) {
-    gdYaw -= x / CURSOR_SPEED;
-  }
-  if (y != 0) {
-    gdPitch -= y / CURSOR_SPEED;
-  }
-}
-
-void onOrientation(const Quaternion &q) {
-  float q1 = -q.x; // X * sin(T/2)
-  float q2 = -q.y; // Y * sin(T/2)
-  float q3 = -q.z; // Z * sin(T/2)
-  float q0 = q.w; // cos(T/2)
-
-  float yaw = atan2(2 * (q0 * q3 - q1 * q2), (1 - 2 * (q1 * q1 + q3 * q3)));
-  float pitch = asin(2 * (q0 * q1 + q2 * q3));
-  // float roll = atan2(2 * (q0 * q2 - q1 * q3), (1 - 2 * (q1 * q1 + q2 * q2)));
-
-  if (yaw == NAN || pitch == NAN) {
-    // NaN case, skip it
-    return;
-  }
-
-  if (firstRead) {
-    gYaw = yaw;
-    gPitch = pitch;
-    firstRead = false;
-  } else {
-    const float newYaw = highpass(gYaw, yaw);
-    const float newPitch = highpass(gPitch, pitch);
-
-    float dYaw = clamp(gYaw - newYaw);
-    float dPitch = gPitch - newPitch;
-    gYaw = newYaw;
-    gPitch = newPitch;
-
-    // Accumulate the error locally.
-    gdYaw += dYaw;
-    gdPitch += dPitch;
-  }
-}
-
-void beginTracking() {
-  if (dmpReady) {
-    mpu.setDMPEnabled(true);
-  }
-}
-
-void stepTracking() {
-  // if programming failed, don't try to do anything
-  if (!dmpReady) return;
-  // read a packet from FIFO
-  if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { // Get the Latest packet 
-    Quaternion q;
-    mpu.dmpGetQuaternion(&q, fifoBuffer);
-    onOrientation(q);
-    sendCurrentState();
-  }
-}
-
-void stopTracking() {
-  if (dmpReady) {
-    mpu.setDMPEnabled(false);
-  }
-}
-
-void initDmp() {
-  Wire.begin();
-  Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
-
-  // initialize device
-  mpu.initialize();
-
-  // verify connection
-  mpu.testConnection(); // No diagnostics here
-
-  // load and configure the DMP
-  devStatus = mpu.dmpInitialize();
-
-  // supply your own gyro offsets here, scaled for min sensitivity
-  // make sure it worked (returns 0 if so)
-  if (devStatus == 0) {
-    // Calibration Time: generate offsets and calibrate our MPU6050
-    mpu.CalibrateAccel(6);
-    mpu.CalibrateGyro(6);
-    mpu.PrintActiveOffsets();
-    // set our DMP Ready flag so the main loop() function knows it's okay to use it
-    dmpReady = true;
-  } else {
-    // ERROR!
-    // 1 = initial memory load failed
-    // 2 = DMP configuration updates failed
-    // (if it's going to break, usually the code will be 1)
-  }
-}
+void calibrateIMU(MPU6050 *accelgyro, int offsets[6]);
 
 byte LUT(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadBand) { // This function builds a lookup table for the given axis.
   // Shift all joystick values to a base of zero. All values are halved due to ram limitations on the 32u4.
   int shiftedMin = 0;
-  int shiftedMid = (midIn - minIn) /2;
-  int shiftedMax = (maxIn - minIn) /2;
-  int temp;
-  
-  if (i < shiftedMid) {
+  int shiftedMid = (midIn - minIn) / 2;
+  int shiftedMax = (maxIn - minIn) / 2;
+
+  if (i < shiftedMid + deadBand && i > shiftedMid - deadBand) {
+    return 127;
+  } else if (i < shiftedMid) {
     if (i > shiftedMin + earlyStop) {
-      temp = map(i, shiftedMin, shiftedMid - deadBand, 0, 127);
+      return map(i, shiftedMin, shiftedMid - deadBand, 0, 127);
     } else {
-      temp = 0;
+      return 0;
     }
   } else {
     if (i < shiftedMax - earlyStop) {
-      temp = map(i, shiftedMid + deadBand, shiftedMax, 127, 254);
+      return map(i, shiftedMid + deadBand, shiftedMax, 127, 254);
     } else {
-      temp = 254;
+      return 254;
     }
   }
-  if (i < shiftedMid + deadBand && i > shiftedMid - deadBand) {
-    temp = 127;
-  }
-
-  return temp;
+  return 0;
 }
 
 byte leftXLUT(int i) {
@@ -417,6 +275,39 @@ byte rightYLUT(int i) {
   return LUT(i, minRightY, midRightY, maxRightY, earlyRightY, deadBandRight);
 }
 
+void serialEvent() {
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    if (inChar == 27) { // Escape
+      Keyboard.press(KEY_ESC);
+    } else if (inChar == 8) { // Backspace
+      Keyboard.press(KEY_BACKSPACE);
+    } else if (inChar == 13) { // Enter
+      Keyboard.press(KEY_RETURN);
+    } else if (inChar == 14) { // Right
+      Keyboard.press(KEY_RIGHT_ARROW);
+    } else if (inChar == 15) { // Left
+      Keyboard.press(KEY_LEFT_ARROW);
+    } else if (inChar == 17) { // Up
+      Keyboard.press(KEY_UP_ARROW);
+    } else if (inChar == 18) { // Down
+      Keyboard.press(KEY_DOWN_ARROW);
+    } else if (inChar == calibrationStepOne) {
+      calibrationMode = true;
+    } else if (inChar == menuClose) {
+      menuEnabled = false;
+    } else if (inChar == povModeDisable) {
+      povHatMode = false;
+    } else if (inChar == povModeEnable) {
+      povHatMode = true;
+    } else {
+      Keyboard.press(inChar);
+    }
+    delay(10);
+    Keyboard.releaseAll();
+  }
+}
+
 int readJoystick(int joystickPin, boolean invertOutput) { // Reads raw joystick values and inverts if required
   int var = analogRead(joystickPin);
   if (invertOutput) {
@@ -428,11 +319,6 @@ int readJoystick(int joystickPin, boolean invertOutput) { // Reads raw joystick 
 }
 
 void mouseControl() {
-  if (airMouse) {
-    stepTracking();
-    return;
-  }
-
   int var;
 
   // Calculate Y Value
@@ -504,6 +390,25 @@ int atDigitalRead(uint8_t pin) {
   return LOW;
 }
 
+void menuMode() {
+  if (dpadPinsState[0] == 1) {
+    Serial.write(osKeyboardUp);
+    delay(serialButtonDelay);
+  } else if (dpadPinsState[2] == 1) {
+    Serial.write(osKeyboardDn);
+    delay(serialButtonDelay);
+  } else if (dpadPinsState[1] == 1) {
+    Serial.write(osKeyboardRight);
+    delay(serialButtonDelay);
+  } else if (dpadPinsState[3] == 1) {
+    Serial.write(osKeyboardLeft);
+    delay(serialButtonDelay);
+  } else if (lastButtonState[1] == 1) {
+    Serial.write(osKeyboardSelect);
+    delay(serialButtonDelay);
+  }
+}
+
 void buttonRead() { // Read button inputs and set state arrays.
   for (int i = 0; i < buttonCount; i++) {
     int input = !atDigitalRead(buttonPins[i]);
@@ -522,7 +427,7 @@ void buttonRead() { // Read button inputs and set state arrays.
 void joypadButtons() { // Set joystick buttons for USB output
   for (int i = 0; i < buttonCount; i++) {
     if (lastButtonState[i] != currentButtonState[i]) {
-      Joystick.setButton(i, lastButtonState[i]);
+      joystick.setButton(i, lastButtonState[i]);
       currentButtonState[i] = lastButtonState[i];
     }
   }
@@ -531,18 +436,18 @@ void joypadButtons() { // Set joystick buttons for USB output
 void dPadInput() { // D-Pad as RY and RZ Axis
   if (!povHatMode) {
     if (dpadPinsState[DPAD_UP] == HIGH && lastButtonState[BTN_SELECT] != HIGH) { // Up
-      Joystick.setRyAxis(2);
+      joystick.setRyAxis(2);
     } else if (dpadPinsState[DPAD_DOWN] == HIGH && lastButtonState[BTN_SELECT] != HIGH) { // Down
-      Joystick.setRyAxis(0);
+      joystick.setRyAxis(0);
     } else {
-      Joystick.setRyAxis(1);
+      joystick.setRyAxis(1);
     }
     if (dpadPinsState[DPAD_RIGHT] == HIGH) { // Right
-      Joystick.setRzAxis(2);
+      joystick.setRzAxis(2);
     } else if (dpadPinsState[DPAD_LEFT] == HIGH) { // Left
-      Joystick.setRzAxis(0);
+      joystick.setRzAxis(0);
     } else {
-      Joystick.setRzAxis(1);
+      joystick.setRzAxis(1);
     }
   } else { // POV Hat Mode
     int angle = -1;
@@ -567,7 +472,7 @@ void dPadInput() { // D-Pad as RY and RZ Axis
     } else if (dpadPinsState[DPAD_LEFT] == HIGH) { // Left
       angle = 270;
     }
-    Joystick.setHatSwitch(0, angle);
+    joystick.setHatSwitch(0, angle);
   }
 }
 
@@ -601,6 +506,14 @@ void readJoystickConfig() { // Read joystick calibration from EEPROM
   minRightX = readIntFromEEPROM(19);
   maxRightX = readIntFromEEPROM(21);
   midRightX = readIntFromEEPROM(23);
+
+// IMU calibration data
+  xAccelOffset = readIntFromEEPROM(25);
+  yAccelOffset = readIntFromEEPROM(27);
+  zAccelOffset = readIntFromEEPROM(29);
+  xGyroOffset = readIntFromEEPROM(31);
+  yGyroOffset = readIntFromEEPROM(33);
+  zGyroOffset = readIntFromEEPROM(35);
 }
 
 void writeJoystickConfig() { // Store joystick calibration in EEPROM
@@ -620,6 +533,14 @@ void writeJoystickConfig() { // Store joystick calibration in EEPROM
   writeIntIntoEEPROM(19, minRightX);
   writeIntIntoEEPROM(21, maxRightX);
   writeIntIntoEEPROM(23, midRightX);
+
+// IMU calibration data
+  writeIntIntoEEPROM(25, xAccelOffset);
+  writeIntIntoEEPROM(27, yAccelOffset);
+  writeIntIntoEEPROM(29, zAccelOffset);
+  writeIntIntoEEPROM(31, xGyroOffset);
+  writeIntIntoEEPROM(33, yGyroOffset);
+  writeIntIntoEEPROM(35, zGyroOffset);
 }
 
 void eepromLoad() { // Loads stored settings from EEPROM
@@ -687,19 +608,23 @@ void joystickInput() {
   int var = 0;
   var = readJoystick(rightJoyY, invertRightY);
   var = (var - minRightY) / 2;
-  Joystick.setRxAxis(rightYLUT(var));
+  joystick.setRxAxis(rightYLUT(var));
 
   var = readJoystick(rightJoyX, invertRightX);
   var = (var - minRightX) / 2;
-  Joystick.setZAxis(rightXLUT(var));
+  joystick.setZAxis(rightXLUT(var));
 
   var = readJoystick(leftJoyY, invertLeftY);
   var = (var - minLeftY) / 2;
-  Joystick.setYAxis(leftYLUT(var));
+  joystick.setYAxis(leftYLUT(var));
 
   var = readJoystick(leftJoyX, invertLeftX);
   var = (var - minLeftX) / 2;
-  Joystick.setXAxis(leftXLUT(var));
+  joystick.setXAxis(leftXLUT(var));
+
+  int16_t ax, ay, az, gx, gy, gz;
+  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  sensors.setMotion6(ax, ay, az, gx, gy, gz);
 }
 
 void atPinModeInputPullup(uint8_t pin) {
@@ -719,16 +644,18 @@ void atPinModeInputPullup(uint8_t pin) {
 
 void setup() {
   // Needed for Retropie to detect axis.
-  Joystick.setXAxisRange(0, 254);
-  Joystick.setYAxisRange(0, 254);
-  Joystick.setZAxisRange(0, 254);
-  Joystick.setRxAxisRange(0, 254);
-  Joystick.setRyAxisRange(0, 2);
-  Joystick.setRzAxisRange(0, 2);
+  joystick.setXAxisRange(0, 254);
+  joystick.setYAxisRange(0, 254);
+  joystick.setZAxisRange(0, 254);
+  joystick.setRxAxisRange(0, 254);
+  joystick.setRyAxisRange(0, 2);
+  joystick.setRzAxisRange(0, 2);
 
   Serial.begin(baudrate);
   //while (!Serial);
-  Joystick.begin(false); // Initialise joystick mode with auto sendState disabled as it has a huge processor time penalty for seemingly no benefit.
+  joystick.begin(false); // Initialise joystick mode with auto sendState disabled as it has a huge processor time penalty for seemingly no benefit.
+  sensors.begin();
+  Keyboard.begin(); //Initialise keyboard for on screen keyboard input
   Mouse.begin(); // Initialise mouse control
 
   for (int i = 0; i < buttonCount; i++) { // Set all button pins as input pullup. Change to INPUT if using external resistors.
@@ -739,7 +666,43 @@ void setup() {
   }
   
   eepromLoad(); // Check for stored joystick settings and load if applicable.
-  initDmp();
+
+  Wire.begin();
+  Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+
+  // initialize device
+  mpu.initialize();
+
+  // verify connection
+  if (mpu.testConnection()) {
+    // supply your own gyro offsets here, scaled for min sensitivity
+    mpu.setXAccelOffset(xAccelOffset);
+    mpu.setYAccelOffset(yAccelOffset);
+    mpu.setZAccelOffset(zAccelOffset);
+    mpu.setXGyroOffset(xGyroOffset);
+    mpu.setYGyroOffset(yGyroOffset);
+    mpu.setZGyroOffset(zGyroOffset);
+
+    if (calibrateMPU) {
+      // Calibration Time: generate offsets and calibrate our MPU6050
+      mpu.CalibrateAccel(6);
+      mpu.CalibrateGyro(6);
+      mpu.PrintActiveOffsets();
+
+      int offsets[6];
+      calibrateIMU(&mpu, offsets); // takes a couple minutes to complete
+      xAccelOffset = offsets[0];
+      yAccelOffset = offsets[1];
+      zAccelOffset = offsets[2];
+      xGyroOffset = offsets[3];
+      yGyroOffset = offsets[4];
+      zGyroOffset = offsets[5];
+      writeJoystickConfig(); // Update EEPROM
+    }
+
+    mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
+    mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);
+  }
 }
 
 void loop() {
@@ -747,23 +710,25 @@ void loop() {
 
   if (calibrationMode) {
     joystickCalibration();
+  } else if (menuEnabled) {
+    serialEvent();
+    menuMode();
   } else {
     joypadButtons();
     joystickInput();
     dPadInput();
-    Joystick.sendState(); // Update input changes
+    joystick.sendState(); // Update input changes
+    sensors.sendState();
   }
 
   // Mouse Toggle
-  if (lastButtonState[BTN_L3] == HIGH && lastButtonState[BTN_SELECT] == HIGH) { // Left joystick click toggles the mouse cursor to an on/off state
+  if (lastButtonState[BTN_SELECT] == HIGH && lastButtonState[BTN_R3] == HIGH) { // Left joystick click toggles the mouse cursor to an on/off state
     if (mouseModeTimerStarted) {
       if (millis() > mouseModeTimer + 2000) {
         if (mouseEnabled) {
-          stopTracking();
           mouseEnabled = false;
         } else {
           mouseEnabled = true;
-          beginTracking();
         }
         mouseModeTimerStarted = false;
       }
@@ -791,7 +756,19 @@ void loop() {
     delay(serialButtonDelay);
   }
 
-  if (lastButtonState[BTN_R3] == HIGH && lastButtonState[BTN_START] == HIGH) { // Start+R3 for jostick calibration
+  if (lastButtonState[BTN_SELECT] == HIGH && lastButtonState[BTN_R3] == HIGH) { //If this combination of buttons is pressed, Open Menu. (Select and right joystick button)
+    if (menuEnabled) {
+      Serial.write(menuClose);
+      delay(200);
+      menuEnabled = false;
+    } else {
+      Serial.write(menuOpen);
+      delay(200);
+      menuEnabled = true;
+    }
+  }
+
+  if (lastButtonState[BTN_START] == HIGH && lastButtonState[BTN_R3] == HIGH) { // Start+R3 for jostick calibration
     calibrationStep = 1;
     calibrationMode = true;
   }
