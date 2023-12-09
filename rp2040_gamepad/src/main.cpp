@@ -76,6 +76,29 @@ void tud_resume_cb(void) { blink_interval_ms = BLINK_MOUNTED; }
 // USB HID
 //--------------------------------------------------------------------+
 
+int16_t g_imu[6];
+
+int imu_read(double* vec)
+{
+    mpu.getMotion6(&g_imu[0], &g_imu[1], &g_imu[2], &g_imu[3], &g_imu[4], &g_imu[5]);
+
+    vec[0] = ((double)g_imu[0] * 4 / 32768) * G;
+    vec[1] = ((double)g_imu[1] * 4 / 32768) * G;
+    vec[2] = ((double)g_imu[2] * 4 / 32768) * G;
+    vec[3] = ((double)g_imu[3] * 1000 / 32768) * DEG_TO_RAD;
+    vec[4] = ((double)g_imu[4] * 1000 / 32768) * DEG_TO_RAD;
+    vec[5] = ((double)g_imu[5] * 1000 / 32768) * DEG_TO_RAD;
+
+    // printf("%f, %f, %f \t %f, %f, %f\n", vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+
+    return ACC_DATA_READY | GYR_DATA_READY;
+}
+
+void mouse_cb(int8_t x, int8_t y)
+{
+    tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0);
+}
+
 static void send_hid_report(uint8_t report_id, uint32_t btn)
 {
     // skip if hid is not ready yet
@@ -93,19 +116,19 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
 
             tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
             has_keyboard_key = true;
+            break;
         } else {
             // send empty key report if previously has key pressed
-            if (has_keyboard_key)
+            if (has_keyboard_key) {
                 tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
-            has_keyboard_key = false;
+                has_keyboard_key = false;
+                break;
+            }
         }
-    } break;
+    }
 
     case REPORT_ID_MOUSE: {
-        int8_t const delta = 5;
-
-        // no button, right + down, no scroll, no pan
-        tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, delta, delta, 0, 0);
+       tracking_step(mouse_cb);
     } break;
 
     case REPORT_ID_CONSUMER_CONTROL: {
@@ -117,14 +140,17 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
             uint16_t volume_down = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
             tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &volume_down, 2);
             has_consumer_key = true;
+            break;
         } else {
             // send empty key report (release key) if previously has key pressed
             uint16_t empty_key = 0;
-            if (has_consumer_key)
+            if (has_consumer_key) {
                 tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &empty_key, 2);
-            has_consumer_key = false;
+                has_consumer_key = false;
+                break;
+            }
         }
-    } break;
+    }
 
     case REPORT_ID_GAMEPAD: {
         // use to avoid send multiple consecutive zero report for keyboard
@@ -137,15 +163,21 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
             report.hat = GAMEPAD_HAT_UP;
             report.buttons = GAMEPAD_BUTTON_A;
             tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
-
             has_gamepad_key = true;
+            break;
         } else {
             report.hat = GAMEPAD_HAT_CENTERED;
             report.buttons = 0;
-            if (has_gamepad_key)
+            if (has_gamepad_key) {
                 tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
-            has_gamepad_key = false;
+                has_gamepad_key = false;
+                break;
+            }
         }
+    }
+
+    case REPORT_ID_MULTI_AXIS: {
+        tud_hid_report(REPORT_ID_MULTI_AXIS, g_imu, 12);
     } break;
 
     default:
@@ -259,46 +291,6 @@ void led_blinking_task(void)
     led_state = 1 - led_state; // toggle
 }
 
-bool mouse_cb(int8_t x, int8_t y, void* context)
-{
-    // Remote wakeup
-    if (tud_suspended()) {
-        // Wake up host if we are in suspend mode
-        // and REMOTE_WAKEUP feature is enabled by host
-        tud_remote_wakeup();
-    } else if (tud_hid_ready()) {
-        tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0);
-    }
-    return true;
-}
-
-void mpu_task(void)
-{
-    static uint32_t start_ms = 0;
-    if (board_millis() - start_ms < 10)
-        return; // not enough time
-    start_ms += 10;
-
-    tracking_step(mouse_cb, nullptr);
-}
-
-int imu_read(double* vec)
-{
-    int16_t ax, ay, az, gx, gy, gz;
-    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-
-    vec[0] = ((double)ax * 4 / 32768) * G;
-    vec[1] = ((double)ay * 4 / 32768) * G;
-    vec[2] = ((double)az * 4 / 32768) * G;
-    vec[3] = ((double)gx * 1000 / 32768) * DEG_TO_RAD;
-    vec[4] = ((double)gy * 1000 / 32768) * DEG_TO_RAD;
-    vec[5] = ((double)gz * 1000 / 32768) * DEG_TO_RAD;
-
-    // printf("%f, %f, %f \t %f, %f, %f\n", vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-
-    return ACC_DATA_READY | GYR_DATA_READY;
-}
-
 int main()
 {
     stdio_init_all();
@@ -352,7 +344,6 @@ int main()
     while (1) {
         tud_task(); // tinyusb device task
         led_blinking_task();
-        // hid_task();
-        mpu_task();
+        hid_task();
     }
 }
