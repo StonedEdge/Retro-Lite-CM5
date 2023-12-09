@@ -51,7 +51,7 @@
     HID_USAGE          ( HID_USAGE_DESKTOP_MULTI_AXIS_CONTROLLER ) ,\
     HID_LOGICAL_MIN_N  ( -32768, 2                               ) ,\
     HID_LOGICAL_MAX_N  ( 32767, 2                                ) ,\
-    HID_PHYSICAL_MIN   ( -4                                      ) ,\
+    HID_PHYSICAL_MIN   ( (uint8_t)-4                             ) ,\
     HID_PHYSICAL_MAX   ( 4                                       ) ,\
     HID_REPORT_SIZE    ( 16                                      ) ,\
     HID_REPORT_COUNT   ( 3                                       ) ,\
@@ -65,8 +65,8 @@
     HID_USAGE          ( HID_USAGE_DESKTOP_MULTI_AXIS_CONTROLLER ) ,\
     HID_LOGICAL_MIN_N  ( -32768, 2                               ) ,\
     HID_LOGICAL_MAX_N  ( 32767, 2                                ) ,\
-    HID_PHYSICAL_MIN   ( -1000                                   ) ,\
-    HID_PHYSICAL_MAX   ( 1000                                    ) ,\
+    HID_PHYSICAL_MIN_N ( -1000, 2                                ) ,\
+    HID_PHYSICAL_MAX_N ( 1000, 2                                 ) ,\
     HID_REPORT_SIZE    ( 16                                      ) ,\
     HID_REPORT_COUNT   ( 3                                       ) ,\
     HID_COLLECTION     ( HID_COLLECTION_PHYSICAL                 ) ,\
