@@ -51,7 +51,7 @@ TBD
 - [x] Design v1 DSI test display board
 - [x] Design v1 Power Management/DisplayPort/USB-C PD test board
 - [x] Order v1 Power Management/DisplayPort/USB-C PD test board
-- [ ] Design v2 prototype left/right controller PCBs (RP2040 based)
+- [x] Design v2 prototype left/right controller PCBs (RP2040 based)
 - [ ] Test v1 Power Management/DisplayPort/USB-C PD test board functionality 
 - [ ] Design CM5 carrier main board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle potential max 15W of power 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
@@ -61,13 +61,13 @@ TBD
 - [x] Integrate touch/verify via the GT911 controller 
 - [x] Add RetroPie software package
 - [x] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
-- [ ] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
+- [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
 - [ ] Write HID controller code for RP2040, based on GP2040-CE
 - [ ] Integrate an IMU into the controller PCB for gyro functionality (RP2040)
 - [ ] Integrate brightness display toggle via GPIO PWM control 
 - [ ] Redesign housing (increase 3mm all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
 - [ ] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
-- [ ] Redeisgn housing to use original switch lite fan enclosure 
+- [x] Redeisgn housing to use original switch lite fan enclosure 
 - [ ] Standby and wakeup RK3588s SoC implementation via ATtiny84 and button press
 - [ ] Power on/power off via ATtiny84 and button press 
 - [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD if possible to draw to screen FB) 
