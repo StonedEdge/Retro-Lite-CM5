@@ -40,7 +40,7 @@ private:
         return newVal + alpha * delta;
     }
 
-    void sendCurrentState(MouseMoveCallback mouse_move, void *context) {
+    void sendCurrentState(MouseMoveCallback mouse_move) {
         float dX = dYaw * CURSOR_SPEED;
         float dY = dPitch * CURSOR_SPEED;
 
@@ -65,7 +65,7 @@ private:
         const int8_t x = (int8_t)std::floor(dX + 0.5);
         const int8_t y = (int8_t)std::floor(dY + 0.5);
 
-        mouse_move(x, y, context);
+        mouse_move(x, y);
 
         // Only subtract the part of the error that was already sent.
         if (x != 0) {
@@ -169,7 +169,7 @@ public:
         tracker.Resume();
     }
 
-    void stepTracking(MouseMoveCallback mouse_move, void *context) {
+    void stepTracking(MouseMoveCallback mouse_move) {
         double vec[6];
         int ret = imu_read(vec);
         if (ret != 0) {
@@ -187,7 +187,7 @@ public:
                         .data = cardboard::Vector3(vec[3], vec[4], vec[5]) };
                 cardboard::Vector4 pose = tracker.OnGyroscopeData(gdata);
                 onOrientation(pose);
-                sendCurrentState(mouse_move, context);
+                sendCurrentState(mouse_move);
             }
         }
     }
@@ -216,8 +216,8 @@ void tracking_begin() {
     g_state.beginTracking();
 }
 
-void tracking_step(MouseMoveCallback mouse_move, void *context) {
-    g_state.stepTracking(mouse_move, context);
+void tracking_step(MouseMoveCallback mouse_move) {
+    g_state.stepTracking(mouse_move);
 }
 
 void tracking_end() {
