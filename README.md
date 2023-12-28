@@ -1,17 +1,22 @@
-# Retro-Lite-CM5
-For regular updates/following progress on the build, please check out the forum post here:
-https://bitbuilt.net/forums/index.php?threads/retro-lite-cm5.5815/
+<div align="center">
+  <h1>Retro-Lite-CM5</h1>
+</div>
+
+<div align="center">
+  <img src="https://i.imgur.com/VhgvOEU.png" alt="Image of Retro Lite CM5">
+</div>
 
 The Retro Lite CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86.  
 
 Powered by the RK3588s compute module from Radxa, which is an SBC SOM module with an ARMv8 64-bit processor. Features 8 cores/threads - 4 x ARM Cortex-A55/A76 cores with A55 cores clocked at 1.8GHz, and A76 cores clocked at 2.4GHz. 
 
-The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via USB Type-C, USB 3.0 & HDMI 2.1. Built in PCIe WiFI 6.0 & BT 5.2, as well as a new 720p IPS display @ 5.5" with touchscreen support & dual tact trigger buttons for GameCube support make this a much more viable low powered ARM SBC gaming PC than the Raspberry Pi 4. 
+The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via USB Type-C, USB 3.0 & HDMI 2.1. Built-in PCIe WiFI 6.0 & BT 5.2, as well as a new 720p IPS display @ 5.5" with touchscreen support & dual tact trigger buttons for GameCube support, make this a much more viable low-powered ARM SBC gaming PC than the Raspberry Pi 4. 
 
-The operating system will be based on Armbian, with custom device tree for hardware interfacing & RetroPie pre-installed. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux. Android is currently more performant due to Vulkan drivers however Linux Vulkan blobs should come in the near future. 
+The operating system will be based on Armbian, with a custom device tree for hardware interfacing & RetroPie pre-installed. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux. Android is currently more performant due to Vulkan drivers however Linux Vulkan blobs should come soon. 
 
-![Image of Retro Lite CM5](https://i.imgur.com/evUsqqW.png)
-![Image of Retro Lite CM52](https://i.imgur.com/OTbErjX.png)
+For regular updates/following progress on the build, please check out the forum post here:
+https://bitbuilt.net/forums/index.php?threads/retro-lite-cm5.5815/
+
 # Retro Lite CM5: Radxa RK3588s Handheld 
 
 ## Description
@@ -64,17 +69,17 @@ TBD
 - [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
 - [ ] Write HID controller code for RP2040, based on GP2040-CE
 - [ ] Integrate an IMU into the controller PCB for gyro functionality (RP2040)
-- [ ] Integrate brightness display toggle via GPIO PWM control 
-- [ ] Redesign housing (increase 3mm all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
+- [x] Redesign housing (increase 3mm all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
 - [ ] Standby and wakeup RK3588s SoC implementation via ATtiny84 and button press
-- [ ] Power on/power off via ATtiny84 and button press 
-- [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD if possible to draw to screen FB) 
-- [ ] Port any necessary C code base from Retro Lite CM4 to RK3588 (if appropriate) 
-- [ ] Prepare reference implementation of Wayland image via Weston for launching games 
+- [ ] Power on/power off via ATtiny84
+- [ ] Retro Lite CM5 "OSD" control panel via Linux Video Overlay Interface
+- [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD via Linux framework to draw to screen FB) 
+- [ ] Prepare reference implementation of Wayland image via Weston for launching games via EmulationStation
 - [ ] Implement an on-screen indicator for volume control via GPIOs
-- [ ] Implement an on-screen indicator for brightness control in fixed steps
+- [ ] Integrate brightness display toggle via GPIO PWM control 
+- [ ] Implement an on-screen indicator for brightness control
 - [ ] Create a headphone icon to indicate headphones hotplugged 
 - [ ] Other optimizations/improvements/bug fixes 
 - [ ] Final GitHub open source release & announcement
