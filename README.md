@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Retro-Lite-CM5</h1>
+  <h1>Retro Lite CM5: RK3588s Gaming Handheld</h1>
 </div>
 
 <div align="center">
