@@ -1,16 +1,16 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Ivan Podogov <ginkage@***x.ru>
-Date: Mon, 30 Oct 2023 19:00:17 +0000
+From: John Doe <john.doe@somewhere.on.planet>
+Date: Sun, 14 Jan 2024 14:52:24 +0000
 Subject: Add WM8960 and KD055HDFIA001
 
-Signed-off-by: Ivan Podogov <ginkage@***x.ru>
+Signed-off-by: John Doe <john.doe@somewhere.on.planet>
 ---
- arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts | 238 +++++++++-
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c         | 231 ++++++++-
- 2 files changed, 463 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts | 231 +++++++++-
+ drivers/gpu/drm/panel/panel-ilitek-ili9881c.c         | 231 +++++++++-
+ 2 files changed, 456 insertions(+), 6 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
-index 81299650de4f..fcfc141a9ae9 100644
+index 81299650de4f..386d274c9c22 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
 @@ -6,10 +6,13 @@
@@ -40,7 +40,7 @@ index 81299650de4f..fcfc141a9ae9 100644
  		rockchip,format = "i2s";
  		rockchip,mclk-fs = <256>;
  		rockchip,cpu = <&i2s0_8ch>;
-@@ -166,10 +169,101 @@ fan0: pwm-fan {
+@@ -166,10 +169,98 @@ fan0: pwm-fan {
  			70000	4
  			75000	5
  			80000	6
@@ -97,7 +97,7 @@ index 81299650de4f..fcfc141a9ae9 100644
 +	dsi1_backlight: dsi1-backlight {
 +		status = "okay";
 +		compatible = "pwm-backlight";
-+		pwms = <&pwm0 0 25000 0>;
++		pwms = <&pwm0 0 25000 PWM_POLARITY_INVERTED>;
 +		brightness-levels = <
 +			0  20  20  21  21  22  22  23
 +			23  24  24  25  25  26  26  27
@@ -133,16 +133,13 @@ index 81299650de4f..fcfc141a9ae9 100644
 +			248 249 250 251 252 253 254 255
 +		>;
 +		default-brightness-level = <200>;
-+		enable-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&dsi1_backlight_en>;
 +	};
  };
  
  &i2c6 {
  	status = "okay";
  	pinctrl-names = "default";
-@@ -283,38 +377,87 @@ &dp0 {
+@@ -283,38 +374,87 @@ &dp0 {
  
  &dp0_in_vp2 {
  	status = "okay";
@@ -232,7 +229,7 @@ index 81299650de4f..fcfc141a9ae9 100644
  	status = "okay";
  	pinctrl-0 = <&pwm4m0_pins>;
  };
-@@ -391,10 +534,79 @@ &display_subsystem {
+@@ -391,10 +531,79 @@ &display_subsystem {
  
  &hdptxphy_hdmi_clk0 {
  	status = "okay";
@@ -312,7 +309,7 @@ index 81299650de4f..fcfc141a9ae9 100644
  	usb {
  		vcc5v0_host_en: vcc5v0-host-en {
  			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
-@@ -420,10 +632,30 @@ usbc0_int: usbc0-int {
+@@ -420,10 +629,26 @@ usbc0_int: usbc0-int {
  	hym8563 {
  		rtc_int: rtc-int {
  			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
@@ -324,10 +321,6 @@ index 81299650de4f..fcfc141a9ae9 100644
 +			rockchip,pins =
 +				//<1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>,
 +				<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+
-+		dsi1_backlight_en: dsi1-backlight-en {
-+			rockchip,pins = <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
 +		};
 +	};
 +
@@ -344,7 +337,7 @@ index 81299650de4f..fcfc141a9ae9 100644
  	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
  	vpcie3v3-supply = <&vcc3v3_pcie2x1l0>;
 diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 534dd7414d42..cfa0180069cd 100644
+index 534dd7414d42..8c639fb28346 100644
 --- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
 +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
 @@ -451,10 +451,207 @@ static const struct ili9881c_instr k101_im2byl02_init[] = {
