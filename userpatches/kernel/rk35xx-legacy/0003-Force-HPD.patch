@@ -1,0 +1,173 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: John Doe <john.doe@somewhere.on.planet>
+Date: Mon, 18 Dec 2023 10:08:21 +0000
+Subject: Force HPD
+
+Signed-off-by: John Doe <john.doe@somewhere.on.planet>
+---
+ arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts | 107 ++--------
+ 1 file changed, 13 insertions(+), 94 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+index fcfc141a9ae9..a3580ca9ae87 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+@@ -267,77 +267,10 @@ dsi1_backlight: dsi1-backlight {
+ &i2c6 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c6m3_xfer>;
+ 
+-	usbc0: fusb302@22 {
+-		compatible = "fcs,fusb302";
+-		reg = <0x22>;
+-		interrupt-parent = <&gpio0>;
+-		interrupts = <RK_PC4 IRQ_TYPE_LEVEL_LOW>;
+-		int-n-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&usbc0_int>;
+-		vbus-supply = <&vbus5v0_typec>;
+-		status = "okay";
+-
+-		ports {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			port@0 {
+-			reg = <0>;
+-			usbc0_role_sw: endpoint@0 {
+-				remote-endpoint = <&dwc3_0_role_switch>;
+-				};
+-			};
+-		};
+-
+-		usb_con: connector {
+-			compatible = "usb-c-connector";
+-			label = "USB-C";
+-			data-role = "dual";
+-			power-role = "dual";
+-			try-power-role = "sink";
+-			op-sink-microwatt = <1000000>;
+-
+-			sink-pdos =
+-				<PDO_FIXED(5000, 1000, PDO_FIXED_USB_COMM)>;
+-			source-pdos =
+-				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+-
+-			altmodes {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				altmode@0 {
+-					reg = <0>;
+-					svid = <0xff01>;
+-					vdo = <0xffffffff>;
+-				};
+-			};
+-
+-			ports {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				port@0 {
+-					reg = <0>;
+-					usbc0_orien_sw: endpoint {
+-						remote-endpoint = <&usbdp_phy0_orientation_switch>;
+-					};
+-				};
+-
+-				port@1 {
+-					reg = <1>;
+-					dp_altmode_mux: endpoint {
+-						remote-endpoint = <&usbdp_phy0_dp_altmode_mux>;
+-					};
+-				};
+-			};
+-		};
+-	};
+-
+ 	hym8563: hym8563@51 {
+ 		compatible = "haoyu,hym8563";
+ 		reg = <0x51>;
+ 		#clock-cells = <0>;
+ 		clock-frequency = <32768>;
+@@ -349,32 +282,23 @@ hym8563: hym8563@51 {
+ 	};
+ };
+ 
+ &usbdp_phy0 {
+ 	status = "okay";
+-	orientation-switch;
+-	svid = <0xff01>;
+-	sbu1-dc-gpios = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
+-	sbu2-dc-gpios = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
+-
+-	port {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		usbdp_phy0_orientation_switch: endpoint@0 {
+-			reg = <0>;
+-			remote-endpoint = <&usbc0_orien_sw>;
+-		};
++	rockchip,dp-lane-mux = <3 2 0 1>;
++};
+ 
+-		usbdp_phy0_dp_altmode_mux: endpoint@1 {
+-			reg = <1>;
+-			remote-endpoint = <&dp_altmode_mux>;
+-		};
+-	};
++&usbdp_phy0_dp {
++	status = "okay";
+ };
+ 
+ &dp0 {
++	// force-hpd;
+ 	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dp0_hpd>;
++	hpd-gpios = <&gpio0 RK_PD3 GPIO_ACTIVE_HIGH>;
+ };
+ 
+ &dp0_in_vp2 {
+ 	status = "okay";
+ };
+@@ -604,10 +528,15 @@ &dsi1_in_vp2 {
+ &dsi1_in_vp3 {
+ 	status = "okay";
+ };
+ 
+ &pinctrl {
++	dp {
++		dp0_hpd: dp0-hpd {
++			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
+ 
+ 	usb {
+ 		vcc5v0_host_en: vcc5v0-host-en {
+ 			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+@@ -730,20 +659,10 @@ &usbdrd3_0 {
+ 
+ &usbdrd_dwc3_0 {
+ 	dr_mode = "otg";
+ 	extcon = <&u2phy0>;
+ 	status = "okay";
+-
+-	usb-role-switch;
+-	port {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		dwc3_0_role_switch: endpoint@0 {
+-			reg = <0>;
+-			remote-endpoint = <&usbc0_role_sw>;
+-		};
+-	};
+ };
+ 
+ &usbhost3_0 {
+ 	status = "okay";
+ };
+-- 
+Created with Armbian build tools https://github.com/armbian/build
+
