@@ -101,7 +101,7 @@ int readJoystick(int joystickAxis)
 { // Reads raw joystick values and inverts if required
     adc_select_input(joystickAxis);
     return invertOutput[joystickAxis]
-        ? 1023 - adc_read()
+        ? 4095 - adc_read()
         : adc_read();
 }
 
@@ -196,7 +196,6 @@ void writeIntIntoFlash(int number)
 
 int readIntFromFlash()
 { // Converts uint8_tS to INT from Flash
-    return -1;
     uint16_t byte1 = flash_target_contents[flashOffset];
     uint16_t byte2 = flash_target_contents[flashOffset + 1];
     flashOffset += 2;
@@ -205,6 +204,7 @@ int readIntFromFlash()
 
 void readJoystickConfig()
 { // Read joystick calibration from Flash
+    flashData[0] = 0xAA;
     flashOffset = 1;
     for (int i = 0; i < 4; i++) {
         axisMin[i] = readIntFromFlash();
@@ -245,8 +245,8 @@ void writeJoystickConfig()
 
 void flashLoad()
 { // Loads stored settings from Flash
-    flashOffset = 1;
-    if (readIntFromFlash() != -1) { // Check Joystick Calibration in Flash is not Empty
+    flashOffset = 0;
+    if (readIntFromFlash() == 0xAA) { // Check Joystick Calibration in Flash is not Empty
         readJoystickConfig(); // Load joystick calibration from Flash
     }
 }
