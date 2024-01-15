@@ -3,6 +3,7 @@
 #define PICO_DEFAULT_I2C_SCL_PIN 19
 
 #include "gamepad.h"
+#include "hardware/i2c.h"
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
 #include <stdio.h>

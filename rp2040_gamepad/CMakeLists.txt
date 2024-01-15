@@ -27,6 +27,10 @@ endif()
 
 add_executable(rp2040_gamepad
         src/main.cpp
+        src/keyboard.cpp
+        src/mouse.cpp
+        src/consumer.cpp
+        src/gamepad.cpp
         src/usb_descriptors.cpp
         src/imu/I2Cdev.cpp
         src/imu/MPU6050.cpp
@@ -52,7 +56,7 @@ target_include_directories(rp2040_gamepad PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
 
 # pull in common dependencies and additional i2c hardware support
-target_link_libraries(rp2040_gamepad pico_stdlib pico_unique_id hardware_i2c tinyusb_device tinyusb_board)
+target_link_libraries(rp2040_gamepad pico_stdlib pico_unique_id hardware_i2c hardware_adc tinyusb_device tinyusb_board)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(rp2040_gamepad)

@@ -1,31 +1,12 @@
 #include "gamepad.h"
 
-// Serial Comms
-uint8_t brightnessUp = 0x00;
-uint8_t brightnessDn = 0x01;
-uint8_t calibrationStepOne = 0x02;
-uint8_t calibrationStepTwo = 0x03;
-uint8_t calibrationComplete = 0x04;
-uint8_t osKeyboardEnabled = 0x05;
-uint8_t osKeyboardLeft = 0x06;
-uint8_t osKeyboardRight = 0x07;
-uint8_t osKeyboardUp = 0x08;
-uint8_t osKeyboardDn = 0x09;
-uint8_t osKeyboardSelect = 0x10;
-uint8_t osKeyboardDisabled = 0x11;
-uint8_t menuOpen = 0x12;
-uint8_t menuClose = 0x13;
-uint8_t povModeEnable = 0x14;
-uint8_t povModeDisable = 0x15;
-uint8_t mouseEnable = 0x16; // Currently unused. May be used in future to toggle mouse from OSD menu
-uint8_t mouseDisable
-    = 0x17; // Currently unused. May be used in future to toggle mouse from OSD menu
-int serialButtonDelay = 150;
+int serialButtonsleep_ms = 150;
 
-static uint8_t lastKey = 0;
+//static uint8_t lastKey = 0;
 
 void serialEvent()
 {
+/*
     while (Serial.available()) {
         uint8_t key = 0;
         char inChar = (char)Serial.read();
@@ -67,26 +48,29 @@ void serialEvent()
                 tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
         }
     }
+*/
 }
 
 void menuMode()
 {
-    if (dpadPinsState[0] == 1) {
+/*
+    if (dpadPinState[DPAD_UP] == 1) {
         serial_write(osKeyboardUp);
-        delay(serialButtonDelay);
-    } else if (dpadPinsState[2] == 1) {
+        sleep_ms(serialButtonsleep_ms);
+    } else if (dpadPinState[DPAD_DOWN] == 1) {
         serial_write(osKeyboardDn);
-        delay(serialButtonDelay);
-    } else if (dpadPinsState[1] == 1) {
+        sleep_ms(serialButtonsleep_ms);
+    } else if (dpadPinState[DPAD_RIGHT] == 1) {
         serial_write(osKeyboardRight);
-        delay(serialButtonDelay);
-    } else if (dpadPinsState[3] == 1) {
+        sleep_ms(serialButtonsleep_ms);
+    } else if (dpadPinState[DPAD_LEFT] == 1) {
         serial_write(osKeyboardLeft);
-        delay(serialButtonDelay);
-    } else if (buttonState[1] == 1) {
+        sleep_ms(serialButtonsleep_ms);
+    } else if (buttonState[BTN_A] == 1) {
         serial_write(osKeyboardSelect);
-        delay(serialButtonDelay);
+        sleep_ms(serialButtonsleep_ms);
     }
+*/
 }
 
 bool send_keyboard_report()
@@ -109,11 +93,11 @@ bool send_keyboard_report()
                                   // and right joystick button)
         if (menuEnabled) {
             serial_write(menuClose);
-            delay(200);
+            sleep_ms(200);
             menuEnabled = false;
         } else {
             serial_write(menuOpen);
-            delay(200);
+            sleep_ms(200);
             menuEnabled = true;
         }
     }

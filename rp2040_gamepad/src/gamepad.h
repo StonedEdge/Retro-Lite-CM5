@@ -2,6 +2,28 @@
 #include "tusb.h"
 #include "usb_descriptors.h"
 
+// Serial Comms
+const uint8_t brightnessUp = 0x00;
+const uint8_t brightnessDn = 0x01;
+const uint8_t calibrationStepOne = 0x02;
+const uint8_t calibrationStepTwo = 0x03;
+const uint8_t calibrationComplete = 0x04;
+const uint8_t osKeyboardEnabled = 0x05;
+const uint8_t osKeyboardLeft = 0x06;
+const uint8_t osKeyboardRight = 0x07;
+const uint8_t osKeyboardUp = 0x08;
+const uint8_t osKeyboardDn = 0x09;
+const uint8_t osKeyboardSelect = 0x10;
+const uint8_t osKeyboardDisabled = 0x11;
+const uint8_t menuOpen = 0x12;
+const uint8_t menuClose = 0x13;
+const uint8_t povModeEnable = 0x14;
+const uint8_t povModeDisable = 0x15;
+const uint8_t mouseEnable
+    = 0x16; // Currently unused. May be used in future to toggle mouse from OSD menu
+const uint8_t mouseDisable
+    = 0x17; // Currently unused. May be used in future to toggle mouse from OSD menu
+
 const int buttonCount = 16; // Number of buttons in use. Change length of buttonPins, buttonState
                             // and newButtonState to match.
 
@@ -32,17 +54,22 @@ extern bool buttonState[buttonCount]; // Empty State array for buttons last sent
 
 extern bool dpadPinState[4]; // Empty State array for dPad
 
+#define JOY_RIGHT_Y 0
+#define JOY_RIGHT_X 1
+#define JOY_LEFT_Y 2
+#define JOY_LEFT_X 3
+
+int readJoystick(int axis);
+uint8_t mapJoystick(int axis);
+
 // All variables below general use, not used for configuration.
-extern bool calibrationMode = false;
-extern int calibrationStep = 1;
-extern bool menuEnabled = false;
+extern bool calibrationMode;
+extern int calibrationStep;
+extern bool menuEnabled;
 
 // Mouse Variables
-extern bool mouseEnabled = false;
+extern bool mouseEnabled;
 
 extern hid_gamepad_report_t joystick;
 
-uint8_t leftXaxisMap(int i);
-uint8_t leftYaxisMap(int i);
-uint8_t rightXaxisMap(int i);
-uint8_t rightYaxisMap(int i);
+void serial_write(uint8_t b);

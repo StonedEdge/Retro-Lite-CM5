@@ -1,4 +1,7 @@
 #include "gamepad.h"
+#include "hardware/adc.h"
+#include "pico/stdlib.h"
+#include <algorithm>
 
 #define PIN_A 0
 #define PIN_B 1
@@ -31,59 +34,32 @@ uint8_t dpadPins[4] = { PIN_D_UP, PIN_D_RIGHT, PIN_D_DOWN,
     PIN_D_LEFT }; // Up, Right, Down, Left. Do not change order of directions.
 
 // Button state arrays
-bool dpadPinState[4]; // Empty State array for dPad
-bool buttonState[buttonCount]; // Empty State array for buttons last sent state. Must be same length
-                               // as buttonPins
-bool
-    newButtonState[buttonCount]; // Empty State array for buttons. Must be same length as buttonPins
-
-#define JOY_RIGHT_Y 0
-#define JOY_RIGHT_X 1
-#define JOY_LEXT_Y 2
-#define JOY_LEXT_X 3
+bool dpadPinState[4];
+bool buttonState[buttonCount];
+bool newButtonState[buttonCount];
 
 const int joystickPins[4] = { 26, 27, 28, 29 };
 
 // Joystick Settings
-const bool invertLeftY = false; //------------------------------------------
-const bool invertLeftX = false; // Change these settings for Inverted mounting
-const bool invertRightY = true; // of joysticks.
-const bool invertRightX = true; //------------------------------------------
-const int deadBandLeft = 10; //
-const int deadBandRight
-    = 10; // Joystick deadband settings. Deadband is the same for both axis on each joystick.
-const bool useDeadband = true; //
-const int earlyLeftX = 30; //--------------------------------------------------
-const int earlyLeftY = 30; // Distance from end of travel to achieve full axis movement.
-const int earlyRightY = 30; // This helps square out each axis response to allow full movement speed
-                            // with direction input.
-const int earlyRightX = 30; //--------------------------------------------------
-bool scaledJoystickOutput
-    = true; // Enable joystick scaling. Needed for switch joysticks due to uneven axis travels.
-            // Disabling will save some compute time if your joystick works well without it.
+// Change these settings for Inverted mounting of joysticks.
+bool invertOutput[4] = { true, true, false, false };
 
-int minLeftX = 330;
-int maxLeftX = 830;
-int midLeftX = 512;
+// Joystick deadband settings. Deadband is the same for both axis on each joystick.
+int axisDeadband[4] = { 10, 10, 10, 10 };
 
-int minLeftY = 205;
-int maxLeftY = 635;
-int midLeftY = 477;
+// Distance from end of travel to achieve full axis movement.
+// This helps square out each axis response to allow full movement speed with direction input.
+int axisEarly[4] = { 30, 30, 30, 30 };
 
-int minRightY = 215;
-int maxRightY = 730;
-int midRightY = 529;
+const bool useDeadband = true;
 
-int minRightX = 300;
-int maxRightX = 780;
-int midRightX = 525;
+// Enable joystick scaling. Needed for switch joysticks due to uneven axis travels.
+// Disabling will save some compute time if your joystick works well without it.
+bool scaledJoystickOutput = true;
 
-int xAccelOffset = 1055;
-int yAccelOffset = -3053;
-int zAccelOffset = 1149;
-int xGyroOffset = 16;
-int yGyroOffset = -20;
-int zGyroOffset = 42;
+int axisMin[4] = { 215, 300, 205, 330 };
+int axisMid[4] = { 529, 525, 477, 512 };
+int axisMax[4] = { 730, 780, 635, 830 };
 
 // All variables below general use, not used for configuration.
 bool calibrationMode = false;
@@ -96,7 +72,7 @@ bool povHatMode = true; // Enable to use POV Hat for Dpad instead of analog
 hid_gamepad_report_t joystick;
 hid_gamepad_report_t lastState;
 
-long map(long x, long in_min, long in_max, long out_min, long out_max)
+static inline long map(long x, long in_min, long in_max, long out_min, long out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
@@ -121,31 +97,19 @@ uint8_t axisMap(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadB
     return 254;
 }
 
-uint8_t leftXaxisMap(int i)
+uint8_t mapJoystick(int axis)
 {
-    return axisMap(i, minLeftX, midLeftX, maxLeftX, earlyLeftX, deadBandLeft);
+    int var = readJoystick(axis);
+    var = (var - axisMin[axis]) / 2;
+    return axisMap(
+        var, axisMin[axis], axisMid[axis], axisMax[axis], axisEarly[axis], axisDeadband[axis]);
 }
 
-uint8_t leftYaxisMap(int i)
-{
-    return axisMap(i, minLeftY, midLeftY, maxLeftY, earlyLeftY, deadBandLeft);
-}
-
-uint8_t rightXaxisMap(int i)
-{
-    return axisMap(i, minRightX, midRightX, maxRightX, earlyRightX, deadBandRight);
-}
-
-uint8_t rightYaxisMap(int i)
-{
-    return axisMap(i, minRightY, midRightY, maxRightY, earlyRightY, deadBandRight);
-}
-
-int readJoystick(int joystickAxis, bool invertOutput)
+int readJoystick(int joystickAxis)
 { // Reads raw joystick values and inverts if required
     adc_select_input(joystickAxis);
     int var = adc_read();
-    if (invertOutput) {
+    if (invertOutput[joystickAxis]) {
         var = 1023 - var;
         return var;
     } else {
@@ -182,43 +146,39 @@ void joypadButtons()
 void dPadInput()
 { // D-Pad as RY and RZ Axis
     if (!povHatMode) {
-        if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT]) { // Up
+        if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT])
             joystick.ry = 127;
-        } else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT]) { // Down
+        else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT])
             joystick.ry = -127;
-        } else {
+        else
             joystick.ry = 0;
-        }
-        if (dpadPinState[DPAD_RIGHT]) { // Right
+
+        if (dpadPinState[DPAD_RIGHT])
             joystick.rz = 127;
-        } else if (dpadPinState[DPAD_LEFT]) { // Left
+        else if (dpadPinState[DPAD_LEFT])
             joystick.rz = -127;
-        } else {
+        else
             joystick.rz = 0;
-        }
     } else { // POV Hat Mode
         joystick.hat = GAMEPAD_HAT_CENTERED;
-        if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT]) { // Up
-            if (dpadPinState[DPAD_RIGHT]) {
-                hostick.hat = GAMEPAD_HAT_UP_RIGHT;
-            } else if (dpadPinState[DPAD_LEFT]) {
-                hostick.hat = GAMEPAD_HAT_UP_LEFT;
-            } else {
-                hostick.hat = GAMEPAD_HAT_UP;
-            }
-        } else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT]) { // Down
-            if (dpadPinState[DPAD_RIGHT]) {
-                hostick.hat = GAMEPAD_HAT_DOWN_RIGHT;
-            } else if (dpadPinState[DPAD_LEFT]) {
-                hostick.hat = GAMEPAD_HAT_DOWN_LEFT;
-            } else {
-                hostick.hat = GAMEPAD_HAT_DOWN;
-            }
-        } else if (dpadPinState[DPAD_RIGHT]) { // Right
-            hostick.hat = GAMEPAD_HAT_RIGHT;
-        } else if (dpadPinState[DPAD_LEFT]) { // Left
-            hostick.hat = GAMEPAD_HAT_LEFT;
-        }
+        if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT]) {
+            if (dpadPinState[DPAD_RIGHT])
+                joystick.hat = GAMEPAD_HAT_UP_RIGHT;
+            else if (dpadPinState[DPAD_LEFT])
+                joystick.hat = GAMEPAD_HAT_UP_LEFT;
+            else
+                joystick.hat = GAMEPAD_HAT_UP;
+        } else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT]) {
+            if (dpadPinState[DPAD_RIGHT])
+                joystick.hat = GAMEPAD_HAT_DOWN_RIGHT;
+            else if (dpadPinState[DPAD_LEFT])
+                joystick.hat = GAMEPAD_HAT_DOWN_LEFT;
+            else
+                joystick.hat = GAMEPAD_HAT_DOWN;
+        } else if (dpadPinState[DPAD_RIGHT])
+            joystick.hat = GAMEPAD_HAT_RIGHT;
+        else if (dpadPinState[DPAD_LEFT])
+            joystick.hat = GAMEPAD_HAT_LEFT;
     }
 }
 /*
@@ -309,59 +269,38 @@ void joystickCalibration()
     if (calibrationStep == 1) {
         if (buttonState[BTN_A]) {
             // RXLED1;
-            delay(100);
+            sleep_ms(100);
             // RXLED0;
-            midLeftX = readJoystick(leftJoyX, invertLeftX);
-            midLeftY = readJoystick(leftJoyY, invertLeftY);
-            midRightX = readJoystick(rightJoyX, invertRightX);
-            midRightY = readJoystick(rightJoyY, invertRightY);
+            for (int i = 0; i < 4; i++)
+                axisMid[i] = readJoystick(i);
             calibrationStep = 2;
             serial_write(calibrationStepTwo);
-            delay(50);
+            sleep_ms(50);
         }
     } else if (calibrationStep == 2) {
         // RXLED1;
-        delay(100);
+        sleep_ms(100);
         // RXLED0;
-        minLeftX = midLeftX;
-        minLeftY = midLeftY;
-        maxLeftX = 0;
-        maxLeftY = 0;
-        minRightX = midRightX;
-        minRightY = midRightY;
-        maxRightX = 0;
-        maxRightY = 0;
+        for (int i = 0; i < 4; i++) {
+            axisMin[i] = axisMid[i];
+            axisMax[i] = 0;
+        }
         calibrationStep = 3;
-        delay(500);
+        sleep_ms(500);
     } else if (calibrationStep == 3) {
-        int var = readJoystick(leftJoyX, invertLeftX);
-        if (var > maxLeftX)
-            maxLeftX = var;
-        if (var < minLeftX)
-            minLeftX = var;
-        var = readJoystick(leftJoyY, invertLeftY);
-        if (var > maxLeftY)
-            maxLeftY = var;
-        if (var < minLeftY)
-            minLeftY = var;
-        var = readJoystick(rightJoyX, invertRightX);
-        if (var > maxRightX)
-            maxRightX = var;
-        if (var < minRightX)
-            minRightX = var;
-        var = readJoystick(rightJoyY, invertRightY);
-        if (var > maxRightY)
-            maxRightY = var;
-        if (var < minRightY)
-            minRightY = var;
+        for (int i = 0; i < 4; i++) {
+            int var = readJoystick(i);
+            axisMin[i] = std::min(axisMin[i], var);
+            axisMax[i] = std::max(axisMax[i], var);
+        }
         if (buttonState[BTN_A]) { // Complete Calibration
             // RXLED1;
-            delay(100);
+            sleep_ms(100);
             // RXLED0;
-            delay(200);
+            sleep_ms(200);
             writeJoystickConfig(); // Update EEPROM
             serial_write(calibrationComplete);
-            delay(50);
+            sleep_ms(50);
             calibrationStep = 1;
             calibrationMode = false;
         }
@@ -370,26 +309,10 @@ void joystickCalibration()
 
 void joystickInput()
 {
-    int var = 0;
-    var = readJoystick(rightJoyY, invertRightY);
-    var = (var - minRightY) / 2;
-    joystick.rx = rightYaxisMap(var);
-
-    var = readJoystick(rightJoyX, invertRightX);
-    var = (var - minRightX) / 2;
-    joystick.z = rightXaxisMap(var);
-
-    var = readJoystick(leftJoyY, invertLeftY);
-    var = (var - minLeftY) / 2;
-    joystick.y = leftYaxisMap(var);
-
-    var = readJoystick(leftJoyX, invertLeftX);
-    var = (var - minLeftX) / 2;
-    joystick.x = leftXaxisMap(var);
-
-    int16_t ax, ay, az, gx, gy, gz;
-    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-    sensors.setMotion6(ax, ay, az, gx, gy, gz);
+    joystick.rx = mapJoystick(JOY_RIGHT_Y);
+    joystick.z = mapJoystick(JOY_RIGHT_X);
+    joystick.y = mapJoystick(JOY_LEFT_Y);
+    joystick.x = mapJoystick(JOY_LEFT_X);
 }
 
 void pinModeInputPullup(int pin)
@@ -441,7 +364,7 @@ bool send_gamepad_report()
         calibrationMode = true;
     }
 
-    if (lastState != joystick && !calibrationMode && !menuMode) {
+    if (memcmp(&lastState, &joystick, sizeof(joystick)) && !calibrationMode && !menuEnabled) {
         tud_hid_report(REPORT_ID_GAMEPAD, &joystick, sizeof(joystick));
         lastState = joystick;
         return true;

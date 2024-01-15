@@ -50,16 +50,12 @@ void mouseControl()
     int var;
 
     // Calculate Y Value
-    var = readJoystick(leftJoyY, invertLeftY); // read raw input
-    var = (var - minLeftY) / 2; // scale to fit axisMap
-    var = leftYaxisMap(var); // Read value from axisMap
+    var = mapJoystick(JOY_LEFT_Y); // read raw input
     var = var - 127; // Shift to 0 centre.
     int yMove = var / mouseDivider; // Divide signal by the mouseDivider for mouse level output
 
     // Calculate X Value
-    var = readJoystick(leftJoyX, invertLeftX);
-    var = (var - minLeftX) / 2;
-    var = leftXaxisMap(var);
+    var = mapJoystick(JOY_LEFT_X);
     var = var - 127;
     int xMove = var / mouseDivider;
 
