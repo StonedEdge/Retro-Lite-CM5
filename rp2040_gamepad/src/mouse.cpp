@@ -7,7 +7,7 @@
 #include "tracking/main_loop.h"
 
 // Mouse Variables
-bool mouseEnabled = true;
+//bool mouseEnabled = true;
 
 // Adjust this value to control mouse sensitivity. Higher number = slower response.
 int mouseDivider = 8;
