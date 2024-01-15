@@ -1,10 +1,11 @@
+#include "gamepad.h"
 #include "imu/MPU6050.h"
 #include "tracking/main_loop.h"
-#include "gamepad.h"
 
 // Mouse Variables
 bool mouseEnabled = false;
-int mouseDivider = 8; // Adjust this value to control mouse sensitivity. Higher number = slower response.
+int mouseDivider
+    = 8; // Adjust this value to control mouse sensitivity. Higher number = slower response.
 unsigned long mouseTimer;
 int mouseInterval = 10; // Interval in MS between mouse updates
 unsigned long mouseModeTimer;
@@ -44,31 +45,29 @@ int imu_read(double* vec)
     return ACC_DATA_READY | GYR_DATA_READY;
 }
 
-void mouseControl() {
-  int var;
+void mouseControl()
+{
+    int var;
 
-  // Calculate Y Value
-  var = readJoystick(leftJoyY, invertLeftY); // read raw input
-  var = (var - minLeftY) / 2; // scale to fit axisMap
-  var = leftYaxisMap(var); // Read value from axisMap
-  var = var - 127; // Shift to 0 centre.
-  int yMove = var / mouseDivider; // Divide signal by the mouseDivider for mouse level output
- 
-  // Calculate X Value
-  var = readJoystick(leftJoyX, invertLeftX);
-  var = (var - minLeftX) / 2;
-  var = leftXaxisMap(var);
-  var = var - 127;
-  int xMove = var / mouseDivider;
+    // Calculate Y Value
+    var = readJoystick(leftJoyY, invertLeftY); // read raw input
+    var = (var - minLeftY) / 2; // scale to fit axisMap
+    var = leftYaxisMap(var); // Read value from axisMap
+    var = var - 127; // Shift to 0 centre.
+    int yMove = var / mouseDivider; // Divide signal by the mouseDivider for mouse level output
 
-  int mouseButtons = buttonState[BTN_L1] | (buttonState[BTN_R1] << 1);
+    // Calculate X Value
+    var = readJoystick(leftJoyX, invertLeftX);
+    var = (var - minLeftX) / 2;
+    var = leftXaxisMap(var);
+    var = var - 127;
+    int xMove = var / mouseDivider;
+
+    int mouseButtons = buttonState[BTN_L1] | (buttonState[BTN_R1] << 1);
     tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, xMove, yMove, 0, 0);
 }
 
-void mouse_cb(int8_t x, int8_t y)
-{
-    tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0);
-}
+void mouse_cb(int8_t x, int8_t y) { tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0); }
 
 void mouse_init()
 {
@@ -118,7 +117,8 @@ bool send_mouse_report()
     start_ms += interval_ms;
 
     // Mouse Toggle
-    if (buttonState[BTN_SELECT] && buttonState[BTN_R3]) { // Left joystick click toggles the mouse cursor to an on/off state
+    if (buttonState[BTN_SELECT]
+        && buttonState[BTN_R3]) { // Left joystick click toggles the mouse cursor to an on/off state
         if (mouseModeTimerStarted) {
             if (board_millis() > mouseModeTimer + 2000) {
                 mouseEnabled = !mouseEnabled;

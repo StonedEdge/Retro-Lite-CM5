@@ -12,21 +12,21 @@ bool send_consumer_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-  uint16_t key = 0;
-  if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_UP]) { 
-    key = HID_USAGE_CONSUMER_BRIGHTNESS_INCREMENT;
-  } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_DOWN]) {
-    key = HID_USAGE_CONSUMER_BRIGHTNESS_DECREMENT;
-  } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_LEFT]) { 
-    key = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-  } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_RIGHT]) {
-    key = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
-  }
+    uint16_t key = 0;
+    if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_UP]) {
+        key = HID_USAGE_CONSUMER_BRIGHTNESS_INCREMENT;
+    } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_DOWN]) {
+        key = HID_USAGE_CONSUMER_BRIGHTNESS_DECREMENT;
+    } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_LEFT]) {
+        key = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
+    } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_RIGHT]) {
+        key = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
+    }
 
-  if (lastKey != key) {
-     tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);
-     lastKey = key;
-  }
+    if (lastKey != key) {
+        tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);
+        lastKey = key;
+    }
 
     return false;
 }
