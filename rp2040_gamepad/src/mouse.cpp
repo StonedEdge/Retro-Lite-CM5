@@ -7,7 +7,7 @@
 #include "tracking/main_loop.h"
 
 // Mouse Variables
-bool mouseEnabled = false;
+bool mouseEnabled = true;
 
 // Adjust this value to control mouse sensitivity. Higher number = slower response.
 int mouseDivider = 8;
@@ -53,17 +53,12 @@ int imu_read(double* vec)
 
 void mouseControl()
 {
-    int var;
-
     // Calculate Y Value
-    var = mapJoystick(JOY_LEFT_Y); // read raw input
-    var = var - 127; // Shift to 0 centre.
-    int yMove = var / mouseDivider; // Divide signal by the mouseDivider for mouse level output
+    // Divide signal by the mouseDivider for mouse level output
+    int yMove = mapJoystick(JOY_LEFT_Y) / mouseDivider;
 
     // Calculate X Value
-    var = mapJoystick(JOY_LEFT_X);
-    var = var - 127;
-    int xMove = var / mouseDivider;
+    int xMove = mapJoystick(JOY_LEFT_X) / mouseDivider;
 
     int mouseButtons = buttonState[BTN_L1] | (buttonState[BTN_R1] << 1);
     tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, xMove, yMove, 0, 0);
@@ -78,7 +73,7 @@ void mouse_init()
     sleep_ms(100);
 
     if (mpu.testConnection()) {
-        printf("Connected!\n");
+        //printf("Connected!\n");
         mpu.setXAccelOffset(xAccelOffset);
         mpu.setYAccelOffset(yAccelOffset);
         mpu.setZAccelOffset(zAccelOffset);
@@ -106,12 +101,12 @@ void mouse_init()
         mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
         sleep_ms(100);
 
-        printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
-            mpu.getFullScaleGyroRange());
+        //printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
+        //    mpu.getFullScaleGyroRange());
 
         tracking_begin();
     } else {
-        printf("Not connected\n");
+        //printf("Not connected\n");
     }
 }
 

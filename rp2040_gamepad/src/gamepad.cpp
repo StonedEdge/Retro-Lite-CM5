@@ -82,39 +82,34 @@ uint8_t axisMap(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadB
 {
     // Shift all joystick values to a base of zero.
     int shiftedMin = 0;
-    int shiftedMid = (midIn - minIn) / 2;
-    int shiftedMax = (maxIn - minIn) / 2;
+    int shiftedMid = midIn - minIn;
+    int shiftedMax = maxIn - minIn;
 
     if (i < shiftedMid + deadBand && i > shiftedMid - deadBand)
-        return 127;
+        return 0;
     if (i < shiftedMid) {
         if (i > shiftedMin + earlyStop)
-            return map(i, shiftedMin, shiftedMid - deadBand, 0, 127);
-        return 0;
+            return map(i, shiftedMin, shiftedMid - deadBand, -127, 0);
+        return -127;
     }
     if (i < shiftedMax - earlyStop)
-        return map(i, shiftedMid + deadBand, shiftedMax, 127, 254);
-    return 254;
-}
-
-uint8_t mapJoystick(int axis)
-{
-    int var = readJoystick(axis);
-    var = (var - axisMin[axis]) / 2;
-    return axisMap(
-        var, axisMin[axis], axisMid[axis], axisMax[axis], axisEarly[axis], axisDeadband[axis]);
+        return map(i, shiftedMid + deadBand, shiftedMax, 0, 127);
+    return 127;
 }
 
 int readJoystick(int joystickAxis)
 { // Reads raw joystick values and inverts if required
     adc_select_input(joystickAxis);
-    int var = adc_read();
-    if (invertOutput[joystickAxis]) {
-        var = 1023 - var;
-        return var;
-    } else {
-        return var;
-    }
+    return invertOutput[joystickAxis]
+        ? 1023 - adc_read()
+        : adc_read();
+}
+
+int8_t mapJoystick(int axis)
+{
+    int var = readJoystick(axis) - axisMin[axis];
+    return axisMap(
+        var, axisMin[axis], axisMid[axis], axisMax[axis], axisEarly[axis], axisDeadband[axis]);
 }
 
 void serial_write(uint8_t b)
@@ -316,16 +311,19 @@ void pinModeInputPullup(int pin)
 
 void gamepad_init()
 {
-    for (int i = 0; i < buttonCount;
-         i++) // Set all button pins as input pullup. Change to INPUT if using external resistors.
+    memset(&joystick, 0, sizeof(joystick));
+    memset(&lastState, 0, sizeof(lastState));
+
+    // Set all button pins as input pullup. Change to INPUT if using external resistors.
+    for (int i = 0; i < buttonCount; i++) 
         pinModeInputPullup(buttonPins[i]);
 
     for (int i = 0; i < 4; i++) // Set all dpad button pins as input pullup.
         pinModeInputPullup(dpadPins[i]);
 
-    //adc_init();
-    //for (int i = 0; i < 4; i++)
-    //    adc_gpio_init(joystickPins[i]);
+    adc_init();
+    for (int i = 0; i < 4; i++)
+        adc_gpio_init(joystickPins[i]);
 
     flashLoad(); // Check for stored joystick settings and load if applicable.
 }
@@ -346,7 +344,7 @@ bool send_gamepad_report()
         joystickCalibration();
     } else if (!menuEnabled) {
         joypadButtons();
-        //joystickInput();
+        joystickInput();
         dPadInput();
     }
 

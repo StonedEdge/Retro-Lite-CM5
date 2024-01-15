@@ -57,8 +57,7 @@ extern bool dpadPinState[4];
 #define JOY_LEFT_Y 2
 #define JOY_LEFT_X 3
 
-int readJoystick(int axis);
-uint8_t mapJoystick(int axis);
+int8_t mapJoystick(int axis);
 void writeJoystickConfig();
 
 // All variables below general use, not used for configuration.
@@ -69,12 +68,12 @@ extern bool menuEnabled;
 // Mouse Variables
 extern bool mouseEnabled;
 
-extern int xAccelOffset = 149;
-extern int yAccelOffset = -684;
-extern int zAccelOffset = 865;
-extern int xGyroOffset = 50;
-extern int yGyroOffset = -33;
-extern int zGyroOffset = -11;
+extern int xAccelOffset;
+extern int yAccelOffset;
+extern int zAccelOffset;
+extern int xGyroOffset;
+extern int yGyroOffset;
+extern int zGyroOffset;
 
 extern hid_gamepad_report_t joystick;
 
