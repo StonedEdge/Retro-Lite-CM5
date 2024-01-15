@@ -86,13 +86,20 @@ void mouse_init()
         mpu.setYGyroOffset(yGyroOffset);
         mpu.setZGyroOffset(zGyroOffset);
 
-        /*
-        // Calibration Time: generate offsets and calibrate our MPU6050
-        int offset[6];
-        calibrateIMU(&mpu, offset); // takes a couple minutes to complete
-        printf("%d\t%d\t%d\n%d\t%d\t%d\n", offset[0], offset[1], offset[2], offset[3], offset[4],
-        offset[5]);
-        */
+        if (calibrateMPU) {
+            // Calibration Time: generate offsets and calibrate our MPU6050
+            int offset[6];
+            calibrateIMU(&mpu, offset); // takes a couple minutes to complete
+            printf("%d\t%d\t%d\n%d\t%d\t%d\n", offset[0], offset[1], offset[2], offset[3],
+                offset[4], offset[5]);
+            xAccelOffset = offset[0];
+            yAccelOffset = offset[1];
+            zAccelOffset = offset[2];
+            xGyroOffset = offset[3];
+            yGyroOffset = offset[4];
+            zGyroOffset = offset[5];
+            writeJoystickConfig();
+        }
 
         sleep_ms(100);
         mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);

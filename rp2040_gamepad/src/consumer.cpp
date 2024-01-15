@@ -13,15 +13,14 @@ bool send_consumer_report()
     start_ms += interval_ms;
 
     uint16_t key = 0;
-    if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_UP]) {
+    if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_UP])
         key = HID_USAGE_CONSUMER_BRIGHTNESS_INCREMENT;
-    } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_DOWN]) {
+    else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_DOWN])
         key = HID_USAGE_CONSUMER_BRIGHTNESS_DECREMENT;
-    } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_LEFT]) {
+    else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_LEFT])
         key = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-    } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_RIGHT]) {
+    else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinState[DPAD_RIGHT])
         key = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
-    }
 
     if (lastKey != key) {
         tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);

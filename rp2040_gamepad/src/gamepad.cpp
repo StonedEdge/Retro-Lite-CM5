@@ -1,5 +1,6 @@
 #include "gamepad.h"
 #include "hardware/adc.h"
+#include "hardware/flash.h"
 #include "pico/stdlib.h"
 #include <algorithm>
 
@@ -30,8 +31,8 @@ uint8_t buttonPins[buttonCount] = {
     PIN_R2_FULL, PIN_R1, PIN_L1, PIN_L3, PIN_R3, PIN_HOTKEY_MINUS, PIN_HOTKEY_PLUS
 }; // Array to store digital pins used for buttons. Length must be the same as buttonCount.
 
-uint8_t dpadPins[4] = { PIN_D_UP, PIN_D_RIGHT, PIN_D_DOWN,
-    PIN_D_LEFT }; // Up, Right, Down, Left. Do not change order of directions.
+// Up, Right, Down, Left. Do not change order of directions.
+uint8_t dpadPins[4] = { PIN_D_UP, PIN_D_RIGHT, PIN_D_DOWN, PIN_D_LEFT };
 
 // Button state arrays
 bool dpadPinState[4];
@@ -79,8 +80,7 @@ static inline long map(long x, long in_min, long in_max, long out_min, long out_
 
 uint8_t axisMap(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadBand)
 {
-    // Shift all joystick values to a base of zero. All values are halved due to ram limitations on
-    // the 32u4.
+    // Shift all joystick values to a base of zero.
     int shiftedMin = 0;
     int shiftedMid = (midIn - minIn) / 2;
     int shiftedMax = (maxIn - minIn) / 2;
@@ -181,87 +181,79 @@ void dPadInput()
             joystick.hat = GAMEPAD_HAT_LEFT;
     }
 }
-/*
-void writeIntIntoEEPROM(int address, int number) { // Splits Int into uint8_tS for EEPROM
-  uint8_t uint8_t1 = number >> 8;
-  uint8_t uint8_t2 = number & 0xFF;
-  EEPROM.write(address, uint8_t1);
-  EEPROM.write(address + 1, uint8_t2);
+
+#define FLASH_TARGET_OFFSET (1024 * 1024)
+
+const uint8_t *flash_target_contents = (const uint8_t *) (XIP_BASE + FLASH_TARGET_OFFSET);
+
+int flashOffset = -1;
+
+uint8_t flashData[FLASH_PAGE_SIZE];
+
+void writeIntIntoFlash(int number)
+{ // Splits Int into uint8_tS for Flash
+    uint8_t byte1 = number >> 8;
+    uint8_t byte2 = number & 0xFF;
+    flashData[flashOffset] = byte1;
+    flashData[flashOffset + 1] = byte2;
+    flashOffset += 2;
 }
 
-int readIntFromEEPROM(int address) { // Converts uint8_tS to INT from EEPROM
-  uint8_t uint8_t1 = EEPROM.read(address);
-  uint8_t uint8_t2 = EEPROM.read(address + 1);
-  return (uint8_t1 << 8) + uint8_t2;
+int readIntFromFlash()
+{ // Converts uint8_tS to INT from Flash
+    return -1;
+    uint16_t byte1 = flash_target_contents[flashOffset];
+    uint16_t byte2 = flash_target_contents[flashOffset + 1];
+    flashOffset += 2;
+    return (byte1 << 8) + byte2;
 }
-*/
+
 void readJoystickConfig()
-{ // Read joystick calibration from EEPROM
-    /*
-    // Left X
-      minLeftX = readIntFromEEPROM(1);
-      maxLeftX = readIntFromEEPROM(3);
-      midLeftX = readIntFromEEPROM(5);
-    // Left Y
-      minLeftY = readIntFromEEPROM(7);
-      maxLeftY = readIntFromEEPROM(9);
-      midLeftY = readIntFromEEPROM(11);
-    // Right Y
-      minRightY = readIntFromEEPROM(13);
-      maxRightY = readIntFromEEPROM(15);
-      midRightY = readIntFromEEPROM(17);
-    // Right X
-      minRightX = readIntFromEEPROM(19);
-      maxRightX = readIntFromEEPROM(21);
-      midRightX = readIntFromEEPROM(23);
+{ // Read joystick calibration from Flash
+    flashOffset = 1;
+    for (int i = 0; i < 4; i++) {
+        axisMin[i] = readIntFromFlash();
+        axisMid[i] = readIntFromFlash();
+        axisMax[i] = readIntFromFlash();
+    }
 
     // IMU calibration data
-      xAccelOffset = readIntFromEEPROM(25);
-      yAccelOffset = readIntFromEEPROM(27);
-      zAccelOffset = readIntFromEEPROM(29);
-      xGyroOffset = readIntFromEEPROM(31);
-      yGyroOffset = readIntFromEEPROM(33);
-      zGyroOffset = readIntFromEEPROM(35);
-    */
+    xAccelOffset = readIntFromFlash();
+    yAccelOffset = readIntFromFlash();
+    zAccelOffset = readIntFromFlash();
+    xGyroOffset = readIntFromFlash();
+    yGyroOffset = readIntFromFlash();
+    zGyroOffset = readIntFromFlash();
 }
 
 void writeJoystickConfig()
-{ // Store joystick calibration in EEPROM
-    /*
-    // Left X
-      writeIntIntoEEPROM(1, minLeftX);
-      writeIntIntoEEPROM(3, maxLeftX);
-      writeIntIntoEEPROM(5, midLeftX);
-    // Left Y
-      writeIntIntoEEPROM(7, minLeftY);
-      writeIntIntoEEPROM(9, maxLeftY);
-      writeIntIntoEEPROM(11, midLeftY);
-    // Right Y
-      writeIntIntoEEPROM(13, minRightY);
-      writeIntIntoEEPROM(15, maxRightY);
-      writeIntIntoEEPROM(17, midRightY);
-    // Right X
-      writeIntIntoEEPROM(19, minRightX);
-      writeIntIntoEEPROM(21, maxRightX);
-      writeIntIntoEEPROM(23, midRightX);
+{ // Store joystick calibration in Flash
+    flashOffset = 1;
+    flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
+
+    for (int i = 0; i < 4; i++) {
+        writeIntIntoFlash(axisMin[i]);
+        writeIntIntoFlash(axisMid[i]);
+        writeIntIntoFlash(axisMax[i]);
+    }
 
     // IMU calibration data
-      writeIntIntoEEPROM(25, xAccelOffset);
-      writeIntIntoEEPROM(27, yAccelOffset);
-      writeIntIntoEEPROM(29, zAccelOffset);
-      writeIntIntoEEPROM(31, xGyroOffset);
-      writeIntIntoEEPROM(33, yGyroOffset);
-      writeIntIntoEEPROM(35, zGyroOffset);
-    */
+    writeIntIntoFlash(xAccelOffset);
+    writeIntIntoFlash(yAccelOffset);
+    writeIntIntoFlash(zAccelOffset);
+    writeIntIntoFlash(xGyroOffset);
+    writeIntIntoFlash(yGyroOffset);
+    writeIntIntoFlash(zGyroOffset);
+
+    flash_range_program(FLASH_TARGET_OFFSET, flashData, FLASH_PAGE_SIZE);
 }
 
-void eepromLoad()
-{ // Loads stored settings from EEPROM
-    /*
-      if (readIntFromEEPROM(1) != -1) { // Check Joystick Calibration in EEPROM is not Empty
-        readJoystickConfig(); // Load joystick calibration from EEPROM
-      }
-    */
+void flashLoad()
+{ // Loads stored settings from Flash
+    flashOffset = 1;
+    if (readIntFromFlash() != -1) { // Check Joystick Calibration in Flash is not Empty
+        readJoystickConfig(); // Load joystick calibration from Flash
+    }
 }
 
 void joystickCalibration()
@@ -298,7 +290,7 @@ void joystickCalibration()
             sleep_ms(100);
             // RXLED0;
             sleep_ms(200);
-            writeJoystickConfig(); // Update EEPROM
+            writeJoystickConfig(); // Update Flash
             serial_write(calibrationComplete);
             sleep_ms(50);
             calibrationStep = 1;
@@ -330,19 +322,18 @@ void gamepad_init()
 
     for (int i = 0; i < 4; i++) // Set all dpad button pins as input pullup.
         pinModeInputPullup(dpadPins[i]);
-/*
-    for (int i = 0; i < 4; i++)
-        adc_gpio_init(joystickPins[i]);
 
-    adc_init();
-*/
-    eepromLoad(); // Check for stored joystick settings and load if applicable.
+    //adc_init();
+    //for (int i = 0; i < 4; i++)
+    //    adc_gpio_init(joystickPins[i]);
+
+    flashLoad(); // Check for stored joystick settings and load if applicable.
 }
 
 bool send_gamepad_report()
 {
     // Poll every 5ms
-    const uint32_t interval_ms = 10;
+    const uint32_t interval_ms = 5;
     static uint32_t start_ms = 0;
 
     if (board_millis() - start_ms < interval_ms)

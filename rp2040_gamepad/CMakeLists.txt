@@ -56,7 +56,7 @@ target_include_directories(rp2040_gamepad PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
 
 # pull in common dependencies and additional i2c hardware support
-target_link_libraries(rp2040_gamepad pico_stdlib pico_unique_id hardware_i2c hardware_adc tinyusb_device tinyusb_board)
+target_link_libraries(rp2040_gamepad pico_stdlib pico_unique_id hardware_i2c hardware_adc hardware_flash tinyusb_device tinyusb_board)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(rp2040_gamepad)

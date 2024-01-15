@@ -2,7 +2,7 @@
 
 int serialButtonsleep_ms = 150;
 
-//static uint8_t lastKey = 0;
+// static uint8_t lastKey = 0;
 
 void serialEvent()
 {

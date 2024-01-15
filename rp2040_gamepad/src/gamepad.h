@@ -19,13 +19,12 @@ const uint8_t menuOpen = 0x12;
 const uint8_t menuClose = 0x13;
 const uint8_t povModeEnable = 0x14;
 const uint8_t povModeDisable = 0x15;
-const uint8_t mouseEnable
-    = 0x16; // Currently unused. May be used in future to toggle mouse from OSD menu
-const uint8_t mouseDisable
-    = 0x17; // Currently unused. May be used in future to toggle mouse from OSD menu
 
-const int buttonCount = 16; // Number of buttons in use. Change length of buttonPins, buttonState
-                            // and newButtonState to match.
+// Currently unused. May be used in future to toggle mouse from OSD menu
+const uint8_t mouseEnable = 0x16;
+const uint8_t mouseDisable = 0x17;
+
+const int buttonCount = 16;
 
 #define BTN_A 0
 #define BTN_B 1
@@ -44,15 +43,14 @@ const int buttonCount = 16; // Number of buttons in use. Change length of button
 #define BTN_HOTKEY_MINUS 14
 #define BTN_HOTKEY_PLUS 15
 
-extern bool buttonState[buttonCount]; // Empty State array for buttons last sent state. Must be same
-                                      // length as buttonPins
+extern bool buttonState[buttonCount];
 
 #define DPAD_UP 0
 #define DPAD_DOWN 1
 #define DPAD_LEFT 2
 #define DPAD_RIGHT 3
 
-extern bool dpadPinState[4]; // Empty State array for dPad
+extern bool dpadPinState[4];
 
 #define JOY_RIGHT_Y 0
 #define JOY_RIGHT_X 1
@@ -61,6 +59,7 @@ extern bool dpadPinState[4]; // Empty State array for dPad
 
 int readJoystick(int axis);
 uint8_t mapJoystick(int axis);
+void writeJoystickConfig();
 
 // All variables below general use, not used for configuration.
 extern bool calibrationMode;
@@ -69,6 +68,13 @@ extern bool menuEnabled;
 
 // Mouse Variables
 extern bool mouseEnabled;
+
+extern int xAccelOffset = 149;
+extern int yAccelOffset = -684;
+extern int zAccelOffset = 865;
+extern int xGyroOffset = 50;
+extern int yGyroOffset = -33;
+extern int zGyroOffset = -11;
 
 extern hid_gamepad_report_t joystick;
 
