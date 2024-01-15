@@ -1,11 +1,17 @@
+#define PICO_DEFAULT_I2C 1
+#define PICO_DEFAULT_I2C_SDA_PIN 18
+#define PICO_DEFAULT_I2C_SCL_PIN 19
+
 #include "gamepad.h"
 #include "imu/MPU6050.h"
 #include "tracking/main_loop.h"
 
 // Mouse Variables
 bool mouseEnabled = false;
-int mouseDivider
-    = 8; // Adjust this value to control mouse sensitivity. Higher number = slower response.
+
+// Adjust this value to control mouse sensitivity. Higher number = slower response.
+int mouseDivider = 8;
+
 unsigned long mouseTimer;
 int mouseInterval = 10; // Interval in MS between mouse updates
 unsigned long mouseModeTimer;
@@ -112,9 +118,8 @@ bool send_mouse_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-    // Mouse Toggle
-    if (buttonState[BTN_SELECT]
-        && buttonState[BTN_R3]) { // Left joystick click toggles the mouse cursor to an on/off state
+    // Left joystick click toggles the mouse cursor to an on/off state
+    if (buttonState[BTN_SELECT] && buttonState[BTN_R3]) {
         if (mouseModeTimerStarted) {
             if (board_millis() > mouseModeTimer + 2000) {
                 mouseEnabled = !mouseEnabled;

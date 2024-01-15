@@ -1,5 +1,4 @@
 {
-    "cmake.configureOnOpen": false,
     "files.associations": {
         "pins_arduino.h": "c"
     }

@@ -330,19 +330,19 @@ void gamepad_init()
 
     for (int i = 0; i < 4; i++) // Set all dpad button pins as input pullup.
         pinModeInputPullup(dpadPins[i]);
-
+/*
     for (int i = 0; i < 4; i++)
         adc_gpio_init(joystickPins[i]);
 
     adc_init();
-
+*/
     eepromLoad(); // Check for stored joystick settings and load if applicable.
 }
 
 bool send_gamepad_report()
 {
     // Poll every 5ms
-    const uint32_t interval_ms = 5;
+    const uint32_t interval_ms = 10;
     static uint32_t start_ms = 0;
 
     if (board_millis() - start_ms < interval_ms)
@@ -355,7 +355,7 @@ bool send_gamepad_report()
         joystickCalibration();
     } else if (!menuEnabled) {
         joypadButtons();
-        joystickInput();
+        //joystickInput();
         dPadInput();
     }
 

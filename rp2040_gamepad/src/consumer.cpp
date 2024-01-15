@@ -26,6 +26,7 @@ bool send_consumer_report()
     if (lastKey != key) {
         tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);
         lastKey = key;
+        return true;
     }
 
     return false;
