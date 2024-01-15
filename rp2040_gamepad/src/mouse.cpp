@@ -1,15 +1,16 @@
 #include "imu/MPU6050.h"
 #include "tracking/main_loop.h"
+#include "gamepad.h"
 
-#include "bsp/board.h"
-#include "pico/binary_info.h"
-#include "pico/stdlib.h"
-#include "tusb.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+// Mouse Variables
+bool mouseEnabled = false;
+int mouseDivider = 8; // Adjust this value to control mouse sensitivity. Higher number = slower response.
+unsigned long mouseTimer;
+int mouseInterval = 10; // Interval in MS between mouse updates
+unsigned long mouseModeTimer;
+bool mouseModeTimerStarted = false;
 
-#include "usb_descriptors.h"
+bool calibrateMPU = false;
 
 MPU6050 mpu;
 
@@ -43,7 +44,6 @@ int imu_read(double* vec)
     return ACC_DATA_READY | GYR_DATA_READY;
 }
 
-/*
 void mouseControl() {
   int var;
 
@@ -61,32 +61,9 @@ void mouseControl() {
   var = var - 127;
   int xMove = var / mouseDivider;
 
-  // Move Mouse
-  Mouse.move(xMove, yMove, 0); // X, Y, Scroll Wheel
-  
-  // Left Click
-  if (lastButtonState[6] == HIGH) { // Right ZR trigger
-    if (!Mouse.isPressed(MOUSE_LEFT)) {
-      Mouse.press(MOUSE_LEFT);
-    }
-  } else {
-    if (Mouse.isPressed(MOUSE_LEFT)) {
-      Mouse.release(MOUSE_LEFT);
-    }
-  }
-  
-  // Right Click // Left ZR trigger
-  if (lastButtonState[9] == HIGH) {
-    if (!Mouse.isPressed(MOUSE_RIGHT)) {
-      Mouse.press(MOUSE_RIGHT);
-    }
-  } else {
-    if (Mouse.isPressed(MOUSE_RIGHT)) {
-      Mouse.release(MOUSE_RIGHT);
-    }
-  }
+  int mouseButtons = buttonState[BTN_L1] | (buttonState[BTN_R1] << 1);
+    tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, xMove, yMove, 0, 0);
 }
-*/
 
 void mouse_cb(int8_t x, int8_t y)
 {

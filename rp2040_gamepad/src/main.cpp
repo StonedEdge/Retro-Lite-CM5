@@ -1,17 +1,13 @@
-
 #define PICO_DEFAULT_I2C 1
 #define PICO_DEFAULT_I2C_SDA_PIN 18
 #define PICO_DEFAULT_I2C_SCL_PIN 19
 
-#include "bsp/board.h"
+#include "gamepad.h"
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
-#include "tusb.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "usb_descriptors.h"
 
 void mouse_init();
 void gamepad_init();
@@ -165,7 +161,6 @@ int main()
 
     board_init();
     tusb_init();
-
     gamepad_init();
     mouse_init();
 

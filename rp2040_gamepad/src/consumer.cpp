@@ -1,15 +1,6 @@
-#include "bsp/board.h"
-#include "pico/binary_info.h"
-#include "pico/stdlib.h"
-#include "tusb.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "gamepad.h"
 
-#include "usb_descriptors.h"
-
-// use to avoid send multiple consecutive zero report
-static bool has_consumer_key = false;
+static uint16_t lastKey = 0;
 
 bool send_consumer_report()
 {
@@ -21,25 +12,21 @@ bool send_consumer_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-    // volume down
-    // uint16_t volume_down = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-    // tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &volume_down, 2);
-
-    // send empty key report (release key) if previously has key pressed
-    // uint16_t empty_key = 0;
-    // tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &empty_key, 2);
-
-
-/*
-  if (buttonState[BTN_SELECT] && dpadPinsState[DPAD_UP]) { 
-    serial_write(brightnessUp);
-    delay(serialButtonDelay);
+  uint16_t key = 0;
+  if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_UP]) { 
+    key = HID_USAGE_CONSUMER_BRIGHTNESS_INCREMENT;
+  } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_DOWN]) {
+    key = HID_USAGE_CONSUMER_BRIGHTNESS_DECREMENT;
+  } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_LEFT]) { 
+    key = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
+  } else if (buttonState[BTN_HOTKEY_PLUS] && dpadPinsState[DPAD_RIGHT]) {
+    key = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
   }
-  if (buttonState[BTN_SELECT] && dpadPinsState[DPAD_DOWN]) {
-    serial_write(brightnessDn);
-    delay(serialButtonDelay);
+
+  if (lastKey != key) {
+     tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);
+     lastKey = key;
   }
-*/
 
     return false;
 }

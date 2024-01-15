@@ -1,54 +1,47 @@
-#include "bsp/board.h"
-#include "pico/binary_info.h"
-#include "pico/stdlib.h"
-#include "tusb.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "usb_descriptors.h"
+#include "gamepad.h"
 
 // Serial Comms
-byte brightnessUp = 0x00;
-byte brightnessDn = 0x01;
-byte calibrationStepOne = 0x02;
-byte calibrationStepTwo = 0x03;
-byte calibrationComplete = 0x04;
-byte osKeyboardEnabled = 0x05;
-byte osKeyboardLeft = 0x06;
-byte osKeyboardRight = 0x07;
-byte osKeyboardUp = 0x08;
-byte osKeyboardDn = 0x09;
-byte osKeyboardSelect = 0x10;
-byte osKeyboardDisabled = 0x11;
-byte menuOpen = 0x12;
-byte menuClose = 0x13;
-byte povModeEnable = 0x14;
-byte povModeDisable = 0x15;
-byte mouseEnable = 0x16; // Currently unused. May be used in future to toggle mouse from OSD menu
-byte mouseDisable = 0x17; // Currently unused. May be used in future to toggle mouse from OSD menu
+uint8_t brightnessUp = 0x00;
+uint8_t brightnessDn = 0x01;
+uint8_t calibrationStepOne = 0x02;
+uint8_t calibrationStepTwo = 0x03;
+uint8_t calibrationComplete = 0x04;
+uint8_t osKeyboardEnabled = 0x05;
+uint8_t osKeyboardLeft = 0x06;
+uint8_t osKeyboardRight = 0x07;
+uint8_t osKeyboardUp = 0x08;
+uint8_t osKeyboardDn = 0x09;
+uint8_t osKeyboardSelect = 0x10;
+uint8_t osKeyboardDisabled = 0x11;
+uint8_t menuOpen = 0x12;
+uint8_t menuClose = 0x13;
+uint8_t povModeEnable = 0x14;
+uint8_t povModeDisable = 0x15;
+uint8_t mouseEnable = 0x16; // Currently unused. May be used in future to toggle mouse from OSD menu
+uint8_t mouseDisable = 0x17; // Currently unused. May be used in future to toggle mouse from OSD menu
 int serialButtonDelay = 150;
+
+static uint8_t lastKey = 0;
 
 void serialEvent()
 {
-    /*
   while (Serial.available()) {
-    uint8_t keycode[6] = { 0 };
+    uint8_t key = 0;
     char inChar = (char)Serial.read();
     if (inChar == 27) { // Escape
-      keycode[0] = HID_KEY_ESCAPE;
+      key = HID_KEY_ESCAPE;
     } else if (inChar == 8) { // Backspace
-      keycode[0] = HID_KEY_BACKSPACE;
+      key = HID_KEY_BACKSPACE;
     } else if (inChar == 13) { // Enter
-      keycode[0] = HID_KEY_ENTER;
+      key = HID_KEY_ENTER;
     } else if (inChar == 14) { // Right
-        keycode[0] = HID_KEY_ARROW_RIGHT;
+        key = HID_KEY_ARROW_RIGHT;
     } else if (inChar == 15) { // Left
-        keycode[0] = HID_KEY_ARROW_LEFT;
+        key = HID_KEY_ARROW_LEFT;
     } else if (inChar == 17) { // Up
-        keycode[0] = HID_KEY_ARROW_UP;
+        key = HID_KEY_ARROW_UP;
     } else if (inChar == 18) { // Down
-        keycode[0] = HID_KEY_ARROW_DOWN;
+        key = HID_KEY_ARROW_DOWN;
     } else if (inChar == calibrationStepOne) {
       calibrationMode = true;
     } else if (inChar == menuClose) {
@@ -58,15 +51,22 @@ void serialEvent()
     } else if (inChar == povModeEnable) {
       povHatMode = true;
     } else {
-        keycode[0] = inChar;
+        key = inChar;
     }
 
-    if (keycode[0] != 0)
+    if (lastKey != key) {
+      tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);
+      lastKey = key;
+
+      if (key != 0) {
+        uint8_t keycode[6] = { 0 };
+        keycode[0] = key;
         tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
-    else
-        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
+      }
+      else
+          tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
+    }
   }
-  */
 }
 
 void menuMode() {

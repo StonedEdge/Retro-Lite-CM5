@@ -1,36 +1,28 @@
-#include "bsp/board.h"
-#include "pico/binary_info.h"
-#include "pico/stdlib.h"
-#include "tusb.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "gamepad.h"
 
-#include "usb_descriptors.h"
-
-#define PIN_A       0
-#define PIN_B       1
-#define PIN_X       2
-#define PIN_Y       3
-#define PIN_START   4
-#define PIN_SELECT  5
-#define PIN_D_UP    6
-#define PIN_D_DOWN  7
-#define PIN_D_LEFT  8
-#define PIN_D_RIGHT 9
-#define PIN_L2_HALF 10
-#define PIN_R2_HALF 11
-#define PIN_L2_FULL 12
-#define PIN_R2_FULL 13
-#define PIN_R1      14
-#define PIN_L1      15
-#define PIN_L3      16
-#define PIN_R3      17
-#define PIN_HOTKEY  18
+#define PIN_A             0
+#define PIN_B             1
+#define PIN_X             2
+#define PIN_Y            25
+#define PIN_START        17
+#define PIN_SELECT       11
+#define PIN_D_UP         12
+#define PIN_D_DOWN       13
+#define PIN_D_LEFT       14
+#define PIN_D_RIGHT      15
+#define PIN_L2_HALF      20
+#define PIN_R2_HALF       8
+#define PIN_L2_FULL      21
+#define PIN_R2_FULL       7
+#define PIN_R1            9
+#define PIN_L1           10
+#define PIN_L3           16
+#define PIN_R3            3
+#define PIN_HOTKEY_MINUS 24
+#define PIN_HOTKEY_PLUS  16
 
 // Define buttons
-byte buttonCount = 15; // Number of buttons in use. Change length of buttonPins, buttonState and newButtonState to match.
-byte buttonPins[15] = {
+uint8_t buttonPins[buttonCount] = {
   PIN_A,
   PIN_B,
   PIN_X,
@@ -45,60 +37,46 @@ byte buttonPins[15] = {
   PIN_L1,
   PIN_L3,
   PIN_R3,
-  PIN_HOTKEY
+  PIN_HOTKEY_MINUS,
+  PIN_HOTKEY_PLUS
 }; // Array to store digital pins used for buttons. Length must be the same as buttonCount.
 
-#define BTN_A       0
-#define BTN_B       1
-#define BTN_X       2
-#define BTN_Y       3
-#define BTN_START   4
-#define BTN_SELECT  5
-#define BTN_L2_HALF 6
-#define BTN_R2_HALF 7
-#define BTN_L2_FULL 8
-#define BTN_R2_FULL 9
-#define BTN_R1      10
-#define BTN_L1      11
-#define BTN_L3      12
-#define BTN_R3      13
-#define BTN_HOTKEY  14
-
-byte dpadPins[4] = {
+uint8_t dpadPins[4] = {
   PIN_D_UP,
   PIN_D_RIGHT,
   PIN_D_DOWN,
   PIN_D_LEFT
 }; // Up, Right, Down, Left. Do not change order of directions.
 
-#define DPAD_UP    0
-#define DPAD_DOWN  1
-#define DPAD_LEFT  2
-#define DPAD_RIGHT 3
-
 // Button state arrays
-bool dpadPinsState[4];       // Empty State array for dPad
-bool buttonState[15];    // Empty State array for buttons last sent state. Must be same length as buttonPins
-bool newButtonState[15]; // Empty State array for buttons. Must be same length as buttonPins
+bool dpadPinState[4];             // Empty State array for dPad
+bool buttonState[buttonCount];    // Empty State array for buttons last sent state. Must be same length as buttonPins
+bool newButtonState[buttonCount]; // Empty State array for buttons. Must be same length as buttonPins
 
-// Define Analog Pins for joysticks
-const int leftJoyX = A3;
-const int leftJoyY = A2;
-const int rightJoyX = A1;
-const int rightJoyY = A0;
+#define JOY_RIGHT_Y 0
+#define JOY_RIGHT_X 1
+#define JOY_LEXT_Y  2
+#define JOY_LEXT_X  3
+
+const int joystickPins[4] = {
+  26,
+  27,
+  28,
+  29
+};
 
 // Joystick Settings
-const bool invertLeftY = false;  //------------------------------------------
-const bool invertLeftX = false;  // Change these settings for Inverted mounting 
-const bool invertRightY = true;  // of joysticks.
-const bool invertRightX = true;  //------------------------------------------
-const int deadBandLeft = 10;     //
-const int deadBandRight = 10;    // Joystick deadband settings. Deadband is the same for both axis on each joystick.
-const bool useDeadband = true;   //
-const int earlyLeftX = 30;       //--------------------------------------------------
-const int earlyLeftY = 30;       // Distance from end of travel to achieve full axis movement. 
-const int earlyRightY = 30;      // This helps square out each axis response to allow full movement speed with direction input.
-const int earlyRightX = 30;      //--------------------------------------------------
+const bool invertLeftY = false;   //------------------------------------------
+const bool invertLeftX = false;   // Change these settings for Inverted mounting 
+const bool invertRightY = true;   // of joysticks.
+const bool invertRightX = true;   //------------------------------------------
+const int deadBandLeft = 10;      //
+const int deadBandRight = 10;     // Joystick deadband settings. Deadband is the same for both axis on each joystick.
+const bool useDeadband = true;    //
+const int earlyLeftX = 30;        //--------------------------------------------------
+const int earlyLeftY = 30;        // Distance from end of travel to achieve full axis movement. 
+const int earlyRightY = 30;       // This helps square out each axis response to allow full movement speed with direction input.
+const int earlyRightX = 30;       //--------------------------------------------------
 bool scaledJoystickOutput = true; // Enable joystick scaling. Needed for switch joysticks due to uneven axis travels. Disabling will save some compute time if your joystick works well without it.
 
 int minLeftX = 330;
@@ -132,61 +110,51 @@ bool L3Pressed = false;
 bool menuEnabled = false;
 bool povHatMode = true; // Enable to use POV Hat for Dpad instead of analog
 
-// Mouse Variables
-bool mouseEnabled = false;
-int mouseDivider = 8; // Adjust this value to control mouse sensitivity. Higher number = slower response.
-unsigned long mouseTimer;
-int mouseInterval = 10; // Interval in MS between mouse updates
-unsigned long mouseModeTimer;
-bool mouseModeTimerStarted = false;
-
-bool calibrateMPU = false;
-
 hid_gamepad_report_t joystick;
 hid_gamepad_report_t lastState;
 
-byte axisMap(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadBand) {
+long map(long x, long in_min, long in_max, long out_min, long out_max)
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+uint8_t axisMap(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadBand) {
   // Shift all joystick values to a base of zero. All values are halved due to ram limitations on the 32u4.
   int shiftedMin = 0;
   int shiftedMid = (midIn - minIn) / 2;
   int shiftedMax = (maxIn - minIn) / 2;
 
-  if (i < shiftedMid + deadBand && i > shiftedMid - deadBand) {
+  if (i < shiftedMid + deadBand && i > shiftedMid - deadBand)
     return 127;
-  } else if (i < shiftedMid) {
-    if (i > shiftedMin + earlyStop) {
+  if (i < shiftedMid) {
+    if (i > shiftedMin + earlyStop)
       return map(i, shiftedMin, shiftedMid - deadBand, 0, 127);
-    } else {
-      return 0;
-    }
-  } else {
-    if (i < shiftedMax - earlyStop) {
-      return map(i, shiftedMid + deadBand, shiftedMax, 127, 254);
-    } else {
-      return 254;
-    }
+    return 0;
   }
-  return 0;
+  if (i < shiftedMax - earlyStop)
+    return map(i, shiftedMid + deadBand, shiftedMax, 127, 254);
+  return 254;
 }
 
-byte leftXaxisMap(int i) {
+uint8_t leftXaxisMap(int i) {
   return axisMap(i, minLeftX, midLeftX, maxLeftX, earlyLeftX, deadBandLeft);
 }
 
-byte leftYaxisMap(int i) {
+uint8_t leftYaxisMap(int i) {
   return axisMap(i, minLeftY, midLeftY, maxLeftY, earlyLeftY, deadBandLeft);
 }
 
-byte rightXaxisMap(int i) {
+uint8_t rightXaxisMap(int i) {
   return axisMap(i, minRightX, midRightX, maxRightX, earlyRightX, deadBandRight);
 }
 
-byte rightYaxisMap(int i) {
+uint8_t rightYaxisMap(int i) {
   return axisMap(i, minRightY, midRightY, maxRightY, earlyRightY, deadBandRight);
 }
 
-int readJoystick(int joystickPin, bool invertOutput) { // Reads raw joystick values and inverts if required
-  int var = analogRead(joystickPin);
+int readJoystick(int joystickAxis, bool invertOutput) { // Reads raw joystick values and inverts if required
+  adc_select_input(joystickAxis);
+  int var = adc_read();
   if (invertOutput) {
     var = 1023 - var;
     return var;
@@ -195,7 +163,7 @@ int readJoystick(int joystickPin, bool invertOutput) { // Reads raw joystick val
   }
 }
 
-void serial_write(byte b)
+void serial_write(uint8_t b)
 {
     (void)b;
 
@@ -207,7 +175,7 @@ void buttonRead() { // Read button inputs and set state arrays.
     buttonState[i] = !gpio_get(buttonPins[i]);
 
   for (int i = 0; i < 4; i++)
-    dpadPinsState[i] = !gpio_get(dpadPins[i]);
+    dpadPinState[i] = !gpio_get(dpadPins[i]);
 }
 
 void joypadButtons() { // Set joystick buttons for USB output
@@ -221,57 +189,57 @@ void joypadButtons() { // Set joystick buttons for USB output
 
 void dPadInput() { // D-Pad as RY and RZ Axis
   if (!povHatMode) {
-    if (dpadPinsState[DPAD_UP] && !buttonState[BTN_SELECT]) { // Up
+    if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT]) { // Up
       joystick.ry = 127;
-    } else if (dpadPinsState[DPAD_DOWN] && !buttonState[BTN_SELECT]) { // Down
+    } else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT]) { // Down
       joystick.ry = -127;
     } else {
       joystick.ry = 0;
     }
-    if (dpadPinsState[DPAD_RIGHT]) { // Right
+    if (dpadPinState[DPAD_RIGHT]) { // Right
       joystick.rz = 127;
-    } else if (dpadPinsState[DPAD_LEFT]) { // Left
+    } else if (dpadPinState[DPAD_LEFT]) { // Left
       joystick.rz = -127;
     } else {
       joystick.rz = 0;
     }
   } else { // POV Hat Mode
     joystick.hat = GAMEPAD_HAT_CENTERED;
-    if (dpadPinsState[DPAD_UP] && !buttonState[BTN_SELECT]) { // Up
-      if (dpadPinsState[DPAD_RIGHT]) {
+    if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT]) { // Up
+      if (dpadPinState[DPAD_RIGHT]) {
         hostick.hat = GAMEPAD_HAT_UP_RIGHT;
-      } else if (dpadPinsState[DPAD_LEFT]) {
+      } else if (dpadPinState[DPAD_LEFT]) {
         hostick.hat = GAMEPAD_HAT_UP_LEFT;
       } else {
         hostick.hat = GAMEPAD_HAT_UP;
       }
-    } else if (dpadPinsState[DPAD_DOWN] && !buttonState[BTN_SELECT]) { // Down
-      if (dpadPinsState[DPAD_RIGHT]) {
+    } else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT]) { // Down
+      if (dpadPinState[DPAD_RIGHT]) {
         hostick.hat = GAMEPAD_HAT_DOWN_RIGHT;
-      } else if (dpadPinsState[DPAD_LEFT]) {
+      } else if (dpadPinState[DPAD_LEFT]) {
         hostick.hat = GAMEPAD_HAT_DOWN_LEFT;
       } else {
         hostick.hat = GAMEPAD_HAT_DOWN;
       }
-    } else if (dpadPinsState[DPAD_RIGHT]) { // Right
+    } else if (dpadPinState[DPAD_RIGHT]) { // Right
       hostick.hat = GAMEPAD_HAT_RIGHT;
-    } else if (dpadPinsState[DPAD_LEFT]) { // Left
+    } else if (dpadPinState[DPAD_LEFT]) { // Left
       hostick.hat = GAMEPAD_HAT_LEFT;
     }
   }
 }
 /*
-void writeIntIntoEEPROM(int address, int number) { // Splits Int into BYTES for EEPROM
-  byte byte1 = number >> 8;
-  byte byte2 = number & 0xFF;
-  EEPROM.write(address, byte1);
-  EEPROM.write(address + 1, byte2);
+void writeIntIntoEEPROM(int address, int number) { // Splits Int into uint8_tS for EEPROM
+  uint8_t uint8_t1 = number >> 8;
+  uint8_t uint8_t2 = number & 0xFF;
+  EEPROM.write(address, uint8_t1);
+  EEPROM.write(address + 1, uint8_t2);
 }
 
-int readIntFromEEPROM(int address) { // Converts BYTES to INT from EEPROM
-  byte byte1 = EEPROM.read(address);
-  byte byte2 = EEPROM.read(address + 1);
-  return (byte1 << 8) + byte2;
+int readIntFromEEPROM(int address) { // Converts uint8_tS to INT from EEPROM
+  uint8_t uint8_t1 = EEPROM.read(address);
+  uint8_t uint8_t2 = EEPROM.read(address + 1);
+  return (uint8_t1 << 8) + uint8_t2;
 }
 */
 void readJoystickConfig() { // Read joystick calibration from EEPROM
@@ -425,12 +393,16 @@ void pinModeInputPullup(int pin) {
 }
 
 void gamepad_init() {
-  for (int i = 0; i < buttonCount; i++) { // Set all button pins as input pullup. Change to INPUT if using external resistors.
+  for (int i = 0; i < buttonCount; i++) // Set all button pins as input pullup. Change to INPUT if using external resistors.
     pinModeInputPullup(buttonPins[i]);
-  }
-  for (int i = 0; i < 4; i++) { // Set all dpad button pins as input pullup.
+
+  for (int i = 0; i < 4; i++) // Set all dpad button pins as input pullup.
     pinModeInputPullup(dpadPins[i]);
-  }
+
+  for (int i = 0; i < 4; i++)
+    adc_gpio_init(joystickPins[i]);
+
+  adc_init();
 
   eepromLoad(); // Check for stored joystick settings and load if applicable.
 }
