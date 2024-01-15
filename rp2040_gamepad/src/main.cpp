@@ -3,9 +3,6 @@
 #define PICO_DEFAULT_I2C_SDA_PIN 18
 #define PICO_DEFAULT_I2C_SCL_PIN 19
 
-#include "imu/MPU6050.h"
-#include "tracking/main_loop.h"
-
 #include "bsp/board.h"
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
@@ -16,49 +13,24 @@
 
 #include "usb_descriptors.h"
 
-MPU6050 mpu;
+void mouse_init();
+void gamepad_init();
 
-int xAccelOffset = 149;
-int yAccelOffset = -684;
-int zAccelOffset = 865;
-int xGyroOffset = 50;
-int yGyroOffset = -33;
-int zGyroOffset = -11;
-
-static const double DEG_TO_RAD = 0.017453292519943295769236907684886;
-static const double G = 9.81;
-
-void calibrateIMU(MPU6050* accelgyro, int offsets[6]);
-
-//--------------------------------------------------------------------+
-// MACRO CONSTANT TYPEDEF PROTYPES
-//--------------------------------------------------------------------+
-
-/* Blink pattern
- * - 250 ms  : device not mounted
- * - 1000 ms : device mounted
- * - 2500 ms : device is suspended
- */
-enum {
-    BLINK_NOT_MOUNTED = 250,
-    BLINK_MOUNTED = 1000,
-    BLINK_SUSPENDED = 2500,
-};
-
-static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
-
-void led_blinking_task(void);
-void hid_task(void);
+bool send_keyboard_report();
+bool send_mouse_report();
+bool send_consumer_report();
+bool send_gamepad_report();
+bool send_multiaxis_report();
 
 //--------------------------------------------------------------------+
 // Device callbacks
 //--------------------------------------------------------------------+
 
 // Invoked when device is mounted
-void tud_mount_cb(void) { blink_interval_ms = BLINK_MOUNTED; }
+void tud_mount_cb(void) {}
 
 // Invoked when device is unmounted
-void tud_umount_cb(void) { blink_interval_ms = BLINK_NOT_MOUNTED; }
+void tud_umount_cb(void) {}
 
 // Invoked when usb bus is suspended
 // remote_wakeup_en : if host allow us  to perform remote wakeup
@@ -66,119 +38,41 @@ void tud_umount_cb(void) { blink_interval_ms = BLINK_NOT_MOUNTED; }
 void tud_suspend_cb(bool remote_wakeup_en)
 {
     (void)remote_wakeup_en;
-    blink_interval_ms = BLINK_SUSPENDED;
 }
 
 // Invoked when usb bus is resumed
-void tud_resume_cb(void) { blink_interval_ms = BLINK_MOUNTED; }
+void tud_resume_cb(void) {}
 
 //--------------------------------------------------------------------+
 // USB HID
 //--------------------------------------------------------------------+
 
-int16_t g_imu[6];
-
-int imu_read(double* vec)
-{
-    mpu.getMotion6(&g_imu[0], &g_imu[1], &g_imu[2], &g_imu[3], &g_imu[4], &g_imu[5]);
-
-    vec[0] = ((double)g_imu[0] * 4 / 32768) * G;
-    vec[1] = ((double)g_imu[1] * 4 / 32768) * G;
-    vec[2] = ((double)g_imu[2] * 4 / 32768) * G;
-    vec[3] = ((double)g_imu[3] * 1000 / 32768) * DEG_TO_RAD;
-    vec[4] = ((double)g_imu[4] * 1000 / 32768) * DEG_TO_RAD;
-    vec[5] = ((double)g_imu[5] * 1000 / 32768) * DEG_TO_RAD;
-
-    // printf("%f, %f, %f \t %f, %f, %f\n", vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-
-    return ACC_DATA_READY | GYR_DATA_READY;
-}
-
-void mouse_cb(int8_t x, int8_t y)
-{
-    tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0);
-}
-
-static void send_hid_report(uint8_t report_id, uint32_t btn)
+static void send_hid_report(uint8_t report_id)
 {
     // skip if hid is not ready yet
     if (!tud_hid_ready())
         return;
 
     switch (report_id) {
-    case REPORT_ID_KEYBOARD: {
-        // use to avoid send multiple consecutive zero report for keyboard
-        static bool has_keyboard_key = false;
-
-        if (btn) {
-            uint8_t keycode[6] = { 0 };
-            keycode[0] = HID_KEY_A;
-
-            tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
-            has_keyboard_key = true;
+    case REPORT_ID_KEYBOARD:
+        if (send_keyboard_report())
             break;
-        } else {
-            // send empty key report if previously has key pressed
-            if (has_keyboard_key) {
-                tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
-                has_keyboard_key = false;
-                break;
-            }
-        }
-    }
 
-    case REPORT_ID_MOUSE: {
-       tracking_step(mouse_cb);
-    } break;
-
-    case REPORT_ID_CONSUMER_CONTROL: {
-        // use to avoid send multiple consecutive zero report
-        static bool has_consumer_key = false;
-
-        if (btn) {
-            // volume down
-            uint16_t volume_down = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-            tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &volume_down, 2);
-            has_consumer_key = true;
+    case REPORT_ID_MOUSE:
+        if (send_mouse_report())
             break;
-        } else {
-            // send empty key report (release key) if previously has key pressed
-            uint16_t empty_key = 0;
-            if (has_consumer_key) {
-                tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &empty_key, 2);
-                has_consumer_key = false;
-                break;
-            }
-        }
-    }
 
-    case REPORT_ID_GAMEPAD: {
-        // use to avoid send multiple consecutive zero report for keyboard
-        static bool has_gamepad_key = false;
-
-        hid_gamepad_report_t report
-            = { .x = 0, .y = 0, .z = 0, .rz = 0, .rx = 0, .ry = 0, .hat = 0, .buttons = 0 };
-
-        if (btn) {
-            report.hat = GAMEPAD_HAT_UP;
-            report.buttons = GAMEPAD_BUTTON_A;
-            tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
-            has_gamepad_key = true;
+    case REPORT_ID_CONSUMER_CONTROL:
+        if (send_consumer_report())
             break;
-        } else {
-            report.hat = GAMEPAD_HAT_CENTERED;
-            report.buttons = 0;
-            if (has_gamepad_key) {
-                tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
-                has_gamepad_key = false;
-                break;
-            }
-        }
-    }
 
-    case REPORT_ID_MULTI_AXIS: {
-        tud_hid_report(REPORT_ID_MULTI_AXIS, g_imu, 12);
-    } break;
+    case REPORT_ID_GAMEPAD:
+        if (send_gamepad_report())
+            break;
+
+    case REPORT_ID_MULTI_AXIS:
+        if (send_multiaxis_report())
+            break;
 
     default:
         break;
@@ -189,24 +83,14 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
 // tud_hid_report_complete_cb() is used to send the next report after previous one is complete
 void hid_task(void)
 {
-    // Poll every 10ms
-    const uint32_t interval_ms = 10;
-    static uint32_t start_ms = 0;
-
-    if (board_millis() - start_ms < interval_ms)
-        return; // not enough time
-    start_ms += interval_ms;
-
-    uint32_t const btn = board_button_read();
-
     // Remote wakeup
-    if (tud_suspended() && btn) {
+    if (tud_suspended() && joystick.buttons) {
         // Wake up host if we are in suspend mode
         // and REMOTE_WAKEUP feature is enabled by host
         tud_remote_wakeup();
     } else {
         // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
-        send_hid_report(REPORT_ID_KEYBOARD, btn);
+        send_hid_report(REPORT_ID_KEYBOARD);
     }
 }
 
@@ -221,7 +105,7 @@ void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_
     uint8_t next_report_id = report[0] + 1;
 
     if (next_report_id < REPORT_ID_COUNT) {
-        send_hid_report(next_report_id, board_button_read());
+        send_hid_report(next_report_id);
     }
 }
 
@@ -258,37 +142,12 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             uint8_t const kbd_leds = buffer[0];
 
             if (kbd_leds & KEYBOARD_LED_CAPSLOCK) {
-                // Capslock On: disable blink, turn led on
-                blink_interval_ms = 0;
-                board_led_write(true);
+                // Capslock On
             } else {
-                // Caplocks Off: back to normal blink
-                board_led_write(false);
-                blink_interval_ms = BLINK_MOUNTED;
+                // Caplocks Off
             }
         }
     }
-}
-
-//--------------------------------------------------------------------+
-// BLINKING TASK
-//--------------------------------------------------------------------+
-void led_blinking_task(void)
-{
-    static uint32_t start_ms = 0;
-    static bool led_state = false;
-
-    // blink is disabled
-    if (!blink_interval_ms)
-        return;
-
-    // Blink every interval ms
-    if (board_millis() - start_ms < blink_interval_ms)
-        return; // not enough time
-    start_ms += blink_interval_ms;
-
-    board_led_write(led_state);
-    led_state = 1 - led_state; // toggle
 }
 
 int main()
@@ -307,43 +166,11 @@ int main()
     board_init();
     tusb_init();
 
-    sleep_ms(100);
-    mpu.initialize();
-    sleep_ms(100);
-
-    if (mpu.testConnection()) {
-        printf("Connected!\n");
-        mpu.setXAccelOffset(xAccelOffset);
-        mpu.setYAccelOffset(yAccelOffset);
-        mpu.setZAccelOffset(zAccelOffset);
-        mpu.setXGyroOffset(xGyroOffset);
-        mpu.setYGyroOffset(yGyroOffset);
-        mpu.setZGyroOffset(zGyroOffset);
-
-        /*
-        // Calibration Time: generate offsets and calibrate our MPU6050
-        int offset[6];
-        calibrateIMU(&mpu, offset); // takes a couple minutes to complete
-        printf("%d\t%d\t%d\n%d\t%d\t%d\n", offset[0], offset[1], offset[2], offset[3], offset[4],
-        offset[5]);
-        */
-
-        sleep_ms(100);
-        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);
-        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
-        sleep_ms(100);
-
-        printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
-            mpu.getFullScaleGyroRange());
-
-        tracking_begin();
-    } else {
-        printf("Not connected\n");
-    }
+    gamepad_init();
+    mouse_init();
 
     while (1) {
         tud_task(); // tinyusb device task
-        led_blinking_task();
         hid_task();
     }
 }
