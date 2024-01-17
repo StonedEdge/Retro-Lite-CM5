@@ -19,10 +19,6 @@ bool send_consumer_report();
 bool send_gamepad_report();
 bool send_multiaxis_report();
 
-//--------------------------------------------------------------------+
-// Device callbacks
-//--------------------------------------------------------------------+
-
 // Invoked when device is mounted
 void tud_mount_cb(void) { }
 
@@ -36,10 +32,6 @@ void tud_suspend_cb(bool remote_wakeup_en) { (void)remote_wakeup_en; }
 
 // Invoked when usb bus is resumed
 void tud_resume_cb(void) { }
-
-//--------------------------------------------------------------------+
-// USB HID
-//--------------------------------------------------------------------+
 
 static void send_hid_report(uint8_t report_id)
 {
@@ -148,13 +140,11 @@ int main()
 {
     stdio_init_all();
 
-    // This example will use I2C0 on the default SDA and SCL pins (4, 5 on a Pico)
     i2c_init(i2c_default, 400 * 1000);
     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
     gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-    // Make the I2C pins available to picotool
     bi_decl(bi_2pins_with_func(PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C));
 
     board_init();

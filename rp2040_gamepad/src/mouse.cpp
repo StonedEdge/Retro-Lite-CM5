@@ -64,8 +64,6 @@ void mouseControl()
     tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, xMove, yMove, 0, 0);
 }
 
-void mouse_cb(int8_t x, int8_t y) { tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0); }
-
 void mouse_init()
 {
     sleep_ms(100);
@@ -73,7 +71,7 @@ void mouse_init()
     sleep_ms(100);
 
     if (mpu.testConnection()) {
-        //printf("Connected!\n");
+        // printf("Connected!\n");
         mpu.setXAccelOffset(xAccelOffset);
         mpu.setYAccelOffset(yAccelOffset);
         mpu.setZAccelOffset(zAccelOffset);
@@ -101,14 +99,16 @@ void mouse_init()
         mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
         sleep_ms(100);
 
-        //printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
-        //    mpu.getFullScaleGyroRange());
+        // printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
+        //     mpu.getFullScaleGyroRange());
 
         tracking_begin();
     } else {
-        //printf("Not connected\n");
+        // printf("Not connected\n");
     }
 }
+
+void mouse_cb(int8_t x, int8_t y) { tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0); }
 
 bool send_mouse_report()
 {
@@ -120,8 +120,8 @@ bool send_mouse_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-    // Left joystick click toggles the mouse cursor to an on/off state
-    if (buttonState[BTN_SELECT] && buttonState[BTN_R3]) {
+    // Right joystick click toggles the mouse cursor to an on/off state
+    if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_R3]) {
         if (mouseModeTimerStarted) {
             if (board_millis() > mouseModeTimer + 2000) {
                 mouseEnabled = !mouseEnabled;
@@ -139,7 +139,6 @@ bool send_mouse_report()
         return false;
 
     tracking_step(mouse_cb);
-
     // mouseControl();
 
     return true;
