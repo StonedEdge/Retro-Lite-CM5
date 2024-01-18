@@ -250,28 +250,20 @@ void flashLoad()
 }
 
 void joystickCalibration()
-{ // Very rough at the moment but it works. Read usage instructions at top of page.
+{ // Very rough at the moment but it works.
     if (calibrationStep == 1) {
-        if (buttonState[BTN_A]) {
-            // RXLED1;
-            sleep_ms(100);
-            // RXLED0;
-            for (int i = 0; i < 4; i++)
-                axisMid[i] = readJoystick(i);
+        if (buttonState[BTN_A]) // Wait for button press
             calibrationStep = 2;
-            serial_write(calibrationStepTwo);
-            sleep_ms(50);
-        }
     } else if (calibrationStep == 2) {
-        // RXLED1;
-        sleep_ms(100);
-        // RXLED0;
-        for (int i = 0; i < 4; i++) {
-            axisMin[i] = axisMid[i];
-            axisMax[i] = 0;
+        if (!buttonState[BTN_A]) { // Wait for button release and read the center values
+            for (int i = 0; i < 4; i++) {
+                axisMid[i] = readJoystick(i);
+                axisMin[i] = axisMid[i];
+                axisMax[i] = 0;
+            }
+            serial_write(calibrationStepTwo);
+            calibrationStep = 3;
         }
-        calibrationStep = 3;
-        sleep_ms(500);
     } else if (calibrationStep == 3) {
         for (int i = 0; i < 4; i++) {
             int var = readJoystick(i);
@@ -279,13 +271,8 @@ void joystickCalibration()
             axisMax[i] = std::max(axisMax[i], var);
         }
         if (buttonState[BTN_A]) { // Complete Calibration
-            // RXLED1;
-            sleep_ms(100);
-            // RXLED0;
-            sleep_ms(200);
             writeJoystickConfig(); // Update Flash
             serial_write(calibrationComplete);
-            sleep_ms(50);
             calibrationStep = 1;
             calibrationMode = false;
         }
@@ -338,23 +325,23 @@ bool send_gamepad_report()
 
     buttonRead();
 
-    if (calibrationMode) {
+    if (calibrationMode)
         joystickCalibration();
-    } else if (!menuEnabled) {
+    else if (!menuEnabled) {
         joypadButtons();
         joystickInput();
         dPadInput();
-    }
 
-    if (buttonState[BTN_START] && buttonState[BTN_R3]) { // Start+R3 for jostick calibration
-        calibrationStep = 1;
-        calibrationMode = true;
-    }
-
-    if (memcmp(&lastState, &joystick, sizeof(joystick)) && !calibrationMode && !menuEnabled) {
-        tud_hid_report(REPORT_ID_GAMEPAD, &joystick, sizeof(joystick));
-        lastState = joystick;
-        return true;
+        // Start+Hotkey for jostick calibration
+        if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_R3]) {
+            calibrationStep = 1;
+            calibrationMode = true;
+        }
+        else if (memcmp(&lastState, &joystick, sizeof(joystick))) {
+            tud_hid_report(REPORT_ID_GAMEPAD, &joystick, sizeof(joystick));
+            lastState = joystick;
+            return true;
+        }
     }
 
     return false;
