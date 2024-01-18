@@ -25,11 +25,11 @@
 #define PIN_HOTKEY_MINUS 24
 #define PIN_HOTKEY_PLUS 16
 
-// Define buttons
+// Array to store digital pins used for buttons.
 uint8_t buttonPins[buttonCount] = {
     PIN_A, PIN_B, PIN_X, PIN_Y, PIN_START, PIN_SELECT, PIN_L2_HALF, PIN_R2_HALF, PIN_L2_FULL,
     PIN_R2_FULL, PIN_R1, PIN_L1, PIN_L3, PIN_R3, PIN_HOTKEY_MINUS, PIN_HOTKEY_PLUS
-}; // Array to store digital pins used for buttons. Length must be the same as buttonCount.
+};
 
 // Up, Right, Down, Left. Do not change order of directions.
 uint8_t dpadPins[4] = { PIN_D_UP, PIN_D_RIGHT, PIN_D_DOWN, PIN_D_LEFT };
@@ -46,11 +46,11 @@ const int joystickPins[4] = { 26, 27, 28, 29 };
 bool invertOutput[4] = { true, true, false, false };
 
 // Joystick deadband settings. Deadband is the same for both axis on each joystick.
-int axisDeadband[4] = { 10, 10, 10, 10 };
+int axisDeadband[4] = { 40, 40, 40, 40 };
 
 // Distance from end of travel to achieve full axis movement.
 // This helps square out each axis response to allow full movement speed with direction input.
-int axisEarly[4] = { 30, 30, 30, 30 };
+int axisEarly[4] = { 120, 120, 120, 120 };
 
 const bool useDeadband = true;
 
@@ -58,9 +58,9 @@ const bool useDeadband = true;
 // Disabling will save some compute time if your joystick works well without it.
 bool scaledJoystickOutput = true;
 
-int axisMin[4] = { 215, 300, 205, 330 };
-int axisMid[4] = { 529, 525, 477, 512 };
-int axisMax[4] = { 730, 780, 635, 830 };
+int axisMin[4] = { 0, 0, 0, 0 };
+int axisMid[4] = { 2048, 2048, 2048, 2048 };
+int axisMax[4] = { 4095, 4095, 4095, 4095 };
 
 // All variables below general use, not used for configuration.
 bool calibrationMode = false;
@@ -100,9 +100,7 @@ uint8_t axisMap(int i, int minIn, int midIn, int maxIn, int earlyStop, int deadB
 int readJoystick(int joystickAxis)
 { // Reads raw joystick values and inverts if required
     adc_select_input(joystickAxis);
-    return invertOutput[joystickAxis]
-        ? 4095 - adc_read()
-        : adc_read();
+    return invertOutput[joystickAxis] ? 4095 - adc_read() : adc_read();
 }
 
 int8_t mapJoystick(int axis)
@@ -179,7 +177,7 @@ void dPadInput()
 
 #define FLASH_TARGET_OFFSET (1024 * 1024)
 
-const uint8_t *flash_target_contents = (const uint8_t *) (XIP_BASE + FLASH_TARGET_OFFSET);
+const uint8_t* flash_target_contents = (const uint8_t*)(XIP_BASE + FLASH_TARGET_OFFSET);
 
 int flashOffset = -1;
 
@@ -315,7 +313,7 @@ void gamepad_init()
     memset(&lastState, 0, sizeof(lastState));
 
     // Set all button pins as input pullup. Change to INPUT if using external resistors.
-    for (int i = 0; i < buttonCount; i++) 
+    for (int i = 0; i < buttonCount; i++)
         pinModeInputPullup(buttonPins[i]);
 
     for (int i = 0; i < 4; i++) // Set all dpad button pins as input pullup.
