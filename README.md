@@ -59,7 +59,9 @@ TBD
 - [x] Order v1 Power Management/DisplayPort/USB-C PD test board
 - [x] Design v2 prototype left/right controller PCBs (RP2040 based)
 - [x] Test v1 Power Management/DisplayPort Alternate Mode/USB-C PD test board functionality - works!
-- [ ] Design CM5 carrier main board that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle potential max 15W of power 
+- [ ] Design CM5 carrier main board (v1.0.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle potential max 15W of power
+- [ ] Order CM5 carrier board (v1.0.0) with desired fab house
+- [ ] Test CM5 carrier board (v1.0.0) hardware for a basic functioning prototype 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
 - [x] Test and verify display functionality, including proper backlight & 60 FPS. Verify display works with Armbian 
@@ -68,8 +70,8 @@ TBD
 - [x] Add RetroPie software package
 - [x] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
 - [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
-- [ ] Write HID controller code for RP2040, based on GP2040-CE
-- [ ] Integrate an IMU into the controller PCB for gyro functionality (RP2040)
+- [x] Write HID controller code for RP2040, based on GP2040-CE. Verify basic gamepad functionality 
+- [ ] Integrate an IMU into the controller PCB for gyro functionality (RP2040) 
 - [x] Redesign housing (increase 3mm all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
@@ -82,6 +84,7 @@ TBD
 - [ ] Integrate brightness display toggle via GPIO PWM control 
 - [ ] Implement an on-screen indicator for brightness control
 - [ ] Create a headphone icon to indicate headphones hotplugged 
-- [ ] Other optimizations/improvements/bug fixes 
+- [ ] Other optimizations/improvements/bug fixes
+- [ ] Create prototype showcase video
 - [ ] Final GitHub open source release & announcement
 
