@@ -4,8 +4,8 @@
    <img src="https://i.imgur.com/e9K5JSS.png"/>
 </p>
 
-## Description
-This folder contains the test fixture designed to test the functionality of the TPS65987D PD controller and TUSB546A superspeed mux, as well as other features that will be included on the main carrier board. 
+## What is this folder?
+This folder contains the test fixture schematic and board files (EAGLE) designed to test the functionality of the TPS65987D PD controller and TUSB546A superspeed mux, as well as other features that will be included on the main carrier board for the final build. 
 
 
 
