@@ -59,7 +59,7 @@ TBD
 - [x] Order v1 Power Management/DisplayPort/USB-C PD test board
 - [x] Design v2 prototype left/right controller PCBs (RP2040 based)
 - [x] Test v1 Power Management/DisplayPort Alternate Mode/USB-C PD test board functionality - works!
-- [ ] Design CM5 carrier main board (v1.0.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe. Implement new boost regulator to handle potential max 15W of power
+- [x] Design CM5 carrier main board (v1.0.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe. 
 - [ ] Order CM5 carrier board (v1.0.0) with desired fab house
 - [ ] Test CM5 carrier board (v1.0.0) hardware for a basic functioning prototype 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
@@ -72,10 +72,10 @@ TBD
 - [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available
 - [x] Write HID controller code for RP2040, based on GP2040-CE. Verify basic gamepad functionality 
 - [ ] Integrate an IMU into the controller PCB for gyro functionality (RP2040) 
-- [x] Redesign housing (increase 3mm all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
+- [x] Redesign housing (increase 3mm in all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
-- [ ] Standby and wakeup RK3588s SoC implementation via ATtiny84 and button press
+- [ ] Standby and wake RK3588s SoC implementation via ATtiny84 and button press
 - [ ] Power on/power off via ATtiny84
 - [ ] Retro Lite CM5 "OSD" control panel via Linux Video Overlay Interface
 - [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD via Linux framework to draw to screen FB) 
