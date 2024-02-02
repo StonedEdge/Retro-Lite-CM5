@@ -1,7 +1,7 @@
 # Retro Lite CM5 Carrier Board v1.0 
 
 <p align="center">
-   <img src="https://i,imgur.com/0A3Rhk7.png"/>
+   <img src="https://i.imgur.com/0A3Rhk7.png"/>
 </p>
 
 ## What is this folder?
