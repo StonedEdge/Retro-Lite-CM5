@@ -59,6 +59,7 @@ target_compile_definitions(rp2040_gamepad PRIVATE
         PICO_DEFAULT_I2C=1
         PICO_DEFAULT_I2C_SDA_PIN=18
         PICO_DEFAULT_I2C_SCL_PIN=19
+        PICO_FLASH_SIZE_BYTES=8388608
 )
 
 target_include_directories(rp2040_gamepad PUBLIC
