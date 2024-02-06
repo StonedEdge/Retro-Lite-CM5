@@ -97,14 +97,15 @@ void mouse_init()
 
         // printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
         //     mpu.getFullScaleGyroRange());
-
-        tracking_begin();
     } else {
         // printf("Not connected\n");
     }
 }
 
-void mouse_cb(int8_t x, int8_t y) { tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0); }
+void mouse_cb(int8_t x, int8_t y) {
+    int mouseButtons = buttonState[BTN_L1] | (buttonState[BTN_R1] << 1);
+    tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, x, y, 0, 0);
+}
 
 bool send_mouse_report()
 {
@@ -122,6 +123,11 @@ bool send_mouse_report()
     } else if (mouseModeTimerStarted) {
         mouseModeTimerStarted = false;
         mouseEnabled = !mouseEnabled;
+
+        if (mouseEnabled)
+            tracking_begin();
+        else
+            tracking_end();
     }
 
     if (!mouseEnabled)
