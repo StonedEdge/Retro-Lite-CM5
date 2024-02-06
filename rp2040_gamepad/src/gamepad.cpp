@@ -176,6 +176,7 @@ void dPadInput()
 }
 
 #define FLASH_TARGET_OFFSET (4 * 1024 * 1024)
+#define FLASH_MAGIC 0xBEEF
 
 const uint8_t* flash_target_contents = (const uint8_t*)(XIP_BASE + FLASH_TARGET_OFFSET);
 
@@ -202,7 +203,10 @@ int readIntFromFlash()
 
 void readJoystickConfig()
 { // Read joystick calibration from Flash
-    flashOffset = 1;
+    flashOffset = 0;
+    if (readIntFromFlash() != FLASH_MAGIC) // Check Joystick Calibration in Flash is not Empty
+        return;
+
     for (int i = 0; i < 4; i++) {
         axisMin[i] = readIntFromFlash();
         axisMid[i] = readIntFromFlash();
@@ -220,10 +224,10 @@ void readJoystickConfig()
 
 void writeJoystickConfig()
 { // Store joystick calibration in Flash
-    flashOffset = 1;
     flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
 
-    flashData[0] = 0xAA;
+    flashOffset = 0;
+    writeIntIntoFlash(FLASH_MAGIC);
 
     for (int i = 0; i < 4; i++) {
         writeIntIntoFlash(axisMin[i]);
@@ -240,13 +244,6 @@ void writeJoystickConfig()
     writeIntIntoFlash(zGyroOffset);
 
     flash_range_program(FLASH_TARGET_OFFSET, flashData, FLASH_PAGE_SIZE);
-}
-
-void flashLoad()
-{ // Loads stored settings from Flash
-    if (flash_target_contents[0] == 0xAA) { // Check Joystick Calibration in Flash is not Empty
-        readJoystickConfig(); // Load joystick calibration from Flash
-    }
 }
 
 void joystickCalibration()
@@ -310,7 +307,7 @@ void gamepad_init()
     for (int i = 0; i < 4; i++)
         adc_gpio_init(joystickPins[i]);
 
-    flashLoad(); // Check for stored joystick settings and load if applicable.
+    readJoystickConfig(); // Check for stored joystick settings and load if applicable.
 }
 
 bool send_gamepad_report()
