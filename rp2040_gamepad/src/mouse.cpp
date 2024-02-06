@@ -120,8 +120,8 @@ bool send_mouse_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-    // Right joystick click toggles the mouse cursor to an on/off state
-    if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_R3]) {
+    // Left joystick click toggles the mouse cursor to an on/off state
+    if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_L3]) {
         if (mouseModeTimerStarted) {
             if (board_millis() > mouseModeTimer + 2000) {
                 mouseEnabled = !mouseEnabled;
