@@ -1,7 +1,3 @@
-#define PICO_DEFAULT_I2C 1
-#define PICO_DEFAULT_I2C_SDA_PIN 18
-#define PICO_DEFAULT_I2C_SCL_PIN 19
-
 #include "gamepad.h"
 #include "imu/MPU6050.h"
 #include "tracking/main_loop.h"
@@ -122,17 +118,10 @@ bool send_mouse_report()
 
     // Left joystick click toggles the mouse cursor to an on/off state
     if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_L3]) {
-        if (mouseModeTimerStarted) {
-            if (board_millis() > mouseModeTimer + 2000) {
-                mouseEnabled = !mouseEnabled;
-                mouseModeTimerStarted = false;
-            }
-        } else {
-            mouseModeTimerStarted = true;
-            mouseModeTimer = board_millis();
-        }
-    } else {
+        mouseModeTimerStarted = true;
+    } else if (mouseModeTimerStarted) {
         mouseModeTimerStarted = false;
+        mouseEnabled = !mouseEnabled;
     }
 
     if (!mouseEnabled)

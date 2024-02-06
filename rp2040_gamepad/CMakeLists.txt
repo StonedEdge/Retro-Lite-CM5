@@ -52,6 +52,15 @@ add_executable(rp2040_gamepad
         src/tracking/util/vectorutils.cc
         )
 
+target_compile_definitions(rp2040_gamepad PRIVATE
+        PICO_DEFAULT_UART=1
+        PICO_DEFAULT_UART_TX_PIN=4
+        PICO_DEFAULT_UART_RX_PIN=5
+        PICO_DEFAULT_I2C=1
+        PICO_DEFAULT_I2C_SDA_PIN=18
+        PICO_DEFAULT_I2C_SCL_PIN=19
+)
+
 target_include_directories(rp2040_gamepad PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
 
