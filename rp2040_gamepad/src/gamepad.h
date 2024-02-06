@@ -46,9 +46,9 @@ const int buttonCount = 16;
 extern bool buttonState[buttonCount];
 
 #define DPAD_UP 0
-#define DPAD_DOWN 1
-#define DPAD_LEFT 2
-#define DPAD_RIGHT 3
+#define DPAD_RIGHT 1
+#define DPAD_DOWN 2
+#define DPAD_LEFT 3
 
 extern bool dpadPinState[4];
 
