@@ -1,7 +1,3 @@
-#define PICO_DEFAULT_I2C 1
-#define PICO_DEFAULT_I2C_SDA_PIN 18
-#define PICO_DEFAULT_I2C_SCL_PIN 19
-
 #include "gamepad.h"
 #include "imu/MPU6050.h"
 #include "tracking/main_loop.h"
@@ -101,14 +97,15 @@ void mouse_init()
 
         // printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
         //     mpu.getFullScaleGyroRange());
-
-        tracking_begin();
     } else {
         // printf("Not connected\n");
     }
 }
 
-void mouse_cb(int8_t x, int8_t y) { tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x, y, 0, 0); }
+void mouse_cb(int8_t x, int8_t y) {
+    int mouseButtons = buttonState[BTN_L1] | (buttonState[BTN_R1] << 1);
+    tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, x, y, 0, 0);
+}
 
 bool send_mouse_report()
 {
@@ -120,19 +117,17 @@ bool send_mouse_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-    // Right joystick click toggles the mouse cursor to an on/off state
-    if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_R3]) {
-        if (mouseModeTimerStarted) {
-            if (board_millis() > mouseModeTimer + 2000) {
-                mouseEnabled = !mouseEnabled;
-                mouseModeTimerStarted = false;
-            }
-        } else {
-            mouseModeTimerStarted = true;
-            mouseModeTimer = board_millis();
-        }
-    } else {
+    // Left joystick click toggles the mouse cursor to an on/off state
+    if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_L3]) {
+        mouseModeTimerStarted = true;
+    } else if (mouseModeTimerStarted) {
         mouseModeTimerStarted = false;
+        mouseEnabled = !mouseEnabled;
+
+        if (mouseEnabled)
+            tracking_begin();
+        else
+            tracking_end();
     }
 
     if (!mouseEnabled)

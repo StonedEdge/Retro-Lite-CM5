@@ -1,7 +1,3 @@
-#define PICO_DEFAULT_I2C 1
-#define PICO_DEFAULT_I2C_SDA_PIN 18
-#define PICO_DEFAULT_I2C_SCL_PIN 19
-
 #include "gamepad.h"
 #include "hardware/i2c.h"
 #include "pico/binary_info.h"
@@ -32,6 +28,14 @@ void tud_suspend_cb(bool remote_wakeup_en) { (void)remote_wakeup_en; }
 
 // Invoked when usb bus is resumed
 void tud_resume_cb(void) { }
+
+// Invoked when cdc when line state changed e.g connected/disconnected
+void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) 
+{
+	(void)itf;
+	(void)rts;
+    (void)dtr;
+}
 
 static void send_hid_report(uint8_t report_id)
 {
