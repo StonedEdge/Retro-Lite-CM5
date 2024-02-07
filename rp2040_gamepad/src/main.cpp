@@ -29,6 +29,14 @@ void tud_suspend_cb(bool remote_wakeup_en) { (void)remote_wakeup_en; }
 // Invoked when usb bus is resumed
 void tud_resume_cb(void) { }
 
+// Invoked when cdc when line state changed e.g connected/disconnected
+void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) 
+{
+	(void)itf;
+	(void)rts;
+    (void)dtr;
+}
+
 static void send_hid_report(uint8_t report_id)
 {
     // skip if hid is not ready yet

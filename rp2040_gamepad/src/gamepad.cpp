@@ -54,10 +54,6 @@ int axisEarly[4] = { 120, 120, 120, 120 };
 
 const bool useDeadband = true;
 
-// Enable joystick scaling. Needed for switch joysticks due to uneven axis travels.
-// Disabling will save some compute time if your joystick works well without it.
-bool scaledJoystickOutput = true;
-
 int axisMin[4] = { 0, 0, 0, 0 };
 int axisMid[4] = { 2048, 2048, 2048, 2048 };
 int axisMax[4] = { 4095, 4095, 4095, 4095 };
@@ -65,8 +61,7 @@ int axisMax[4] = { 4095, 4095, 4095, 4095 };
 // All variables below general use, not used for configuration.
 bool calibrationMode = false;
 int calibrationStep = 1;
-// unsigned long keyboardTimer;
-bool L3Pressed = false;
+
 bool menuEnabled = false;
 bool povHatMode = true; // Enable to use POV Hat for Dpad instead of analog
 
@@ -112,9 +107,7 @@ int8_t mapJoystick(int axis)
 
 void serial_write(uint8_t b)
 {
-    (void)b;
-
-    // TODO
+    tud_cdc_write_char(b);
 }
 
 void buttonRead()
