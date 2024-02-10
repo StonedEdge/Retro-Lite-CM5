@@ -1,4 +1,4 @@
-# TPS65987D Test Board v1.0 
+# TPS65987D Test Board v3
 
 <p align="center">
    <img src="https://i.imgur.com/e9K5JSS.png"/>
