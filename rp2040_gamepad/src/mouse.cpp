@@ -3,16 +3,12 @@
 #include "tracking/main_loop.h"
 
 // Mouse Variables
-bool mouseEnabled = false;
+Toggle mouseEnabled;
+Toggle mouseCalibration;
 
 // Adjust this value to control mouse sensitivity. Higher number = slower response.
 int mouseDivider = 8;
-
-unsigned long mouseTimer;
 int mouseInterval = 10; // Interval in MS between mouse updates
-unsigned long mouseModeTimer;
-bool mouseModeTimerStarted = false;
-
 bool calibrateMPU = false;
 
 MPU6050 mpu;
@@ -28,19 +24,23 @@ static const double DEG_TO_RAD = 0.017453292519943295769236907684886;
 static const double G = 9.81;
 
 void calibrateIMU(MPU6050* accelgyro, int offsets[6]);
+void quickCalibrateIMU(MPU6050* accelgyro, int offsets[6]);
 
 static int16_t g_imu[6];
+uint32_t lastMultiaxisReport = -1;
+uint32_t lastMotionTime = -1;
 
 int imu_read(double* vec)
 {
+    lastMotionTime = board_millis();
     mpu.getMotion6(&g_imu[0], &g_imu[1], &g_imu[2], &g_imu[3], &g_imu[4], &g_imu[5]);
 
-    vec[0] = ((double)g_imu[0] * 4 / 32768) * G;
-    vec[1] = ((double)g_imu[1] * 4 / 32768) * G;
-    vec[2] = ((double)g_imu[2] * 4 / 32768) * G;
-    vec[3] = ((double)g_imu[3] * 1000 / 32768) * DEG_TO_RAD;
-    vec[4] = ((double)g_imu[4] * 1000 / 32768) * DEG_TO_RAD;
-    vec[5] = ((double)g_imu[5] * 1000 / 32768) * DEG_TO_RAD;
+    vec[0] = -((double)g_imu[0] * 4 / 32768) * G;
+    vec[1] = ((double)g_imu[2] * 4 / 32768) * G;
+    vec[2] = ((double)g_imu[1] * 4 / 32768) * G;
+    vec[3] = -((double)g_imu[3] * 1000 / 32768) * DEG_TO_RAD;
+    vec[4] = ((double)g_imu[5] * 1000 / 32768) * DEG_TO_RAD;
+    vec[5] = ((double)g_imu[4] * 1000 / 32768) * DEG_TO_RAD;
 
     // printf("%f, %f, %f \t %f, %f, %f\n", vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
 
@@ -60,6 +60,19 @@ void mouseControl()
     tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, xMove, yMove, 0, 0);
 }
 
+void calibrate_mpu() {
+    // Calibration Time: generate offsets and calibrate our MPU6050
+    int offset[6];
+    quickCalibrateIMU(&mpu, offset); // takes a couple minutes to complete
+    xAccelOffset = offset[0];
+    yAccelOffset = offset[1];
+    zAccelOffset = offset[2];
+    xGyroOffset = offset[3];
+    yGyroOffset = offset[4];
+    zGyroOffset = offset[5];
+    writeJoystickConfig();
+}
+
 void mouse_init()
 {
     sleep_ms(100);
@@ -67,7 +80,7 @@ void mouse_init()
     sleep_ms(100);
 
     if (mpu.testConnection()) {
-        // printf("Connected!\n");
+        printf("Connected!\n");
         mpu.setXAccelOffset(xAccelOffset);
         mpu.setYAccelOffset(yAccelOffset);
         mpu.setZAccelOffset(zAccelOffset);
@@ -75,31 +88,22 @@ void mouse_init()
         mpu.setYGyroOffset(yGyroOffset);
         mpu.setZGyroOffset(zGyroOffset);
 
-        if (calibrateMPU) {
-            // Calibration Time: generate offsets and calibrate our MPU6050
-            int offset[6];
-            calibrateIMU(&mpu, offset); // takes a couple minutes to complete
-            printf("%d\t%d\t%d\n%d\t%d\t%d\n", offset[0], offset[1], offset[2], offset[3],
-                offset[4], offset[5]);
-            xAccelOffset = offset[0];
-            yAccelOffset = offset[1];
-            zAccelOffset = offset[2];
-            xGyroOffset = offset[3];
-            yGyroOffset = offset[4];
-            zGyroOffset = offset[5];
-            writeJoystickConfig();
-        }
+        if (calibrateMPU)
+            calibrate_mpu();
 
         sleep_ms(100);
         mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);
         mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
         sleep_ms(100);
 
-        // printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
-        //     mpu.getFullScaleGyroRange());
-    } else {
-        // printf("Not connected\n");
-    }
+        printf("Connected! Accel range: %d, Gyro range: %d\n", mpu.getFullScaleAccelRange(),
+            mpu.getFullScaleGyroRange());
+        printf("%d\t%d\t%d\n%d\t%d\t%d\n", xAccelOffset, yAccelOffset, zAccelOffset,
+            xGyroOffset, yGyroOffset, zGyroOffset);
+    } else
+        printf("Not connected\n");
+
+    mpu.setSleepEnabled(true);
 }
 
 void mouse_cb(int8_t x, int8_t y) {
@@ -117,21 +121,34 @@ bool send_mouse_report()
         return false; // not enough time
     start_ms += interval_ms;
 
-    // Left joystick click toggles the mouse cursor to an on/off state
-    if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_L3]) {
-        mouseModeTimerStarted = true;
-    } else if (mouseModeTimerStarted) {
-        mouseModeTimerStarted = false;
-        mouseEnabled = !mouseEnabled;
-
-        if (mouseEnabled)
+    // Hotkey+ and L3 toggles the mouse cursor to an on/off state
+    if (mouseEnabled.changed(buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_L3])) {
+        if (mouseEnabled) {
+            mpu.setSleepEnabled(false);
+            sleep_ms(100);
             tracking_begin();
-        else
+        }
+        else {
+            mpu.setSleepEnabled(false);
+            sleep_ms(100);
             tracking_end();
+        }
     }
 
     if (!mouseEnabled)
         return false;
+
+    if (mouseCalibration.changed(buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_HOTKEY_MINUS])) {
+        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
+        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
+        sleep_ms(5000); // Allow user some time to put the handheld screen down;
+        calibrate_mpu();
+        sleep_ms(100);
+        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_1000);
+        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
+        mouseCalibration = false;
+        return false;
+    }
 
     tracking_step(mouse_cb);
     // mouseControl();
@@ -149,6 +166,11 @@ bool send_multiaxis_report()
         return false; // not enough time
     start_ms += interval_ms;
 
+    if (lastMultiaxisReport == lastMotionTime)
+        return false;
+
     tud_hid_report(REPORT_ID_MULTI_AXIS, g_imu, 12);
+    lastMultiaxisReport = lastMotionTime;
+
     return true;
 }

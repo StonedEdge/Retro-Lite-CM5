@@ -1,76 +1,64 @@
 #include "gamepad.h"
 
-int serialButtonsleep_ms = 150;
+static const int serialButtonsleep_ms = 150;
+static uint8_t lastKey = 0;
+bool menuModeToggleStarted = false;
 
-// static uint8_t lastKey = 0;
-
-void serialEvent()
-{
-/*
-    while (Serial.available()) {
+bool serialEvent() {
+    while (tud_cdc_available() != 0) {
         uint8_t key = 0;
-        char inChar = (char)Serial.read();
-        if (inChar == 27) { // Escape
-            key = HID_KEY_ESCAPE;
-        } else if (inChar == 8) { // Backspace
-            key = HID_KEY_BACKSPACE;
-        } else if (inChar == 13) { // Enter
-            key = HID_KEY_ENTER;
-        } else if (inChar == 14) { // Right
-            key = HID_KEY_ARROW_RIGHT;
-        } else if (inChar == 15) { // Left
-            key = HID_KEY_ARROW_LEFT;
-        } else if (inChar == 17) { // Up
-            key = HID_KEY_ARROW_UP;
-        } else if (inChar == 18) { // Down
-            key = HID_KEY_ARROW_DOWN;
-        } else if (inChar == calibrationStepOne) {
-            calibrationMode = true;
-        } else if (inChar == menuClose) {
-            menuEnabled = false;
-        } else if (inChar == povModeDisable) {
-            povHatMode = false;
-        } else if (inChar == povModeEnable) {
-            povHatMode = true;
-        } else {
-            key = inChar;
+        char inChar = tud_cdc_read_char();
+        switch (inChar) {
+            case 27: key = HID_KEY_ESCAPE; break;
+            case 8: key = HID_KEY_BACKSPACE; break;
+            case 13: key = HID_KEY_ENTER; break;
+            case 14: key = HID_KEY_ARROW_RIGHT; break;
+            case 15: key = HID_KEY_ARROW_LEFT; break;
+            case 17: key = HID_KEY_ARROW_UP; break;
+            case 18: key = HID_KEY_ARROW_DOWN; break;
+            case calibrationStepOne: calibrationMode = true; break;
+            case menuClose: menuEnabled = false; break;
+            case povModeDisable: povHatMode = false; break;
+            case povModeEnable: povHatMode = true; break;
+            default: key = inChar; break;
         }
 
-        if (lastKey != key) {
-            tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, 2);
+        if (key != 0) {
+            uint8_t keycode[6] = { 0 };
+            keycode[0] = key;
+            tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
             lastKey = key;
-
-            if (key != 0) {
-                uint8_t keycode[6] = { 0 };
-                keycode[0] = key;
-                tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
-            } else
-                tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
+            return true;
         }
     }
-*/
+
+    if (lastKey != 0) {
+        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
+        lastKey = 0;
+        return true;
+    }
+
+    return false;
 }
 
 void menuMode()
 {
-/*
     if (dpadPinState[DPAD_UP] == 1) {
-        serial_write(osKeyboardUp);
+        tud_cdc_write_char(osKeyboardUp);
         sleep_ms(serialButtonsleep_ms);
     } else if (dpadPinState[DPAD_DOWN] == 1) {
-        serial_write(osKeyboardDn);
+        tud_cdc_write_char(osKeyboardDn);
         sleep_ms(serialButtonsleep_ms);
     } else if (dpadPinState[DPAD_RIGHT] == 1) {
-        serial_write(osKeyboardRight);
+        tud_cdc_write_char(osKeyboardRight);
         sleep_ms(serialButtonsleep_ms);
     } else if (dpadPinState[DPAD_LEFT] == 1) {
-        serial_write(osKeyboardLeft);
+        tud_cdc_write_char(osKeyboardLeft);
         sleep_ms(serialButtonsleep_ms);
     } else if (buttonState[BTN_A] == 1) {
-        serial_write(osKeyboardSelect);
+        tud_cdc_write_char(osKeyboardSelect);
         sleep_ms(serialButtonsleep_ms);
     }
-*/
 }
 
 bool send_keyboard_report()
@@ -84,22 +72,20 @@ bool send_keyboard_report()
     start_ms += interval_ms;
 
     if (menuEnabled) {
-        serialEvent();
-        menuMode();
+        if (serialEvent())
+            return true;
+
+        if (menuEnabled)
+            menuMode();
     }
 
-    if (buttonState[BTN_SELECT]
-        && buttonState[BTN_R3]) { // If this combination of buttons is pressed, Open Menu. (Select
-                                  // and right joystick button)
-        if (menuEnabled) {
-            serial_write(menuClose);
-            sleep_ms(200);
-            menuEnabled = false;
-        } else {
-            serial_write(menuOpen);
-            sleep_ms(200);
-            menuEnabled = true;
-        }
+    // If this combination of buttons is pressed, Open Menu.
+    // (Select and Hotkey+)
+    if (menuEnabled.changed(buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_SELECT])) {
+        if (menuEnabled)
+            tud_cdc_write_char(menuOpen);
+        else
+            tud_cdc_write_char(menuClose);
     }
 
     return false;
