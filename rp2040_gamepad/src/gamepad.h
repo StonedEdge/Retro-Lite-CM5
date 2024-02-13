@@ -1,6 +1,7 @@
 #include "bsp/board.h"
 #include "tusb.h"
 #include "usb_descriptors.h"
+#include "toggle.h"
 
 // Serial Comms
 const uint8_t brightnessUp = 0x00;
@@ -63,10 +64,11 @@ void writeJoystickConfig();
 // All variables below general use, not used for configuration.
 extern bool calibrationMode;
 extern int calibrationStep;
-extern bool menuEnabled;
+extern Toggle menuEnabled;
+extern Toggle povHatMode;
 
 // Mouse Variables
-extern bool mouseEnabled;
+extern Toggle mouseEnabled;
 
 extern int xAccelOffset;
 extern int yAccelOffset;
@@ -76,5 +78,3 @@ extern int yGyroOffset;
 extern int zGyroOffset;
 
 extern hid_gamepad_report_t joystick;
-
-void serial_write(uint8_t b);

@@ -52,8 +52,6 @@ int axisDeadband[4] = { 40, 40, 40, 40 };
 // This helps square out each axis response to allow full movement speed with direction input.
 int axisEarly[4] = { 120, 120, 120, 120 };
 
-const bool useDeadband = true;
-
 int axisMin[4] = { 0, 0, 0, 0 };
 int axisMid[4] = { 2048, 2048, 2048, 2048 };
 int axisMax[4] = { 4095, 4095, 4095, 4095 };
@@ -62,8 +60,8 @@ int axisMax[4] = { 4095, 4095, 4095, 4095 };
 bool calibrationMode = false;
 int calibrationStep = 1;
 
-bool menuEnabled = false;
-bool povHatMode = true; // Enable to use POV Hat for Dpad instead of analog
+Toggle menuEnabled;
+Toggle povHatMode(true); // Enable to use POV Hat for Dpad instead of analog
 
 hid_gamepad_report_t joystick;
 hid_gamepad_report_t lastState;
@@ -105,11 +103,6 @@ int8_t mapJoystick(int axis)
         var, axisMin[axis], axisMid[axis], axisMax[axis], axisEarly[axis], axisDeadband[axis]);
 }
 
-void serial_write(uint8_t b)
-{
-    tud_cdc_write_char(b);
-}
-
 void buttonRead()
 { // Read button inputs and set state arrays.
     for (int i = 0; i < buttonCount; i++)
@@ -132,9 +125,9 @@ void joypadButtons()
 void dPadInput()
 { // D-Pad as RY and RZ Axis
     if (!povHatMode) {
-        if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT])
+        if (dpadPinState[DPAD_UP])
             joystick.ry = 127;
-        else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT])
+        else if (dpadPinState[DPAD_DOWN])
             joystick.ry = -127;
         else
             joystick.ry = 0;
@@ -147,14 +140,14 @@ void dPadInput()
             joystick.rz = 0;
     } else { // POV Hat Mode
         joystick.hat = GAMEPAD_HAT_CENTERED;
-        if (dpadPinState[DPAD_UP] && !buttonState[BTN_SELECT]) {
+        if (dpadPinState[DPAD_UP]) {
             if (dpadPinState[DPAD_RIGHT])
                 joystick.hat = GAMEPAD_HAT_UP_RIGHT;
             else if (dpadPinState[DPAD_LEFT])
                 joystick.hat = GAMEPAD_HAT_UP_LEFT;
             else
                 joystick.hat = GAMEPAD_HAT_UP;
-        } else if (dpadPinState[DPAD_DOWN] && !buttonState[BTN_SELECT]) {
+        } else if (dpadPinState[DPAD_DOWN]) {
             if (dpadPinState[DPAD_RIGHT])
                 joystick.hat = GAMEPAD_HAT_DOWN_RIGHT;
             else if (dpadPinState[DPAD_LEFT])
@@ -169,7 +162,7 @@ void dPadInput()
 }
 
 #define FLASH_TARGET_OFFSET (4 * 1024 * 1024)
-#define FLASH_MAGIC 0xBEEF
+#define FLASH_MAGIC (int)0xFFFFBEEF
 
 const uint8_t* flash_target_contents = (const uint8_t*)(XIP_BASE + FLASH_TARGET_OFFSET);
 
@@ -188,10 +181,10 @@ void writeIntIntoFlash(int number)
 
 int readIntFromFlash()
 { // Converts uint8_tS to INT from Flash
-    uint16_t byte1 = flash_target_contents[flashOffset];
-    uint16_t byte2 = flash_target_contents[flashOffset + 1];
+    uint8_t byte1 = flash_target_contents[flashOffset];
+    uint8_t byte2 = flash_target_contents[flashOffset + 1];
     flashOffset += 2;
-    return (byte1 << 8) + byte2;
+    return (int16_t)((byte1 << 8) + byte2);
 }
 
 void readJoystickConfig()
@@ -251,7 +244,7 @@ void joystickCalibration()
                 axisMin[i] = axisMid[i];
                 axisMax[i] = 0;
             }
-            serial_write(calibrationStepTwo);
+            tud_cdc_write_char(calibrationStepTwo);
             calibrationStep = 3;
         }
     } else if (calibrationStep == 3) {
@@ -262,7 +255,7 @@ void joystickCalibration()
         }
         if (buttonState[BTN_A]) { // Complete Calibration
             writeJoystickConfig(); // Update Flash
-            serial_write(calibrationComplete);
+            tud_cdc_write_char(calibrationComplete);
             calibrationStep = 1;
             calibrationMode = false;
         }
@@ -322,7 +315,7 @@ bool send_gamepad_report()
         joystickInput();
         dPadInput();
 
-        // Start+Hotkey for jostick calibration
+        // Hotkey+ and R3 for jostick calibration
         if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_R3]) {
             calibrationStep = 1;
             calibrationMode = true;

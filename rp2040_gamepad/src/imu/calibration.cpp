@@ -291,6 +291,16 @@ void PullBracketsOut(MPU6050* accelgyro)
     } // keep going
 } // PullBracketsOut
 
+void quickCalibrateIMU(MPU6050* accelgyro, int offsets[6])
+{
+    accelgyro->CalibrateAccel(6);
+    accelgyro->CalibrateGyro(6);
+    int16_t *curOffset = accelgyro->GetActiveOffsets();
+    for (int i = 0; i < 6; i++) {
+        offsets[i] = curOffset[i];
+    }
+} // quickCalibrateIMU
+
 void calibrateIMU(MPU6050* accelgyro, int offsets[6])
 {
     Initialize(accelgyro);
@@ -311,4 +321,4 @@ void calibrateIMU(MPU6050* accelgyro, int offsets[6])
     }
 
     printf("-------------- done --------------\n");
-} // setup
+} // calibrateIMU
