@@ -27,6 +27,7 @@ TBD
 ## Features
 
 TBD
+
 A hint: it plays video games. Who knew?
 
 ## Requirements to Build the Retro Lite CM5
