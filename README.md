@@ -44,7 +44,7 @@ Enclosure files have been uploaded in STL and STEP format [here.](https://github
 -------------------------------------------------------------------------------------------------------
 
 ### PCB
-v1 Controller PCBs have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/rp2040_gamepad/PCB). 
+v1 Controller PCBs have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/rp2040_gamepad/PCB)
 Please note that you will not be able to assemble the unit with the UART/serial debug components soldered onto the boards, so make sure these aren't populated. 
 
 -------------------------------------------------------------------------------------------------------
