@@ -89,19 +89,24 @@ TBD
 
 ### Frequently Asked Questions (FAQ) 
 Q: How can I get my hand on a Retro Lite CM5? Do you sell them or will you sell them?
+
 A: The handheld is still in the design phase and is not ready to be sold. I won't rule out selling these in the future as they are a lot easier to make than the previous CM4 version, especially with 3D printing becoming an option now.
 We'll see where it takes us! And besides, the Radxa CM5 SOM still isn't even available to the general public yet for sale. Besides, the benefit of open source is to learn to DIY!
 
 Q: Why dont you use an OLED screen? 
+
 A: We may eventually, however the panel we chose was one that we knew we could get working in Linux for now. An upgrade may come in the future, if we can find a good panel that works with Linux. 
 
 Q: Why do this when you can get an equivalent handheld from Aliexpress for $150? This is stupid and DOA! Makes no sense! Non-sensical! I'm going to buy myself a better handheld. 
+
 A: Because it's fun to build something awesome. The End. Thanks for visiting & farewell, this project isn't for you. 
 
 Q: Is Vulkan working yet on Linux?
+
 A: Not yet, but eventually it will, thanks to the efforts from Collabora and ARM. We'll be sure to integrate it into our Linux image once it's available. 
 
 Q: Will you be using a BSP kernel for this or bleeding edge?
+
 A: Probably not, we want a newer kernel that will give us the latest packages. Eventually the RK3588s will be mainlined, it's just a matter of when, not if. 
 
 Q: Can you please make me one for exposure on YouTube?
