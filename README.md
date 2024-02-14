@@ -113,7 +113,8 @@ Q: Will you be using a BSP kernel for this or bleeding edge?
 
 A: Probably not, we want a newer kernel that will give us the latest packages. Eventually the RK3588s will be mainlined, it's just a matter of when, not if. 
 
-Q: Can you please make me one for exposure on YouTube?
+Q: Can you please make me one for exposure on YouTube? I promise to give incredible reviews!
+
 A: Nope. 
 
 
