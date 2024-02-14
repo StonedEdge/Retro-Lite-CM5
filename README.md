@@ -27,6 +27,7 @@ TBD
 ## Features
 
 TBD
+A hint: it plays video games. Who knew?
 
 ## Requirements to Build the Retro Lite CM5
 
@@ -37,17 +38,19 @@ TBD
 -------------------------------------------------------------------------------------------------------
 
 ### CAD
-TBD
+Enclosure files have been uploaded in STL and STEP format [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/enclosure)
 
 -------------------------------------------------------------------------------------------------------
 
 ### PCB
-TBD
+v1 Controller PCBs have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/rp2040_gamepad/PCB). 
+Please note that you will not be able to assemble the unit with the UART/serial debug components soldered onto the boards, so make sure these aren't populated. 
 
 -------------------------------------------------------------------------------------------------------
 
 ### BOM (Bill of Materials) 
-TBD
+v1 Right Controller PCB BOM have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/rp2040_gamepad/PCB/Retro_Lite_CM5_Right_PCB_v1%20-%20BOM.csv)
+I will get around to the left one soon & the main carrier board will be uploaded once testing has finished. 
 
 -------------------------------------------------------------------------------------------------------
 
