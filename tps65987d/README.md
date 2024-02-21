@@ -12,7 +12,7 @@ It also contains the project file that can be used to edit specific parameters i
 ## Purpose of PCB
 To provide an environment to test out the TPS6598x GUI Application Tool, change parameters and flash a binary for a USB-C DRP application. The current CM5 is programmed with the parameters found in the .pjt file here. You can use this tool if you want to play around with it or change certain parameters to suit your specific application: https://www.ti.com/tool/TPS6598X-CONFIG
 
-The flash module is an W25X05 and coomunicates with the PD device over the SPI bus. It loads this flash either via 3V3 power or dead battery mode via VBUS power. You can also program the TPS65987D (the USB-PD controller) via the I2C bus. 
+The flash module is an W25X05 and communicates with the PD device over the SPI bus. It loads this flash either via 3V3 power or dead battery mode via VBUS power. You can also program the TPS65987D (the USB-PD controller) via the I2C bus. 
 
 The bottom USB-C connector is for plugging in sink/source device to charge the battery or power a USB device (like a keyboard, mouse or thumb drive). This will be the port on the final handheld itself. 
 
@@ -20,7 +20,7 @@ The top two USB-C ports are for high speed data buses, namely DisplayPort & USB 
 
 The ATtiny is connected to the button, which is used to control power, sleep & regulator enable. We use this to safely tell the CM5 to shutdown before the enable pin is driven low. The ATtiny is also connected to the BQ24292i over I2C & sets the specific registers required for monitoring the battery - charging current, termination current, and other parameters like charge cutoff voltage. 
 
-Flash the SPI module via command line, for example, using serprog. 
+Flash the SPI module via the command line, for example, using serprog. 
 ```flashrom -p serprog:dev=/dev/ttyACM0:115200,spispeed=12M -c W25X05 -w .bin```
 
 
