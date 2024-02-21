@@ -38517,13 +38517,10 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C67" library="SparkFun-Capacitors" deviceset="1.0UF" device="-0603-16V-10%" value="1.0uF"/>
 <part name="C68" library="SparkFun-Capacitors" deviceset="1.0UF" device="-0603-16V-10%" value="10uF"/>
 <part name="U$12" library="LCD Driver" deviceset="VSYS" device=""/>
-<part name="R43" library="rcl" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:23547/3" value="332k"/>
-<part name="R44" library="rcl" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:23547/3" value="1M"/>
 <part name="GND45" library="supply1" deviceset="GND" device=""/>
 <part name="GND46" library="supply1" deviceset="GND" device=""/>
 <part name="GND47" library="supply1" deviceset="GND" device=""/>
 <part name="GND48" library="supply1" deviceset="GND" device=""/>
-<part name="GND49" library="supply1" deviceset="GND" device=""/>
 <part name="GND50" library="supply1" deviceset="GND" device=""/>
 <part name="R48" library="rcl" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:23547/3" value="1M"/>
 <part name="GND52" library="supply1" deviceset="GND" device=""/>
@@ -39228,14 +39225,6 @@ for I2C/GPIO mode.. </text>
 <attribute name="VALUE" x="545.084" y="394.081" size="1.778" layer="96" font="vector"/>
 </instance>
 <instance part="U$12" gate="G$1" x="650.24" y="419.1" smashed="yes"/>
-<instance part="R43" gate="G$1" x="619.76" y="381" smashed="yes" rot="R270">
-<attribute name="NAME" x="615.7214" y="379.73" size="1.778" layer="95" font="vector" rot="R90"/>
-<attribute name="VALUE" x="617.982" y="379.73" size="1.778" layer="96" font="vector" rot="R90"/>
-</instance>
-<instance part="R44" gate="G$1" x="619.76" y="398.78" smashed="yes" rot="R90">
-<attribute name="NAME" x="616.1786" y="400.05" size="1.778" layer="95" font="vector" rot="R270"/>
-<attribute name="VALUE" x="613.918" y="400.05" size="1.778" layer="96" font="vector" rot="R270"/>
-</instance>
 <instance part="GND45" gate="1" x="650.24" y="393.7" smashed="yes">
 <attribute name="VALUE" x="647.7" y="391.16" size="1.778" layer="96" font="vector"/>
 </instance>
@@ -39247,9 +39236,6 @@ for I2C/GPIO mode.. </text>
 </instance>
 <instance part="GND48" gate="1" x="543.56" y="386.08" smashed="yes">
 <attribute name="VALUE" x="541.02" y="383.54" size="1.778" layer="96" font="vector"/>
-</instance>
-<instance part="GND49" gate="1" x="619.76" y="370.84" smashed="yes">
-<attribute name="VALUE" x="617.22" y="368.3" size="1.778" layer="96" font="vector"/>
 </instance>
 <instance part="GND50" gate="1" x="568.96" y="388.62" smashed="yes">
 <attribute name="VALUE" x="566.42" y="386.08" size="1.778" layer="96" font="vector"/>
@@ -40030,11 +40016,6 @@ for I2C/GPIO mode.. </text>
 <pinref part="GND48" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="R43" gate="G$1" pin="2"/>
-<wire x1="619.76" y1="375.92" x2="619.76" y2="373.38" width="0.1524" layer="91"/>
-<pinref part="GND49" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="U10" gate="G$1" pin="CC"/>
 <wire x1="574.04" y1="396.24" x2="568.96" y2="396.24" width="0.1524" layer="91"/>
 <wire x1="568.96" y1="396.24" x2="568.96" y2="391.16" width="0.1524" layer="91"/>
@@ -40429,9 +40410,8 @@ for I2C/GPIO mode.. </text>
 </segment>
 <segment>
 <pinref part="U10" gate="G$1" pin="VOUT"/>
-<wire x1="604.52" y1="406.4" x2="619.76" y2="406.4" width="0.1524" layer="91"/>
+<wire x1="604.52" y1="406.4" x2="629.92" y2="406.4" width="0.1524" layer="91"/>
 <pinref part="C60" gate="G$1" pin="1"/>
-<wire x1="619.76" y1="406.4" x2="629.92" y2="406.4" width="0.1524" layer="91"/>
 <wire x1="629.92" y1="406.4" x2="640.08" y2="406.4" width="0.1524" layer="91"/>
 <junction x="629.92" y="406.4"/>
 <pinref part="C61" gate="G$1" pin="1"/>
@@ -40442,9 +40422,6 @@ for I2C/GPIO mode.. </text>
 <label x="647.192" y="420.116" size="1.778" layer="95" font="vector"/>
 <pinref part="U$12" gate="G$1" pin="VSYS"/>
 <wire x1="650.24" y1="406.4" x2="650.24" y2="416.56" width="0.1524" layer="91"/>
-<pinref part="R44" gate="G$1" pin="2"/>
-<wire x1="619.76" y1="403.86" x2="619.76" y2="406.4" width="0.1524" layer="91"/>
-<junction x="619.76" y="406.4"/>
 </segment>
 <segment>
 <pinref part="U13" gate="A" pin="IN"/>
@@ -40471,6 +40448,11 @@ for I2C/GPIO mode.. </text>
 <pinref part="J4" gate="G$1" pin="1"/>
 <wire x1="586.74" y1="434.34" x2="576.58" y2="434.34" width="0.1524" layer="91"/>
 <label x="576.58" y="434.34" size="1.778" layer="95" font="vector"/>
+</segment>
+<segment>
+<pinref part="U10" gate="G$1" pin="FB"/>
+<wire x1="574.04" y1="406.4" x2="558.8" y2="406.4" width="0.1524" layer="91"/>
+<label x="558.8" y="406.4" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="N$10" class="0">
@@ -41686,22 +41668,6 @@ for I2C/GPIO mode.. </text>
 <pinref part="R39" gate="G$1" pin="1"/>
 <wire x1="426.72" y1="414.02" x2="436.88" y2="414.02" width="0.1524" layer="91"/>
 <label x="431.8" y="414.02" size="1.778" layer="95" font="vector"/>
-</segment>
-</net>
-<net name="FB" class="0">
-<segment>
-<pinref part="U10" gate="G$1" pin="FB"/>
-<wire x1="574.04" y1="406.4" x2="558.8" y2="406.4" width="0.1524" layer="91"/>
-<label x="558.8" y="406.4" size="1.778" layer="95" font="vector"/>
-</segment>
-<segment>
-<pinref part="R44" gate="G$1" pin="1"/>
-<pinref part="R43" gate="G$1" pin="1"/>
-<wire x1="619.76" y1="393.7" x2="619.76" y2="388.62" width="0.1524" layer="91"/>
-<wire x1="619.76" y1="388.62" x2="619.76" y2="386.08" width="0.1524" layer="91"/>
-<wire x1="619.76" y1="388.62" x2="627.38" y2="388.62" width="0.1524" layer="91"/>
-<junction x="619.76" y="388.62"/>
-<label x="624.84" y="388.62" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="N$19" class="0">
