@@ -1,11 +1,10 @@
 #include <Arduino.h>
 #include "bq24292i.h"
 
-byte BQ24292i_ADDRESS = 0xD6; //BQ24292i slave address (8-bit) 
-byte power_btn = 2; //Power button connected to this pin. Low Active
-byte sys_on = 1; //Regulator power. Active High
-byte sht_dwn = 8; //Connected to GPIO25. Signal to start Pi Shutdown. Active High
-byte low_volt_shutdown = 9; //Connected to GPIO16 on pi. Used for low voltage shut down
+byte power_btn = PIN_PA2; //Power button connected to this pin. Low Active
+byte sys_on = PIN_PA1; //Regulator power. Active High
+byte sht_dwn = PIN_PB0; //Connected to GPIO25. Signal to start Pi Shutdown. Active High
+byte low_volt_shutdown = PIN_PB1; //Connected to GPIO16 on pi. Used for low voltage shut down
 
 byte lowVoltInState = LOW;
 byte lastLowVoltInState = LOW;
@@ -82,23 +81,26 @@ void powerTimerCheck() {
     if (!btnTimerStarted) {
         btnTimerStarted = true;
         powerBtnTimer = millis() +
-            (systemState == 0) ? powerOnDelay : powerOffDelay;
+            ((systemState == 0) ? powerOnDelay : powerOffDelay);
     }
     else if (millis() > powerBtnTimer) {
-        if (systemState == 0) {
-            systemState = 1;
+        btnTimerStarted = false;
+        systemState = !systemState;
+        if (systemState)
             digitalWrite(sys_on, HIGH);
-            btnTimerStarted = false;
-        } else {
-            systemState = 0;
+        else {
             digitalWrite(sht_dwn, HIGH);
-            btnTimerStarted = false;
             shutdownInit = true;
         }
     }
 }
 
 void setup() {
+    cli(); // Disable interrupts
+    CLKPR = (1<<CLKPCE); // Prescaler enable
+    CLKPR = 0x00; // Clock division factor
+    sei(); // Enable interrupts
+    
     i2c_master_init();
     BQ_INIT(); 
     pinMode(power_btn, INPUT_PULLUP);

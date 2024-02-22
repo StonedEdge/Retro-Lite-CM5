@@ -1,8 +1,8 @@
 #include "bq24292i.h"
 
-#define SDA_PIN 6 
+#define SDA_PIN 6
 #define SDA_PORT PORTA
-#define SCL_PIN 4 
+#define SCL_PIN 4
 #define SCL_PORT PORTA
 #include <SoftI2CMaster.h>
 
