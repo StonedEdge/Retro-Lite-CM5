@@ -6,9 +6,9 @@ byte sys_on = PIN_PA1; //Regulator power. Active High
 byte sht_dwn = PIN_PB0; //Connected to GPIO25. Signal to start Pi Shutdown. Active High
 byte low_volt_shutdown = PIN_PB1; //Connected to GPIO16 on pi. Used for low voltage shut down
 
-byte lowVoltInState = HIGH;
-byte lastLowVoltInState = HIGH;
-byte systemState = 0; //Low Power Off
+bool lowVoltInState = false;
+bool lastLowVoltInState = false;
+bool systemState = false;
 bool shutdownInit = false;
 
 unsigned long powerBtnTimer;
@@ -51,7 +51,7 @@ void BQ_INIT() {
 }
 
 void lowVoltShutdownDebounce() {
-    int input = digitalRead(low_volt_shutdown);
+    bool input = !digitalRead(low_volt_shutdown);
     if (input != lastLowVoltInState)
         lastLowVoltDebounce = millis() + debounceDelay;
 
@@ -110,10 +110,10 @@ void setup() {
 }
 
 void loop() {
-    byte powerBtnState = !digitalRead(power_btn);
+    bool powerBtnState = !digitalRead(power_btn);
     lowVoltShutdownDebounce();
 
-    if (shutdownInit || !lowVoltInState)
+    if (shutdownInit || lowVoltInState)
         shutdownTimer();
     else if (powerBtnState)
         powerTimerCheck();
