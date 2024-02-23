@@ -6,8 +6,8 @@ byte sys_on = PIN_PA1; //Regulator power. Active High
 byte sht_dwn = PIN_PB0; //Connected to GPIO25. Signal to start Pi Shutdown. Active High
 byte low_volt_shutdown = PIN_PB1; //Connected to GPIO16 on pi. Used for low voltage shut down
 
-byte lowVoltInState = LOW;
-byte lastLowVoltInState = LOW;
+byte lowVoltInState = HIGH;
+byte lastLowVoltInState = HIGH;
 byte systemState = 0; //Low Power Off
 bool shutdownInit = false;
 
@@ -26,7 +26,7 @@ void BQ_INIT() {
     bq24292i_set_iin_max(BQ_IIN_MAX_3000MA);
     bq24292i_set_vin_max(5080);
 
-    bq24292i_set_vsys_min(3000);
+    bq24292i_set_vsys_min(3500);
     bq24292i_set_charge_config(BQ_CHG_CONFIG_ENABLE);
 
     bq24292i_set_charge_current(2496);
@@ -106,14 +106,14 @@ void setup() {
     pinMode(power_btn, INPUT_PULLUP);
     pinMode(sys_on, OUTPUT);
     pinMode(sht_dwn, OUTPUT);
-    pinMode(low_volt_shutdown, INPUT);
+    pinMode(low_volt_shutdown, INPUT_PULLUP);
 }
 
 void loop() {
     byte powerBtnState = !digitalRead(power_btn);
     lowVoltShutdownDebounce();
 
-    if (shutdownInit || lowVoltInState)
+    if (shutdownInit || !lowVoltInState)
         shutdownTimer();
     else if (powerBtnState)
         powerTimerCheck();
