@@ -1,3 +1,7 @@
+/**
+ * Based on Jeff Longo's code from https://github.com/jefflongo/bq24292i/
+ */
+
 #include "bq24292i.h"
 
 #define SDA_PIN 6

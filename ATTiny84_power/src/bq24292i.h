@@ -1,3 +1,7 @@
+/**
+ * Based on Jeff Longo's code from https://github.com/jefflongo/bq24292i/
+ */
+
 #pragma once
 
 #include <stdbool.h>
