@@ -6,6 +6,10 @@ byte sys_on = PIN_PA1; //Regulator power. Active High
 byte sht_dwn = PIN_PB0; //Connected to GPIO25. Signal to start Pi Shutdown. Active High
 byte low_volt_shutdown = PIN_PB1; //Connected to GPIO16 on pi. Used for low voltage shut down
 
+byte led1 = PIN_PB2;
+byte led2 = PIN_PA7;
+byte led3 = PIN_PA5;
+
 bool lowVoltInState = false;
 bool lastLowVoltInState = false;
 bool systemState = false;
@@ -66,11 +70,14 @@ void shutdownTimer() {
         shutDown = millis() + shutDownDelay;
         shutDownTimerStarted = true;
         digitalWrite(sht_dwn, HIGH);//Tell Pi to Shut down
+        digitalWrite(led3, HIGH);
         shutdownInit = true;
     }
     else if (millis() > shutDown) {
         digitalWrite(sys_on, LOW);
         digitalWrite(sht_dwn, LOW);
+        digitalWrite(led2, LOW);
+        digitalWrite(led3, LOW);
         systemState = 0;
         shutDownTimerStarted = false;
         shutdownInit = false;
@@ -86,10 +93,13 @@ void powerTimerCheck() {
     else if (millis() > powerBtnTimer) {
         btnTimerStarted = false;
         systemState = !systemState;
-        if (systemState)
+        if (systemState) {
             digitalWrite(sys_on, HIGH);
+            digitalWrite(led2, HIGH);
+        }
         else {
             digitalWrite(sht_dwn, HIGH);
+            digitalWrite(led3, HIGH);
             shutdownInit = true;
         }
     }
@@ -101,12 +111,23 @@ void setup() {
     CLKPR = 0x00; // Clock division factor
     sei(); // Enable interrupts
     
-    i2c_master_init();
-    BQ_INIT(); 
     pinMode(power_btn, INPUT_PULLUP);
     pinMode(sys_on, OUTPUT);
     pinMode(sht_dwn, OUTPUT);
     pinMode(low_volt_shutdown, INPUT_PULLUP);
+    pinMode(led1, OUTPUT);
+    pinMode(led2, OUTPUT);
+    pinMode(led3, OUTPUT);
+
+    digitalWrite(led1, LOW);
+    digitalWrite(led2, LOW);
+    digitalWrite(led3, LOW);
+
+    i2c_master_init();
+
+    digitalWrite(led1, bq24292i_is_present());
+
+    BQ_INIT(); 
 }
 
 void loop() {
