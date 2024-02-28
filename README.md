@@ -47,11 +47,16 @@ Enclosure files have been uploaded in STL and STEP format [here.](https://github
 v1 Controller PCBs have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/rp2040_gamepad/PCB)
 Please note that you will not be able to assemble the unit with the UART/serial debug components soldered onto the boards, so make sure these aren't populated. 
 
+v1 X2.2 Carrier PCB gerber files have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_v1.0_Gerbers.zip). Note that this iteration has not yet been physically tested, however is on order with the fab house currently, so order at your own risk for now. You have been warned! 
+
 -------------------------------------------------------------------------------------------------------
 
 ### BOM (Bill of Materials) 
 v1 Right Controller PCB BOM have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/rp2040_gamepad/PCB/Retro_Lite_CM5_Right_PCB_v1%20-%20BOM.csv)
-I will get around to the left one soon & the main carrier board will be uploaded once testing has finished. 
+
+v1 Left Controller PCB BOM is coming soon. 
+
+v1 X2.2 Carrier PCB BOM has been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_BOM.csv). Note that this has not yet been physically tested, however is on order with the fab house currently, so order at your own risk. You have been warned! 
 
 -------------------------------------------------------------------------------------------------------
 
