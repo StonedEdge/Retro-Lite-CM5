@@ -64,7 +64,7 @@ I will get around to the left one soon & the main carrier board will be uploaded
 - [x] Design v2 prototype left/right controller PCBs (RP2040 based)
 - [x] Test v1 Power Management/DisplayPort Alternate Mode/USB-C PD test board functionality - works!
 - [x] Design CM5 carrier main board (v1.0.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe
-- [ ] Order CM5 carrier board (v1.0.0) with desired fab house
+- [x] Order CM5 carrier board (v1.0.0) with desired fab house. (It's in production!)
 - [ ] Test CM5 carrier board (v1.0.0) hardware for a basic functioning prototype 
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
@@ -78,13 +78,13 @@ I will get around to the left one soon & the main carrier board will be uploaded
 - [x] Redesign housing (increase 3mm in all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
-- [ ] Power on/power off/sleep mode via ATtiny84 (Power control)
+- [x] Power on/power off/sleep mode via ATtiny84 (Power control)
 - [ ] Put together a fully functional Linux image
 - [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD via Linux framework to draw to screen FB) - likely CM5 as host  
-- [ ] Prepare reference implementation of Wayland image via Weston for launching games via EmulationStation
+- [ ] Prepare reference implementation of Wayland image via Weston for launching games via EmulationStation/some form of frontend
 - [ ] Implement an on-screen indicator for volume, brightness control via GPIOs
 - [ ] Create a headphone icon to indicate headphones hotplugged 
-- [ ] Main Boss: The Ultimate Menu Mode!
+- [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. 
 - [ ] Other optimizations/improvements/bug fixes
 - [ ] Create prototype showcase video
 - [ ] Final GitHub open source release & announcement!
