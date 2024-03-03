@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: John Doe <john.doe@somewhere.on.planet>
+Date: Sun, 3 Mar 2024 15:29:32 +0000
+Subject: Add MAX17055 to the device tree
+
+Signed-off-by: John Doe <john.doe@somewhere.on.planet>
+---
+ arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+index c764b09a76a8..31ac40bf3997 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-radxa-cm5-io.dts
+@@ -311,10 +311,19 @@ wm8960: wm8960@1a {
+ 		reg = <0x1a>;
+ 		#sound-dai-cells = <0>;
+ 		AVDD-supply = <&vcc5v0_sys>;
+ 		DVDD-supply = <&vcc_3v3_s3>;
+ 	};
++
++	battery: battery@36 {
++		compatible = "maxim,max17055";
++		reg = <0x36>;
++		maxim,rsns-microohm = <10>;
++		maxim,over-heat-temp = <800>;
++		maxim,dead-volt = <3100>;
++		maxim,over-volt = <4300>;
++	};
+ };
+ 
+ &i2c8 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+-- 
+Created with Armbian build tools https://github.com/armbian/build
+
