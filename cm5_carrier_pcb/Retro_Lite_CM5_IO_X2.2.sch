@@ -52429,12 +52429,8 @@ Details see: &lt;a href="https://www.we-online.com/katalog/en/SMSI_SMT_STEEL_SPA
 <part name="U$16" library="LCD Driver" deviceset="VSYS" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="PCIE_USB_P" library="testpad" deviceset="TP" device="TP07R"/>
-<part name="PCIE_USB_N" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="U$17" library="LCD Driver" deviceset="VSYS" device=""/>
-<part name="USB20_HOST1_P" library="testpad" deviceset="TP" device="TP07R"/>
-<part name="USB20_HOST1_N" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="USB20_HOST0_P" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="USB20_HOST0_N" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="1V8_SDA" library="testpad" deviceset="TP" device="TP07R"/>
@@ -52473,6 +52469,11 @@ Details see: &lt;a href="https://www.we-online.com/katalog/en/SMSI_SMT_STEEL_SPA
 <part name="GND105" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="H1" library="Eagle_WA-SMSI (rev21a)" deviceset="WA-SMSI_9774XXX243" device="_9774015243R" package3d_urn="urn:adsk.eagle:package:14321879/3" value="M2 x 1.5mm"/>
 <part name="GND110" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="R59" library="rcl" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:23547/3" value="4.7k"/>
+<part name="BMS_INT" library="testpad" deviceset="TP" device="TP07R"/>
+<part name="PG" library="led" deviceset="LED" device="SML0603"/>
+<part name="R69" library="rcl" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:23547/3" value="2.2k"/>
+<part name="U$43" library="LCD Driver" deviceset="VSYS" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -52544,8 +52545,8 @@ Details see: &lt;a href="https://www.we-online.com/katalog/en/SMSI_SMT_STEEL_SPA
 <text x="746.76" y="236.22" size="1.778" layer="96" font="vector" rot="R90">47k</text>
 <text x="847.598" y="239.776" size="1.778" layer="96" font="vector" rot="R180">10k</text>
 <text x="847.598" y="232.156" size="1.778" layer="96" font="vector" rot="R180">22R</text>
-<text x="718.82" y="205.74" size="3.81" layer="97" font="vector">Checked battery polartiy. OK!
-I2C pins already have pull-ups. </text>
+<text x="718.82" y="205.74" size="2.54" layer="97" font="vector">Checked battery polartiy. OK!
+I2C pins already have pull-ups on CM5 board.</text>
 <text x="360.68" y="208.28" size="3.81" layer="97" font="vector">Make sure all pins are connected to the CM5 Radxa B2B 
 mezzanines. </text>
 <text x="748.03" y="497.84" size="2.286" layer="97" font="vector" rot="R180">TACH (PWM15_M1) and PWM pins to
@@ -52582,6 +52583,11 @@ GPIO4_D0 to D5</text>
 <text x="114.3" y="124.46" size="1.6764" layer="97" font="vector">I2S Logic: 3V3 - GPIOVREF 3v3</text>
 <text x="314.452" y="528.828" size="1.778" layer="96" font="vector" rot="R180">0R</text>
 <text x="781.812" y="293.37" size="1.778" layer="96" font="vector">100R</text>
+<wire x1="568.96" y1="368.3" x2="568.96" y2="454.66" width="0.1524" layer="97" style="shortdash"/>
+<wire x1="685.8" y1="368.3" x2="685.8" y2="454.66" width="0.1524" layer="97" style="shortdash"/>
+<wire x1="685.8" y1="454.66" x2="568.96" y2="454.66" width="0.1524" layer="97" style="shortdash"/>
+<wire x1="685.8" y1="368.3" x2="568.96" y2="368.3" width="0.1524" layer="97" style="shortdash"/>
+<text x="571.5" y="370.84" size="1.6764" layer="97" font="vector">For sleep mode/shutdown &amp; low voltage notification. </text>
 </plain>
 <instances>
 <instance part="CONNECTOR1" gate="G$1" x="116.84" y="469.9" smashed="yes">
@@ -52604,8 +52610,8 @@ GPIO4_D0 to D5</text>
 <instance part="WL_DIS/PWM4_M0" gate="G$1" x="426.72" y="256.54" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="427.99" y="257.81" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="BT_DIS" gate="G$1" x="396.24" y="261.62" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="397.51" y="262.89" size="1.778" layer="97" rot="R90"/>
+<instance part="BT_DIS" gate="G$1" x="396.24" y="271.78" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="397.51" y="273.05" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="NEXTRST" gate="G$1" x="426.72" y="287.02" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="427.99" y="288.29" size="1.778" layer="97" rot="R90"/>
@@ -53031,7 +53037,7 @@ GPIO4_D0 to D5</text>
 <instance part="U$29" gate="G$1" x="604.52" y="266.7" smashed="yes"/>
 <instance part="U$32" gate="G$1" x="581.66" y="264.16" smashed="yes"/>
 <instance part="U$33" gate="G$1" x="589.28" y="322.58" smashed="yes"/>
-<instance part="U$34" gate="G$1" x="612.14" y="335.28" smashed="yes"/>
+<instance part="U$34" gate="G$1" x="619.76" y="345.44" smashed="yes"/>
 <instance part="U$35" gate="G$1" x="716.28" y="447.04" smashed="yes"/>
 <instance part="U$40" gate="G$1" x="744.22" y="449.58" smashed="yes"/>
 <instance part="J14" gate="A" x="617.22" y="541.02" smashed="yes">
@@ -53112,8 +53118,8 @@ GPIO4_D0 to D5</text>
 <instance part="GPIO4_A6" gate="G$1" x="508" y="287.02" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="509.27" y="288.29" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="GPIO4_A7" gate="G$1" x="396.24" y="251.46" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="397.51" y="252.73" size="1.778" layer="97" rot="R90"/>
+<instance part="GPIO4_A7" gate="G$1" x="396.24" y="261.62" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="397.51" y="262.89" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="3V3_SDA" gate="G$1" x="508" y="281.94" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="509.27" y="283.21" size="1.778" layer="97" rot="R90"/>
@@ -53126,29 +53132,17 @@ GPIO4_D0 to D5</text>
 <instance part="U$14" gate="G$1" x="767.08" y="398.78" smashed="yes"/>
 <instance part="U$15" gate="G$1" x="695.96" y="332.74" smashed="yes"/>
 <instance part="U$16" gate="G$1" x="673.1" y="274.32" smashed="yes"/>
-<instance part="PCIE_USB_P" gate="G$1" x="396.24" y="271.78" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="397.51" y="273.05" size="1.778" layer="97" rot="R90"/>
-</instance>
-<instance part="PCIE_USB_N" gate="G$1" x="396.24" y="266.7" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="397.51" y="267.97" size="1.778" layer="97" rot="R90"/>
-</instance>
 <instance part="GND15" gate="1" x="629.92" y="152.4" smashed="yes">
 <attribute name="VALUE" x="627.38" y="149.86" size="1.778" layer="96" font="vector"/>
 </instance>
 <instance part="U$17" gate="G$1" x="629.92" y="170.18" smashed="yes">
 <attribute name="VALUE" x="632.714" y="172.72" size="1.778" layer="96" font="vector" rot="R180"/>
 </instance>
-<instance part="USB20_HOST1_P" gate="G$1" x="508" y="266.7" smashed="yes" rot="R90">
+<instance part="USB20_HOST0_P" gate="G$1" x="508" y="266.7" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="509.27" y="267.97" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="USB20_HOST1_N" gate="G$1" x="508" y="261.62" smashed="yes" rot="R90">
+<instance part="USB20_HOST0_N" gate="G$1" x="508" y="261.62" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="509.27" y="262.89" size="1.778" layer="97" rot="R90"/>
-</instance>
-<instance part="USB20_HOST0_P" gate="G$1" x="508" y="256.54" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="509.27" y="257.81" size="1.778" layer="97" rot="R90"/>
-</instance>
-<instance part="USB20_HOST0_N" gate="G$1" x="508" y="251.46" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="509.27" y="252.73" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="1V8_SDA" gate="G$1" x="464.82" y="266.7" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="466.09" y="267.97" size="1.778" layer="97" rot="R90"/>
@@ -53162,16 +53156,16 @@ GPIO4_D0 to D5</text>
 <instance part="SBU2" gate="G$1" x="464.82" y="251.46" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="466.09" y="252.73" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="R48" gate="G$1" x="670.56" y="332.74" smashed="yes" rot="R90">
-<attribute name="NAME" x="674.5986" y="334.01" size="1.778" layer="95" font="vector" rot="R270"/>
-<attribute name="VALUE" x="672.338" y="334.01" size="1.778" layer="96" font="vector" rot="R270"/>
+<instance part="R48" gate="G$1" x="612.14" y="322.58" smashed="yes" rot="R90">
+<attribute name="NAME" x="616.1786" y="323.85" size="1.778" layer="95" font="vector" rot="R270"/>
+<attribute name="VALUE" x="613.918" y="323.85" size="1.778" layer="96" font="vector" rot="R270"/>
 </instance>
-<instance part="R52" gate="G$1" x="665.48" y="332.74" smashed="yes" rot="R90">
-<attribute name="NAME" x="661.8986" y="334.01" size="1.778" layer="95" font="vector" rot="R270"/>
-<attribute name="VALUE" x="659.638" y="334.01" size="1.778" layer="96" font="vector" rot="R270"/>
+<instance part="R52" gate="G$1" x="607.06" y="322.58" smashed="yes" rot="R90">
+<attribute name="NAME" x="603.4786" y="323.85" size="1.778" layer="95" font="vector" rot="R270"/>
+<attribute name="VALUE" x="601.218" y="323.85" size="1.778" layer="96" font="vector" rot="R270"/>
 </instance>
-<instance part="U$18" gate="G$1" x="670.56" y="345.44" smashed="yes"/>
-<instance part="U$19" gate="G$1" x="665.48" y="345.44" smashed="yes"/>
+<instance part="U$18" gate="G$1" x="612.14" y="335.28" smashed="yes"/>
+<instance part="U$19" gate="G$1" x="607.06" y="335.28" smashed="yes"/>
 <instance part="P+1" gate="VCC" x="828.04" y="297.18" smashed="yes"/>
 <instance part="R54" gate="G$1" x="312.42" y="523.24" smashed="yes">
 <attribute name="NAME" x="312.42" y="524.764" size="1.778" layer="95" font="vector" align="bottom-center"/>
@@ -53181,8 +53175,8 @@ GPIO4_D0 to D5</text>
 <instance part="SBU1_DC" gate="G$1" x="426.72" y="251.46" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="427.99" y="252.73" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="SBU2_DC" gate="G$1" x="396.24" y="256.54" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="397.51" y="257.81" size="1.778" layer="97" rot="R90"/>
+<instance part="SBU2_DC" gate="G$1" x="396.24" y="266.7" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="397.51" y="267.97" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="R55" gate="G$1" x="784.86" y="297.18" smashed="yes">
 <attribute name="NAME" x="784.86" y="298.704" size="1.778" layer="95" font="vector" align="bottom-center"/>
@@ -53199,11 +53193,11 @@ GPIO4_D0 to D5</text>
 <instance part="GND38" gate="1" x="708.66" y="147.32" smashed="yes">
 <attribute name="VALUE" x="706.12" y="144.78" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="PB1" gate="G$1" x="508" y="246.38" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="509.27" y="247.65" size="1.778" layer="97" rot="R90"/>
+<instance part="PB1" gate="G$1" x="396.24" y="251.46" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="397.51" y="252.73" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="PB0" gate="G$1" x="464.82" y="246.38" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="466.09" y="247.65" size="1.778" layer="97" rot="R90"/>
+<instance part="PB0" gate="G$1" x="508" y="251.46" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="509.27" y="252.73" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="R56" gate="G$1" x="533.4" y="157.48" smashed="yes">
 <attribute name="NAME" x="532.13" y="158.9786" size="1.778" layer="95" font="vector"/>
@@ -53231,13 +53225,25 @@ GPIO4_D0 to D5</text>
 <instance part="GND104" gate="1" x="822.96" y="508" smashed="yes">
 <attribute name="VALUE" x="820.42" y="505.46" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="GND" gate="G$1" x="426.72" y="246.38" smashed="yes" rot="R90">
-<attribute name="TP_SIGNAL_NAME" x="427.99" y="247.65" size="1.778" layer="97" rot="R90"/>
+<instance part="GND" gate="G$1" x="396.24" y="256.54" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="397.51" y="257.81" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="P+9" gate="VCC" x="787.4" y="160.02" smashed="yes"/>
 <instance part="GND105" gate="1" x="784.86" y="89.408" smashed="yes" rot="MR0">
 <attribute name="VALUE" x="787.4" y="86.868" size="1.778" layer="96" font="vector" rot="MR0"/>
 </instance>
+<instance part="BMS_INT" gate="G$1" x="508" y="256.54" smashed="yes" rot="R90">
+<attribute name="TP_SIGNAL_NAME" x="509.27" y="257.81" size="1.778" layer="97" rot="R90"/>
+</instance>
+<instance part="PG" gate="G$1" x="838.2" y="548.64" smashed="yes">
+<attribute name="NAME" x="844.296" y="538.988" size="1.778" layer="95" font="vector" rot="R90"/>
+<attribute name="VALUE" x="843.915" y="544.068" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="R69" gate="G$1" x="838.2" y="535.94" smashed="yes" rot="R90">
+<attribute name="NAME" x="836.7014" y="532.13" size="1.778" layer="95" font="vector" rot="R90"/>
+<attribute name="VALUE" x="841.502" y="532.13" size="1.778" layer="96" font="vector" rot="R90"/>
+</instance>
+<instance part="U$43" gate="G$1" x="838.2" y="556.26" smashed="yes"/>
 </instances>
 <busses>
 <bus name="I2S1:I2S1_SDI,I2S_MCLK,SPI0_CLK_M1/I2S1_LRCK,SPI0_CS0M1/I2S1_SDO,SPI0_MOSI_M1/I2S1_SCLK">
@@ -53976,8 +53982,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="GND" gate="G$1" pin="TP"/>
-<wire x1="429.26" y1="246.38" x2="441.96" y2="246.38" width="0.1524" layer="91"/>
-<label x="431.8" y="246.38" size="1.778" layer="95" font="vector"/>
+<wire x1="398.78" y1="256.54" x2="411.48" y2="256.54" width="0.1524" layer="91"/>
+<label x="401.32" y="256.54" size="1.778" layer="95" font="vector"/>
 </segment>
 <segment>
 <pinref part="J6" gate="A" pin="4"/>
@@ -54057,6 +54063,10 @@ GPIO4_D0 to D5</text>
 <pinref part="U10" gate="A" pin="A2"/>
 <wire x1="622.3" y1="307.34" x2="612.14" y2="307.34" width="0.1524" layer="91"/>
 <label x="596.9" y="307.34" size="1.778" layer="95" font="vector"/>
+<pinref part="R48" gate="G$1" pin="1"/>
+<wire x1="612.14" y1="317.5" x2="612.14" y2="307.34" width="0.1524" layer="91"/>
+<wire x1="612.14" y1="307.34" x2="596.9" y2="307.34" width="0.1524" layer="91"/>
+<junction x="612.14" y="307.34"/>
 </segment>
 <segment>
 <wire x1="467.36" y1="261.62" x2="480.06" y2="261.62" width="0.1524" layer="91"/>
@@ -54166,8 +54176,12 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="U10" gate="A" pin="A1"/>
-<wire x1="622.3" y1="309.88" x2="612.14" y2="309.88" width="0.1524" layer="91"/>
+<wire x1="622.3" y1="309.88" x2="607.06" y2="309.88" width="0.1524" layer="91"/>
 <label x="596.9" y="309.88" size="1.778" layer="95" font="vector"/>
+<pinref part="R52" gate="G$1" pin="1"/>
+<wire x1="607.06" y1="317.5" x2="607.06" y2="309.88" width="0.1524" layer="91"/>
+<wire x1="607.06" y1="309.88" x2="596.9" y2="309.88" width="0.1524" layer="91"/>
+<junction x="607.06" y="309.88"/>
 </segment>
 <segment>
 <wire x1="467.36" y1="266.7" x2="480.06" y2="266.7" width="0.1524" layer="91"/>
@@ -54422,22 +54436,12 @@ GPIO4_D0 to D5</text>
 <pinref part="CONNECTOR3" gate="G$1" pin="45"/>
 <label x="398.78" y="469.9" size="1.778" layer="95" font="vector"/>
 </segment>
-<segment>
-<pinref part="USB20_HOST1_P" gate="G$1" pin="TP"/>
-<wire x1="510.54" y1="266.7" x2="523.24" y2="266.7" width="0.1524" layer="91"/>
-<label x="513.08" y="266.7" size="1.778" layer="95" font="vector"/>
-</segment>
 </net>
 <net name="USB20_HOST1_D_N" class="1">
 <segment>
 <wire x1="441.96" y1="467.36" x2="408.94" y2="467.36" width="0.1524" layer="91"/>
 <pinref part="CONNECTOR3" gate="G$1" pin="47"/>
 <label x="398.78" y="467.36" size="1.778" layer="95" font="vector"/>
-</segment>
-<segment>
-<pinref part="USB20_HOST1_N" gate="G$1" pin="TP"/>
-<wire x1="510.54" y1="261.62" x2="523.24" y2="261.62" width="0.1524" layer="91"/>
-<label x="513.08" y="261.62" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="I2C6_SDA_M3" class="0">
@@ -54586,8 +54590,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="SBU2_DC" gate="G$1" pin="TP"/>
-<wire x1="398.78" y1="256.54" x2="411.48" y2="256.54" width="0.1524" layer="91"/>
-<label x="401.32" y="256.54" size="1.778" layer="95" font="vector"/>
+<wire x1="398.78" y1="266.7" x2="411.48" y2="266.7" width="0.1524" layer="91"/>
+<label x="401.32" y="266.7" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="PWM11_M3" class="0">
@@ -54681,8 +54685,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="BT_DIS" gate="G$1" pin="TP"/>
-<label x="401.32" y="261.62" size="1.778" layer="95" font="vector"/>
-<wire x1="398.78" y1="261.62" x2="408.94" y2="261.62" width="0.1524" layer="91"/>
+<label x="401.32" y="271.78" size="1.778" layer="95" font="vector"/>
+<wire x1="398.78" y1="271.78" x2="408.94" y2="271.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="BT_REG_ON_H" class="0">
@@ -54736,6 +54740,12 @@ GPIO4_D0 to D5</text>
 <wire x1="822.96" y1="551.18" x2="822.96" y2="553.72" width="0.1524" layer="91"/>
 <label x="825.5" y="558.8" size="1.778" layer="95" font="vector" rot="R180"/>
 <pinref part="U$42" gate="G$1" pin="VSYS"/>
+</segment>
+<segment>
+<pinref part="PG" gate="G$1" pin="A"/>
+<wire x1="838.2" y1="551.18" x2="838.2" y2="553.72" width="0.1524" layer="91"/>
+<label x="840.74" y="558.8" size="1.778" layer="95" font="vector" rot="R180"/>
+<pinref part="U$43" gate="G$1" pin="VSYS"/>
 </segment>
 </net>
 <net name="LOW_VOLTAGE_SHUTDOWN" class="0">
@@ -54930,8 +54940,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="USB20_HOST0_N" gate="G$1" pin="TP"/>
-<wire x1="510.54" y1="251.46" x2="523.24" y2="251.46" width="0.1524" layer="91"/>
-<label x="513.08" y="251.46" size="1.778" layer="95" font="vector"/>
+<wire x1="510.54" y1="261.62" x2="523.24" y2="261.62" width="0.1524" layer="91"/>
+<label x="513.08" y="261.62" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="USB20_HOST0_D_P" class="13">
@@ -54942,8 +54952,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="USB20_HOST0_P" gate="G$1" pin="TP"/>
-<wire x1="510.54" y1="256.54" x2="523.24" y2="256.54" width="0.1524" layer="91"/>
-<label x="513.08" y="256.54" size="1.778" layer="95" font="vector"/>
+<wire x1="510.54" y1="266.7" x2="523.24" y2="266.7" width="0.1524" layer="91"/>
+<label x="513.08" y="266.7" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="CM5_3.3V(OUTPUT)" class="0">
@@ -54998,9 +55008,9 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="U10" gate="A" pin="VCCB"/>
-<wire x1="622.3" y1="314.96" x2="612.14" y2="314.96" width="0.1524" layer="91"/>
-<wire x1="612.14" y1="314.96" x2="612.14" y2="332.74" width="0.1524" layer="91"/>
-<label x="624.84" y="337.82" size="1.778" layer="95" font="vector" rot="R180"/>
+<wire x1="622.3" y1="314.96" x2="619.76" y2="314.96" width="0.1524" layer="91"/>
+<wire x1="619.76" y1="314.96" x2="619.76" y2="342.9" width="0.1524" layer="91"/>
+<label x="632.46" y="347.98" size="1.778" layer="95" font="vector" rot="R180"/>
 <pinref part="U$34" gate="G$1" pin="VSYS"/>
 </segment>
 <segment>
@@ -55078,13 +55088,13 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="R52" gate="G$1" pin="2"/>
-<wire x1="665.48" y1="337.82" x2="665.48" y2="342.9" width="0.1524" layer="91"/>
+<wire x1="607.06" y1="327.66" x2="607.06" y2="332.74" width="0.1524" layer="91"/>
 <pinref part="U$19" gate="G$1" pin="VSYS"/>
-<label x="655.828" y="346.964" size="1.778" layer="95" font="vector"/>
+<label x="597.408" y="336.804" size="1.778" layer="95" font="vector"/>
 </segment>
 <segment>
 <pinref part="R48" gate="G$1" pin="2"/>
-<wire x1="670.56" y1="337.82" x2="670.56" y2="342.9" width="0.1524" layer="91"/>
+<wire x1="612.14" y1="327.66" x2="612.14" y2="332.74" width="0.1524" layer="91"/>
 <pinref part="U$18" gate="G$1" pin="VSYS"/>
 </segment>
 </net>
@@ -56289,6 +56299,11 @@ GPIO4_D0 to D5</text>
 <wire x1="853.44" y1="530.86" x2="853.44" y2="520.7" width="0.1524" layer="91"/>
 <label x="853.44" y="525.78" size="1.778" layer="95" font="vector" rot="R270"/>
 </segment>
+<segment>
+<pinref part="U9" gate="A" pin="B3"/>
+<wire x1="812.8" y1="375.92" x2="830.58" y2="375.92" width="0.1524" layer="91"/>
+<label x="820.42" y="375.92" size="1.778" layer="95" font="vector"/>
+</segment>
 </net>
 <net name="N$61" class="0">
 <segment>
@@ -56372,23 +56387,15 @@ GPIO4_D0 to D5</text>
 <net name="I2C8_SDA_M2" class="0">
 <segment>
 <pinref part="U10" gate="A" pin="B1"/>
-<wire x1="657.86" y1="312.42" x2="665.48" y2="312.42" width="0.1524" layer="91"/>
 <label x="660.4" y="312.42" size="1.778" layer="95" font="vector"/>
-<pinref part="R52" gate="G$1" pin="1"/>
-<wire x1="665.48" y1="312.42" x2="673.1" y2="312.42" width="0.1524" layer="91"/>
-<wire x1="665.48" y1="312.42" x2="665.48" y2="327.66" width="0.1524" layer="91"/>
-<junction x="665.48" y="312.42"/>
+<wire x1="657.86" y1="312.42" x2="673.1" y2="312.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="I2C8_SCL_M2" class="0">
 <segment>
 <pinref part="U10" gate="A" pin="B2"/>
-<wire x1="657.86" y1="309.88" x2="670.56" y2="309.88" width="0.1524" layer="91"/>
+<wire x1="657.86" y1="309.88" x2="673.1" y2="309.88" width="0.1524" layer="91"/>
 <label x="660.4" y="309.88" size="1.778" layer="95" font="vector"/>
-<pinref part="R48" gate="G$1" pin="1"/>
-<wire x1="673.1" y1="309.88" x2="670.56" y2="309.88" width="0.1524" layer="91"/>
-<wire x1="670.56" y1="327.66" x2="670.56" y2="309.88" width="0.1524" layer="91"/>
-<junction x="670.56" y="309.88"/>
 </segment>
 </net>
 <net name="GPIO4_A4" class="0">
@@ -56430,8 +56437,8 @@ GPIO4_D0 to D5</text>
 <net name="GPIO4_A7" class="0">
 <segment>
 <pinref part="GPIO4_A7" gate="G$1" pin="TP"/>
-<wire x1="398.78" y1="251.46" x2="408.94" y2="251.46" width="0.1524" layer="91"/>
-<label x="401.32" y="251.46" size="1.778" layer="95" font="vector"/>
+<wire x1="398.78" y1="261.62" x2="408.94" y2="261.62" width="0.1524" layer="91"/>
+<label x="401.32" y="261.62" size="1.778" layer="95" font="vector"/>
 </segment>
 <segment>
 <wire x1="441.96" y1="416.56" x2="408.94" y2="416.56" width="0.1524" layer="91"/>
@@ -56451,27 +56458,6 @@ GPIO4_D0 to D5</text>
 <pinref part="U9" gate="A" pin="B2"/>
 <wire x1="812.8" y1="378.46" x2="830.58" y2="378.46" width="0.1524" layer="91"/>
 <label x="820.42" y="378.46" size="1.778" layer="95" font="vector"/>
-</segment>
-</net>
-<net name="WIFI_USB_P" class="1">
-<segment>
-<pinref part="PCIE_USB_P" gate="G$1" pin="TP"/>
-<wire x1="398.78" y1="271.78" x2="408.94" y2="271.78" width="0.1524" layer="91"/>
-<label x="401.32" y="271.78" size="1.778" layer="95" font="vector"/>
-</segment>
-</net>
-<net name="WIFI_USB_N" class="1">
-<segment>
-<pinref part="PCIE_USB_N" gate="G$1" pin="TP"/>
-<wire x1="398.78" y1="266.7" x2="408.94" y2="266.7" width="0.1524" layer="91"/>
-<label x="401.32" y="266.7" size="1.778" layer="95" font="vector"/>
-</segment>
-</net>
-<net name="GPIO1_A6_CAM1_E" class="0">
-<segment>
-<pinref part="U9" gate="A" pin="B3"/>
-<wire x1="812.8" y1="375.92" x2="830.58" y2="375.92" width="0.1524" layer="91"/>
-<label x="820.42" y="375.92" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="GPIO1_B2_CAM1_E" class="0">
@@ -56560,8 +56546,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="PB1" gate="G$1" pin="TP"/>
-<wire x1="510.54" y1="246.38" x2="523.24" y2="246.38" width="0.1524" layer="91"/>
-<label x="513.08" y="246.38" size="1.778" layer="95" font="vector"/>
+<wire x1="398.78" y1="251.46" x2="411.48" y2="251.46" width="0.1524" layer="91"/>
+<label x="401.32" y="251.46" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="PB2" class="0">
@@ -56572,8 +56558,8 @@ GPIO4_D0 to D5</text>
 </segment>
 <segment>
 <pinref part="PB0" gate="G$1" pin="TP"/>
-<wire x1="467.36" y1="246.38" x2="480.06" y2="246.38" width="0.1524" layer="91"/>
-<label x="469.9" y="246.38" size="1.778" layer="95" font="vector"/>
+<wire x1="510.54" y1="251.46" x2="523.24" y2="251.46" width="0.1524" layer="91"/>
+<label x="513.08" y="251.46" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 <net name="LOW_BAT" class="0">
@@ -56600,6 +56586,27 @@ GPIO4_D0 to D5</text>
 <pinref part="R58" gate="G$1" pin="1"/>
 <pinref part="Q1" gate="G$1" pin="D"/>
 <wire x1="822.96" y1="530.86" x2="822.96" y2="525.78" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BMS_INT" class="0">
+<segment>
+<pinref part="BMS_INT" gate="G$1" pin="TP"/>
+<wire x1="510.54" y1="256.54" x2="523.24" y2="256.54" width="0.1524" layer="91"/>
+<label x="513.08" y="256.54" size="1.778" layer="95" font="vector"/>
+</segment>
+</net>
+<net name="N$66" class="0">
+<segment>
+<pinref part="PG" gate="G$1" pin="C"/>
+<pinref part="R69" gate="G$1" pin="2"/>
+<wire x1="838.2" y1="543.56" x2="838.2" y2="541.02" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BMS_PG" class="0">
+<segment>
+<pinref part="R69" gate="G$1" pin="1"/>
+<wire x1="838.2" y1="530.86" x2="838.2" y2="520.7" width="0.1524" layer="91"/>
+<label x="838.2" y="525.78" size="1.778" layer="95" font="vector" rot="R270"/>
 </segment>
 </net>
 </nets>
@@ -56642,7 +56649,7 @@ High Speed Mux</text>
 <text x="358.14" y="320.04" size="10.16" layer="114" font="vector">MIPI 5.5 Inch Display</text>
 <wire x1="342.9" y1="226.06" x2="706.12" y2="226.06" width="1.016" layer="114"/>
 <wire x1="342.9" y1="38.1" x2="706.12" y2="38.1" width="1.016" layer="114"/>
-<text x="408.94" y="220.98" size="12.7" layer="114" font="vector" rot="MR180">Power Path Management</text>
+<text x="408.94" y="218.44" size="12.7" layer="114" font="vector" rot="MR180">Power Path Management</text>
 <wire x1="342.9" y1="226.06" x2="342.9" y2="38.1" width="1.016" layer="114"/>
 <wire x1="706.12" y1="226.06" x2="706.12" y2="38.1" width="1.016" layer="114"/>
 <text x="627.38" y="68.58" size="1.778" layer="95" font="vector">R39</text>
@@ -57818,6 +57825,10 @@ SPI Mode</text>
 </instance>
 <instance part="GND110" gate="1" x="281.94" y="167.64" smashed="yes">
 <attribute name="VALUE" x="279.4" y="162.56" size="1.778" layer="96" font="vector"/>
+</instance>
+<instance part="R59" gate="G$1" x="396.24" y="99.06" smashed="yes">
+<attribute name="NAME" x="394.97" y="100.5586" size="1.778" layer="95" font="vector"/>
+<attribute name="VALUE" x="394.97" y="95.758" size="1.778" layer="96" font="vector"/>
 </instance>
 </instances>
 <busses>
@@ -59298,20 +59309,6 @@ SPI Mode</text>
 <pinref part="C24" gate="G$1" pin="2"/>
 </segment>
 </net>
-<net name="WIFI_USB_P" class="1">
-<segment>
-<pinref part="J8" gate="G$1" pin="3"/>
-<label x="88.9" y="162.56" size="1.778" layer="95" font="vector"/>
-<wire x1="127" y1="162.56" x2="93.98" y2="162.56" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="WIFI_USB_N" class="1">
-<segment>
-<pinref part="J8" gate="G$1" pin="5"/>
-<wire x1="127" y1="160.02" x2="93.98" y2="160.02" width="0.1524" layer="91"/>
-<label x="88.9" y="160.02" size="1.778" layer="95" font="vector"/>
-</segment>
-</net>
 <net name="WIFI_HOST_WAKE" class="0">
 <segment>
 <pinref part="R13" gate="G$1" pin="2"/>
@@ -60010,6 +60007,8 @@ SPI Mode</text>
 <junction x="391.16" y="106.68"/>
 <pinref part="U$36" gate="G$1" pin="VSYS"/>
 <wire x1="391.16" y1="106.68" x2="383.54" y2="106.68" width="0.1524" layer="91"/>
+<pinref part="R59" gate="G$1" pin="1"/>
+<wire x1="391.16" y1="106.68" x2="391.16" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$29" class="0">
@@ -60191,7 +60190,7 @@ SPI Mode</text>
 <wire x1="386.08" y1="287.02" x2="386.08" y2="276.86" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="GPIO17_INT" class="0">
+<net name="GPIO1_C4" class="0">
 <segment>
 <pinref part="U11" gate="A" pin="ALRT"/>
 <wire x1="640.08" y1="101.6" x2="647.7" y2="101.6" width="0.1524" layer="91"/>
@@ -60965,6 +60964,40 @@ SPI Mode</text>
 <pinref part="C8" gate="G$1" pin="1"/>
 <wire x1="789.94" y1="322.58" x2="774.7" y2="322.58" width="0.1524" layer="91"/>
 <label x="764.54" y="322.58" size="1.778" layer="95" font="vector"/>
+</segment>
+</net>
+<net name="USB20_HOST1_D_P" class="1">
+<segment>
+<pinref part="J8" gate="G$1" pin="3"/>
+<label x="88.9" y="162.56" size="1.778" layer="95" font="vector"/>
+<wire x1="127" y1="162.56" x2="93.98" y2="162.56" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="USB20_HOST1_D_N" class="1">
+<segment>
+<pinref part="J8" gate="G$1" pin="5"/>
+<wire x1="127" y1="160.02" x2="93.98" y2="160.02" width="0.1524" layer="91"/>
+<label x="88.9" y="160.02" size="1.778" layer="95" font="vector"/>
+</segment>
+</net>
+<net name="BMS_INT" class="0">
+<segment>
+<pinref part="R59" gate="G$1" pin="2"/>
+<wire x1="401.32" y1="99.06" x2="411.48" y2="99.06" width="0.1524" layer="91"/>
+<label x="406.4" y="99.06" size="1.778" layer="95" font="vector"/>
+</segment>
+<segment>
+<pinref part="U5" gate="G$1" pin="INT"/>
+<wire x1="419.1" y1="152.4" x2="419.1" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="419.1" y1="147.32" x2="408.94" y2="147.32" width="0.1524" layer="91"/>
+<label x="406.4" y="144.78" size="1.778" layer="95" font="vector"/>
+</segment>
+</net>
+<net name="GPIO0_C7" class="0">
+<segment>
+<pinref part="U5" gate="G$1" pin="PG"/>
+<wire x1="406.4" y1="167.64" x2="383.54" y2="167.64" width="0.1524" layer="91"/>
+<label x="383.54" y="167.64" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 </nets>
