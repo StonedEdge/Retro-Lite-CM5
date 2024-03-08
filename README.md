@@ -55,7 +55,7 @@ Note that this iteration has not yet been physically tested, however is on order
 ### BOM (Bill of Materials) 
 v1 Right Controller PCB BOM have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/rp2040_gamepad/PCB/Retro_Lite_CM5_Right_PCB_v1%20-%20BOM.csv)
 
-v1 Left Controller PCB BOM is coming soon. 
+v1 Left Controller PCB BOM is coming soon. I want to upload both a top & bottom DPAD version. 
 
 v1 X2.2 Carrier PCB BOM has been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_BOM.csv) 
 Note that this has not yet been physically tested, however is on order with the fab house currently, so order at your own risk. You have been warned! 
