@@ -86,14 +86,14 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
 - [x] Power on/power off/sleep mode via ATtiny84 (Power control)
-- [ ] Put together a fully functional Linux image
-- [ ] MAX17055 integration - ATtiny84/CM5 to act as master (use LEDs for battery indication or OSD via Linux framework to draw to screen FB) - likely CM5 as host  
-- [ ] Prepare reference implementation of Wayland image via Weston for launching games via EmulationStation/some form of frontend
+- [x] Put together a fully functional dts for the CM5 IO Board (Device Tree Source) to understand hardware configuration 
+- [x] MAX17055 integration into device tree 
+- [ ] Prepare reference implementation for launching games via EmulationStation/some form of frontend (likely ES-DE/RetroPie)
 - [ ] Implement an on-screen indicator for volume, brightness control via GPIOs
 - [ ] Create a headphone icon to indicate headphones hotplugged 
 - [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. 
 - [ ] Other optimizations/improvements/bug fixes
-- [ ] Create prototype showcase video
+- [ ] Create prototype showcase video for YouTube
 - [ ] Final GitHub open source release & announcement!
 
 -------------------------------------------------------------------------------------------------------
