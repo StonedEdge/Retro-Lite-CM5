@@ -1,10 +1,16 @@
 #include <Arduino.h>
+#include "SoftwareSerial.h"
 #include "bq24292i.h"
 
 byte power_btn = PIN_PA2;           // Power button connected to this pin. Low Active
 byte sys_on = PIN_PA1;              // Regulator power. Active High
 byte sht_dwn = PIN_PB0;             // Connected to GPIO25. Signal to start CM5 Shutdown. Active High
 byte low_volt_shutdown = PIN_PB1;   // Connected to GPIO16 on CM5. Used for low voltage shut down
+
+//#define rxPin PIN_PB1   // Pin used for Serial receive
+//#define txPin PIN_PB0   // Pin used for Serial transmit
+
+//SoftwareSerial mySerial(rxPin, txPin);
 
 byte led1 = PIN_PB2;
 byte led2 = PIN_PA7;
@@ -26,18 +32,14 @@ bool shutDownTimerStarted = false;
 unsigned long lastLowVoltDebounce = 0;
 unsigned long debounceDelay = 50;
 
-const float R1 = 10000.0;  // Value of R1 resistor div 
-const float R2 = 27400.0;  // Value of R2 resistor div
-float vBatSum;
-uint8_t vBatReadCounter;
+uint32_t vBatSum;
+uint32_t vBatReadCounter;
 
-float readAvgVBAT() {
-    uint8_t vBatADCRaw = analogRead(A3);              // Store ADC reading
-    float vBatADCVoltage = (vBatADCRaw * 1.1) / 256.0;  // Convert analog to voltage value
-    float vBatAdj = vBatADCVoltage / (R2 / (R1 + R2));  // Adjust voltage for divider
-    vBatSum += vBatAdj;
+uint32_t readAvgVBAT() {
+    vBatSum += analogRead(A3);
     vBatReadCounter++;
-    return vBatSum / vBatReadCounter;
+    // microvolts factor is: (R1 + R2) * 1.1v * 1000 / (1024 * R2) ~= 4.017578125
+    return (vBatSum * 4018) / (vBatReadCounter * 1000);
 }
 
 void BQ_INIT() {
@@ -114,7 +116,7 @@ void powerTimerCheck() {
             digitalWrite(led3, HIGH);
             shutdownInit = true;
         }
-        else if (readAvgVBAT() > 3.2) { // Check battery voltage before allowing sys_on to go high
+        else if (readAvgVBAT() > 3200) { // Check battery voltage before allowing sys_on to go high
             systemState = true;
             digitalWrite(sys_on, HIGH);
             digitalWrite(led2, HIGH);
@@ -138,7 +140,7 @@ void setup() {
     CLKPR = (1 << CLKPCE);  // Prescaler enable
     CLKPR = 0x00;           // Clock division factor
     sei();                  // Enable interrupts
-    
+
     pinMode(power_btn, INPUT_PULLUP);
     pinMode(sys_on, OUTPUT);
     pinMode(sht_dwn, OUTPUT);
@@ -150,12 +152,6 @@ void setup() {
     pinMode(A3, INPUT);
     analogReference(INTERNAL);  // Setup the ADC voltage ref as 1.1V
 
-    // Not sure if these are needed?
-    ADMUX  |= (1 << ADLAR);     // Left Adjust the ADCH and ADCL registers for 8-bit resolution. No need for 10-bit
-    ADCSRA |= (1 << ADEN);      // ADC enable 
-    ADCSRA |= (1 << ADPS1);     // Set prescaler 
-    ADCSRA |= (1 << ADPS0);     // Set division factor-8 for 1MHz ADC clock
-
     digitalWrite(led1, LOW);
     digitalWrite(led2, LOW);
     digitalWrite(led3, LOW);
@@ -164,7 +160,11 @@ void setup() {
 
     // digitalWrite(led1, bq24292i_is_present());
 
-    BQ_INIT(); 
+    BQ_INIT();
+
+    //mySerial.begin(9600);
+    //delay(2000);
+    //mySerial.println("SETUP Complete - SoftwareSerial Example");
 }
 
 void loop() {
