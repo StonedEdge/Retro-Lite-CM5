@@ -33,13 +33,14 @@ unsigned long lastLowVoltDebounce = 0;
 unsigned long debounceDelay = 50;
 
 uint32_t vBatSum;
-uint32_t vBatReadCounter;
+int vBatReadCounter;
 
+// Returns average VBAT in microvolts
 uint32_t readAvgVBAT() {
-    vBatSum += analogRead(A3);
-    vBatReadCounter++;
     // microvolts factor is: (R1 + R2) * 1.1v * 1000 / (1024 * R2) ~= 4.017578125
-    return (vBatSum * 4018) / (vBatReadCounter * 1000);
+    vBatSum += analogRead(A3) * 4;
+    vBatReadCounter++;
+    return vBatSum / vBatReadCounter;
 }
 
 void BQ_INIT() {
