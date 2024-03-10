@@ -5,7 +5,6 @@ byte power_btn = PIN_PA2;           // Power button connected to this pin. Low A
 byte sys_on = PIN_PA1;              // Regulator power. Active High
 byte sht_dwn = PIN_PB0;             // Connected to GPIO25. Signal to start CM5 Shutdown. Active High
 byte low_volt_shutdown = PIN_PB1;   // Connected to GPIO16 on CM5. Used for low voltage shut down
-byte vbat = A3;
 
 byte led1 = PIN_PB2;
 byte led2 = PIN_PA7;
@@ -33,7 +32,7 @@ float vBatSum;
 uint8_t vBatReadCounter;
 
 float readAvgVBAT() {
-    uint8_t vBatADCRaw = analogRead(vbat);              // Store ADC reading
+    uint8_t vBatADCRaw = analogRead(A3);              // Store ADC reading
     float vBatADCVoltage = (vBatADCRaw * 1.1) / 256.0;  // Convert analog to voltage value
     float vBatAdj = vBatADCVoltage / (R2 / (R1 + R2));  // Adjust voltage for divider
     vBatSum += vBatAdj;
@@ -148,7 +147,7 @@ void setup() {
     pinMode(led2, OUTPUT);
     pinMode(led3, OUTPUT);
 
-    pinMode(vbat, INPUT);
+    pinMode(A3, INPUT);
     analogReference(INTERNAL);  // Setup the ADC voltage ref as 1.1V
 
     // Not sure if these are needed?
