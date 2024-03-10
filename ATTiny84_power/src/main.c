@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include "bq24292i.h"
 
-byte power_btn = PIN_PA2; //Power button connected to this pin. Low Active
-byte sys_on = PIN_PA1; //Regulator power. Active High
-byte sht_dwn = PIN_PB0; //Connected to GPIO25. Signal to start Pi Shutdown. Active High
-byte low_volt_shutdown = PIN_PB1; //Connected to GPIO16 on pi. Used for low voltage shut down
+byte power_btn = PIN_PA2;           // Power button connected to this pin. Low Active
+byte sys_on = PIN_PA1;              // Regulator power. Active High
+byte sht_dwn = PIN_PB0;             // Connected to GPIO25. Signal to start CM5 Shutdown. Active High
+byte low_volt_shutdown = PIN_PB1;   // Connected to GPIO16 on CM5. Used for low voltage shut down
 
 byte led1 = PIN_PB2;
 byte led2 = PIN_PA7;
@@ -25,6 +25,20 @@ bool shutDownTimerStarted = false;
 
 unsigned long lastLowVoltDebounce = 0;
 unsigned long debounceDelay = 50;
+
+const float R1 = 10000.0;  // Value of R1 resistor div 
+const float R2 = 27400.0;  // Value of R2 resistor div
+float vBatSum;
+uint8_t vBatReadCounter;
+
+float readAvgVBAT() {
+    uint8_t vBatADCRaw = analogRead(A3);              // Store ADC reading
+    float vBatADCVoltage = (vBatADCRaw * 1.1) / 256.0;  // Convert analog to voltage value
+    float vBatAdj = vBatADCVoltage / (R2 / (R1 + R2));  // Adjust voltage for divider
+    vBatSum += vBatAdj;
+    vBatReadCounter++;
+    return vBatSum / vBatReadCounter;
+}
 
 void BQ_INIT() {
     bq24292i_set_iin_max(BQ_IIN_MAX_3000MA);
@@ -69,7 +83,7 @@ void shutdownTimer() {
     if (!shutDownTimerStarted) {
         shutDown = millis() + shutDownDelay;
         shutDownTimerStarted = true;
-        digitalWrite(sht_dwn, HIGH);//Tell Pi to Shut down
+        digitalWrite(sht_dwn, HIGH); // Tell CM5 to Shut down
         digitalWrite(led3, HIGH);
         shutdownInit = true;
     }
@@ -87,29 +101,43 @@ void shutdownTimer() {
 void powerTimerCheck() {
     if (!btnTimerStarted) {
         btnTimerStarted = true;
+        vBatReadCounter = 0;
+        vBatSum = 0;
         powerBtnTimer = millis() +
             ((systemState == 0) ? powerOnDelay : powerOffDelay);
     }
     else if (millis() > powerBtnTimer) {
         btnTimerStarted = false;
-        systemState = !systemState;
         if (systemState) {
-            digitalWrite(sys_on, HIGH);
-            digitalWrite(led2, HIGH);
-        }
-        else {
+            systemState = false;
             digitalWrite(sht_dwn, HIGH);
             digitalWrite(led3, HIGH);
             shutdownInit = true;
         }
+        else if (readAvgVBAT() > 3.2) { // Check battery voltage before allowing sys_on to go high
+            systemState = true;
+            digitalWrite(sys_on, HIGH);
+            digitalWrite(led2, HIGH);
+        }
+        else {
+            // Flash LED1 if the user presses the button down during low battery and system off state
+            for (int i = 0; i < 10; i++) {
+                digitalWrite(led1, HIGH);
+                delay(250);
+                digitalWrite(led1, LOW);
+                delay(250);
+            }
+        }
     }
+    else if (!systemState)
+        readAvgVBAT();      // Keep reading voltage while button is pressed
 }
 
 void setup() {
-    cli(); // Disable interrupts
-    CLKPR = (1<<CLKPCE); // Prescaler enable
-    CLKPR = 0x00; // Clock division factor
-    sei(); // Enable interrupts
+    cli();                  // Disable interrupts
+    CLKPR = (1 << CLKPCE);  // Prescaler enable
+    CLKPR = 0x00;           // Clock division factor
+    sei();                  // Enable interrupts
     
     pinMode(power_btn, INPUT_PULLUP);
     pinMode(sys_on, OUTPUT);
@@ -119,13 +147,22 @@ void setup() {
     pinMode(led2, OUTPUT);
     pinMode(led3, OUTPUT);
 
+    pinMode(A3, INPUT);
+    analogReference(INTERNAL);  // Setup the ADC voltage ref as 1.1V
+
+    // Not sure if these are needed?
+    ADMUX  |= (1 << ADLAR);     // Left Adjust the ADCH and ADCL registers for 8-bit resolution. No need for 10-bit
+    ADCSRA |= (1 << ADEN);      // ADC enable 
+    ADCSRA |= (1 << ADPS1);     // Set prescaler 
+    ADCSRA |= (1 << ADPS0);     // Set division factor-8 for 1MHz ADC clock
+
     digitalWrite(led1, LOW);
     digitalWrite(led2, LOW);
     digitalWrite(led3, LOW);
 
     i2c_master_init();
 
-    digitalWrite(led1, bq24292i_is_present());
+    // digitalWrite(led1, bq24292i_is_present());
 
     BQ_INIT(); 
 }
