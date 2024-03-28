@@ -6,15 +6,15 @@ byte power_btn = PIN_PA2;           // Power button connected to this pin. Low A
 byte sys_on = PIN_PA1;              // Regulator power. Active High
 byte sht_dwn = PIN_PB0;             // Connected to GPIO25. Signal to start CM5 Shutdown. Active High
 byte low_volt_shutdown = PIN_PB1;   // Connected to GPIO16 on CM5. Used for low voltage shut down
+byte vbat_low = PIN_PB2;            // Low vbat detect pin
+//byte led1 = PIN_PB2;
+//byte led2 = PIN_PA7;
+//byte led3 = PIN_PA5;
 
 //#define rxPin PIN_PB1   // Pin used for Serial receive
 //#define txPin PIN_PB0   // Pin used for Serial transmit
 
 //SoftwareSerial mySerial(rxPin, txPin);
-
-byte led1 = PIN_PB2;
-byte led2 = PIN_PA7;
-byte led3 = PIN_PA5;
 
 bool lowVoltInState = false;
 bool lastLowVoltInState = false;
@@ -86,15 +86,15 @@ void shutdownTimer() {
     if (!shutDownTimerStarted) {
         shutDown = millis() + shutDownDelay;
         shutDownTimerStarted = true;
-        digitalWrite(sht_dwn, HIGH); // Tell CM5 to Shut down
-        digitalWrite(led3, HIGH);
+        digitalWrite(sht_dwn, HIGH); // Tell CM5 to shut down
+        //digitalWrite(led3, HIGH); // For test fixture
         shutdownInit = true;
     }
     else if (millis() > shutDown) {
         digitalWrite(sys_on, LOW);
         digitalWrite(sht_dwn, LOW);
-        digitalWrite(led2, LOW);
-        digitalWrite(led3, LOW);
+        //digitalWrite(led2, LOW); // For test fixture
+        //digitalWrite(led3, LOW); // For test fixture
         systemState = 0;
         shutDownTimerStarted = false;
         shutdownInit = false;
@@ -114,20 +114,20 @@ void powerTimerCheck() {
         if (systemState) {
             systemState = false;
             digitalWrite(sht_dwn, HIGH);
-            digitalWrite(led3, HIGH);
+            // digitalWrite(led3, HIGH); // For test fixture
             shutdownInit = true;
         }
         else if (readAvgVBAT() > 3200) { // Check battery voltage before allowing sys_on to go high
             systemState = true;
             digitalWrite(sys_on, HIGH);
-            digitalWrite(led2, HIGH);
+            // digitalWrite(led2, HIGH); // For test fixture
         }
         else {
             // Flash LED1 if the user presses the button down during low battery and system off state
             for (int i = 0; i < 10; i++) {
-                digitalWrite(led1, HIGH);
+                digitalWrite(vbat_low, HIGH);
                 delay(250);
-                digitalWrite(led1, LOW);
+                digitalWrite(vbat_low, LOW);
                 delay(250);
             }
         }
@@ -146,20 +146,21 @@ void setup() {
     pinMode(sys_on, OUTPUT);
     pinMode(sht_dwn, OUTPUT);
     pinMode(low_volt_shutdown, INPUT_PULLUP);
-    pinMode(led1, OUTPUT);
-    pinMode(led2, OUTPUT);
-    pinMode(led3, OUTPUT);
+    pinMode(vbat_low, OUTPUT);
+    //pinMode(led1, OUTPUT);   // For test fixture
+    //pinMode(led2, OUTPUT);   // For test fixture
+    //pinMode(led3, OUTPUT);   // For test fixture
 
     pinMode(A3, INPUT);
     analogReference(INTERNAL);  // Setup the ADC voltage ref as 1.1V
-
-    digitalWrite(led1, LOW);
-    digitalWrite(led2, LOW);
-    digitalWrite(led3, LOW);
+    digitalWrite(vbat_low, LOW);
+    //digitalWrite(led1, LOW);  // For test fixture
+    //digitalWrite(led2, LOW);  // For test fixture
+    //digitalWrite(led3, LOW);  // For test fixture
 
     i2c_master_init();
 
-    // digitalWrite(led1, bq24292i_is_present());
+    // digitalWrite(led1, bq24292i_is_present()); // For test fixture
 
     BQ_INIT();
 
