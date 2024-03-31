@@ -1,0 +1,720 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: John Doe <john.doe@somewhere.on.planet>
+Date: Sat, 30 Mar 2024 10:47:59 +0000
+Subject: Add Retro Lite CM5 device tree
+
+Signed-off-by: John Doe <john.doe@somewhere.on.planet>
+---
+ arch/arm64/boot/dts/rockchip/Makefile                   |   1 +
+ arch/arm64/boot/dts/rockchip/rk3588s-retro-lite-cm5.dts | 684 ++++++++++
+ 2 files changed, 685 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index f410b095f58d..db944c3e2cae 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -291,10 +291,11 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-nanopi-r6c.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-nanopi-r6s.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5b.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-cm5-io.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-radxa-nx5-io.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-retro-lite-cm5.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5a.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-roc-pc.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-rk806-single-v10.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-v10.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-v11.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-retro-lite-cm5.dts b/arch/arm64/boot/dts/rockchip/rk3588s-retro-lite-cm5.dts
+new file mode 100644
+index 000000000000..0d594444f015
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-retro-lite-cm5.dts
+@@ -0,0 +1,684 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2024 StonedEdge and GinKage
++ *
++ */
++
++/dts-v1/;
++
++#include "rk3588s-radxa-cm5.dtsi"
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/pinctrl/rockchip.h>
++
++/ {
++	model = "Retro Lite CM5";
++	compatible = "retro-lite,cm5", "radxa,cm5", "rockchip,rk3588";
++
++	/delete-node/ chosen;
++
++	bq24292i_charger: charger {
++		compatible = "gpio-charger";
++		gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_LOW>;
++		charge-status-gpios = <&gpio1 RK_PA6 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&bq24292i_gpio>;
++	};
++
++	bt_wake: bt-wake-gpio-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "bt_wake";
++		enable-active-high;
++		gpio = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	dp0_sound: dp0-sound {
++		status = "okay";
++		compatible = "rockchip,hdmi";
++		rockchip,card-name= "rockchip-hdmi1";
++		rockchip,mclk-fs = <512>;
++		rockchip,cpu = <&spdif_tx2>;
++		rockchip,codec = <&dp0 1>;
++		rockchip,jack-det;
++	};
++
++	dsi1_backlight: dsi1-backlight {
++		status = "okay";
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 0 25000 PWM_POLARITY_INVERTED>;
++		brightness-levels = <
++			0  20  20  21  21  22  22  23
++			23  24  24  25  25  26  26  27
++			27  28  28  29  29  30  30  31
++			31  32  32  33  33  34  34  35
++			35  36  36  37  37  38  38  39
++			40  41  42  43  44  45  46  47
++			48  49  50  51  52  53  54  55
++			56  57  58  59  60  61  62  63
++			64  65  66  67  68  69  70  71
++			72  73  74  75  76  77  78  79
++			80  81  82  83  84  85  86  87
++			88  89  90  91  92  93  94  95
++			96  97  98  99 100 101 102 103
++			104 105 106 107 108 109 110 111
++			112 113 114 115 116 117 118 119
++			120 121 122 123 124 125 126 127
++			128 129 130 131 132 133 134 135
++			136 137 138 139 140 141 142 143
++			144 145 146 147 148 149 150 151
++			152 153 154 155 156 157 158 159
++			160 161 162 163 164 165 166 167
++			168 169 170 171 172 173 174 175
++			176 177 178 179 180 181 182 183
++			184 185 186 187 188 189 190 191
++			192 193 194 195 196 197 198 199
++			200 201 202 203 204 205 206 207
++			208 209 210 211 212 213 214 215
++			216 217 218 219 220 221 222 223
++			224 225 226 227 228 229 230 231
++			232 233 234 235 236 237 238 239
++			240 241 242 243 244 245 246 247
++			248 249 250 251 252 253 254 255
++		>;
++		default-brightness-level = <200>;
++	};
++
++	fan0: pwm-fan {
++		compatible = "pwm-fan";
++		#cooling-cells = <2>;
++		cooling-levels = <15 55 95 135 175 215 255>;
++		pwms = <&pwm11 0 10000 0>;
++		rockchip,temp-trips = <
++			55000	1
++			60000	2
++			65000	3
++			70000	4
++			75000	5
++			80000	6
++		>;
++	};
++
++	gpio_keys: gpio-keys {
++		compatible = "gpio-keys";
++		pinctrl-names = "default";
++		pinctrl-0 = <&volume_keys>;
++		autorepeat;
++
++		key-vol-up {
++			label = "volume up";
++			linux,code = <KEY_VOLUMEUP>;
++			gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
++		};
++
++		key-vol-down {
++			label = "volume down";
++			linux,code = <KEY_VOLUMEDOWN>;
++			gpios = <&gpio1 RK_PD5 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	hdmi0_sound: hdmi0-sound {
++		status = "okay";
++		compatible = "rockchip,hdmi";
++		rockchip,mclk-fs = <128>;
++		rockchip,card-name = "rockchip-hdmi0";
++		rockchip,cpu = <&i2s5_8ch>;
++		rockchip,codec = <&hdmi0>;
++		rockchip,jack-det;
++	};
++
++	lcd_3v3: lcd-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "lcd_3v3";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vcc3v3_sys>;
++	};
++
++	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_1v1_nldo_s3";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <1100000>;
++		regulator-max-microvolt = <1100000>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
++	vcc3v3_pcie2x1l0: vcc3v3-pcie2x1l0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_pcie2x1l0";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		enable-active-high;
++		regulator-boot-on;
++		regulator-always-on;
++		gpios = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
++		startup-delay-us = <50000>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
++	vcc3v3_sys: vcc3v3-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	vcc5v0_sys: vcc5v0-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
++
++	wifi_disable: wifi-diable-gpio-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "wifi_disable";
++		enable-active-high;
++		gpio = <&gpio0 RK_PD4 GPIO_ACTIVE_HIGH>;
++		regulator-boot-on;
++		regulator-always-on;
++	};
++
++	wm8960_mclk: wm8960-mclk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <24000000>;
++	};
++
++	wm8960_sound: wm8960-sound {
++		status = "okay";
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,name = "wm8960-soundcard";
++		simple-audio-card,mclk-fs = <256>;
++		simple-audio-card,widgets =
++			"Microphone", "Mic Jack",
++			"Line", "Line In",
++			"Line", "Line Out",
++			"Speaker", "Speaker",
++			"Headphone", "Headphone Jack";
++		simple-audio-card,routing =
++			"Headphone Jack", "HP_L",
++			"Headphone Jack", "HP_R",
++			"Speaker", "SPK_LP",
++			"Speaker", "SPK_LN",
++			"LINPUT1", "Mic Jack",
++			"LINPUT3", "Mic Jack",
++			"RINPUT1", "Mic Jack",
++			"RINPUT2", "Mic Jack";
++		pinctrl-0 = <&hp_det>;
++		pinctrl-names = "default";
++		hp-det-gpio = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
++		sac_cpu: simple-audio-card,cpu {
++			sound-dai = <&i2s1_8ch>;
++		};
++		sac_codec: simple-audio-card,codec {
++			sound-dai = <&wm8960>;
++			clocks = <&wm8960_mclk>;
++			clock-names = "mclk";
++		};
++	};
++};
++
++&combphy0_ps {
++	status = "okay";
++};
++
++&combphy2_psu {
++	status = "okay";
++};
++
++&display_subsystem {
++	clocks = <&hdptxphy_hdmi_clk0>;
++	clock-names = "hdmi0_phy_pll";
++};
++
++&dp0 {
++	// force-hpd;
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dp0_hpd>;
++	hpd-gpios = <&gpio0 RK_PD3 GPIO_ACTIVE_HIGH>;
++};
++
++&dp0_in_vp2 {
++	status = "okay";
++};
++
++&dsi1 {
++	status = "okay";
++	rockchip,lane-rate = <550>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	dsi1_panel: panel@0 {
++		status = "okay";
++		compatible = "startek,kd055hdfia001";
++		reg = <0>;
++		backlight = <&dsi1_backlight>;
++
++		vdd-supply = <&lcd_3v3>;
++		power-supply = <&lcd_3v3>;
++		//vccio-supply = <&vcc_1v8_s0>;
++		reset-gpio = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
++		rotation = <270>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&dsi1_lcd_rst_gpio>;
++		//te-gpios = <&gpio1 RK_PA4 GPIO_ACTIVE_HIGH>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				panel_in_dsi1: endpoint {
++					remote-endpoint = <&dsi1_out_panel>;
++				};
++			};
++		};
++	};
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@1 {
++			reg = <1>;
++			dsi1_out_panel: endpoint {
++				remote-endpoint = <&panel_in_dsi1>;
++			};
++		};
++	};
++};
++
++&dsi1_in_vp2 {
++	status = "disabled";
++};
++
++&dsi1_in_vp3 {
++	status = "okay";
++};
++
++&hdmi0 {
++	status = "okay";
++};
++
++&hdmi0_in_vp0 {
++	status = "okay";
++};
++
++&hdptxphy_hdmi0 {
++	status = "okay";
++};
++
++&hdptxphy_hdmi_clk0 {
++	status = "okay";
++};
++
++&i2c4 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c4m3_xfer>;
++};
++
++&i2c6 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c6m3_xfer>;
++
++	hym8563: hym8563@51 {
++		compatible = "haoyu,hym8563";
++		reg = <0x51>;
++		#clock-cells = <0>;
++		clock-frequency = <32768>;
++		clock-output-names = "hym8563";
++		pinctrl-names = "default";
++		pinctrl-0 = <&rtc_int>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
++	};
++};
++
++&i2c7 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c7m2_xfer>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	battery: battery@36 {
++		compatible = "maxim,max17055";
++		reg = <0x36>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <RK_PC4 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&fuel_gauge>;
++		power-supplies = <&bq24292i_charger>;
++		maxim,rsns-microohm = <10>;
++		maxim,over-heat-temp = <800>;
++		maxim,dead-volt = <3100>;
++		maxim,over-volt = <4300>;
++	};
++
++	wm8960: wm8960@1a {
++		compatible = "wlf,wm8960";
++		reg = <0x1a>;
++		#sound-dai-cells = <0>;
++		AVDD-supply = <&vcc5v0_sys>;
++		DVDD-supply = <&vcc_3v3_s3>;
++	};
++};
++
++&i2c8 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c8m2_xfer>;
++	clock-frequency = <400000>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	gt9xx: gt9xx@14 {
++		status = "okay";
++		compatible = "goodix,gt911";
++		reg = <0x14>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&gt9xx_gpio>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <RK_PB5 IRQ_TYPE_EDGE_FALLING>;
++		irq-gpios = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio1 RK_PB4 GPIO_ACTIVE_HIGH>;
++		//AVDD28-supply = <&lcd_3v3>;
++		//VDDIO-supply = <&vcc_1v8_s0>;
++		touchscreen-size-x = <720>;
++		touchscreen-size-y = <1280>;
++	};
++};
++
++&i2s1_8ch {
++	status = "okay";
++	rockchip,playback-channels = <2>;
++	rockchip,capture-channels = <2>;
++	rockchip,i2s-tx-route = <1 0 2 3>;
++	rockchip,i2s-rx-route = <0 1 2 3>;
++	#sound-dai-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s1m0_sclk
++			&i2s1m0_lrck
++			&i2s1m0_sdi0
++			&i2s1m0_sdo1>;
++};
++
++&i2s5_8ch {
++	status = "okay";
++};
++
++&mipi_dcphy1 {
++	status = "okay";
++};
++
++&pcie2x1l2 {
++	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
++	vpcie3v3-supply = <&vcc3v3_pcie2x1l0>;
++	status = "okay";
++};
++
++&pinctrl {
++	bq24292i {
++		bq24292i_gpio: bq24292i-gpio {
++			rockchip,pins =
++				<0 RK_PC7 RK_FUNC_GPIO &pcfg_pull_up>,
++				<1 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	dp {
++		dp0_hpd: dp0-hpd {
++			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	dsi1-lcd {
++		dsi1_lcd_rst_gpio: dsi1-lcd-rst-gpio {
++			rockchip,pins =
++				//<1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>,
++				<1 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	gpio-key {
++		volume_keys: volume-keys {
++			rockchip,pins =
++				<1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>,
++				<1 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	gauge {
++		fuel_gauge: fuel-gauge {
++			rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	gt9xx {
++		gt9xx_gpio: gt9xx-gpio {
++			rockchip,pins =
++				<1 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>,
++				<1 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	headphone {
++		hp_det: hp-det {
++			rockchip,pins = <1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	hym8563 {
++		rtc_int: rtc-int {
++			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++};
++
++&pwm0 {
++	status = "okay";
++	pinctrl-names = "active";
++	pinctrl-0 = <&pwm0m1_pins>;
++};
++
++&pwm11 {
++	status = "okay";
++	pinctrl-0 = <&pwm11m3_pins>;
++};
++
++&pwm4 {
++	status = "okay";
++	pinctrl-0 = <&pwm4m0_pins>;
++};
++
++&rockchip_suspend {
++	compatible = "rockchip,pm-rk3588";
++	status = "okay";
++	rockchip,sleep-debug-en = <1>;
++	rockchip,sleep-mode-config = <
++		(0
++		| RKPM_SLP_ARMOFF_DDRPD
++		)
++	>;
++	rockchip,wakeup-config = <
++		(0
++		| RKPM_GPIO_WKUP_EN
++		| RKPM_USB_WKUP_EN
++		)
++	>;
++};
++
++&route_dp0 {
++	status = "okay";
++	connect = <&vp2_out_dp0>;
++};
++
++&route_dsi1 {
++	status = "okay";
++	connect = <&vp3_out_dsi1>;
++};
++
++&route_hdmi0 {
++	status = "okay";
++};
++
++&sdhci {
++	status = "okay";
++};
++
++&sdmmc {
++	max-frequency = <200000000>;
++	no-sdio;
++	no-mmc;
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	disable-wp;
++	sd-uhs-sdr104;
++	vmmc-supply = <&vcc_3v3_s3>;
++	vqmmc-supply = <&vccio_sd_s0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
++	status = "okay";
++};
++
++&spdif_tx2 {
++	status = "okay";
++};
++
++&u2phy0 {
++	status = "okay";
++};
++
++&u2phy0_otg {
++	// rockchip,typec-vbus-det;
++	/delete-property/ rockchip,usbctrl-grf;
++	status = "okay";
++	phy-supply = <&vcc5v0_sys>;
++};
++
++&u2phy2 {
++	status = "okay";
++};
++
++&u2phy2_host {
++	status = "okay";
++	phy-supply = <&vcc5v0_sys>;
++};
++
++&u2phy3 {
++	status = "okay";
++};
++
++&u2phy3_host {
++	status = "okay";
++	phy-supply = <&vcc5v0_sys>;
++};
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usb_host1_ehci {
++	status = "okay";
++};
++
++&usb_host1_ohci {
++	status = "okay";
++};
++
++&usbdp_phy0 {
++	status = "okay";
++	rockchip,dp-lane-mux = <3 2 0 1>;
++};
++
++&usbdp_phy0_dp {
++	status = "okay";
++};
++
++&usbdp_phy0_u3 {
++	status = "okay";
++};
++
++&usbdrd3_0 {
++	status = "okay";
++};
++
++&usbdrd_dwc3_0 {
++	dr_mode = "host";
++	status = "okay";
++	extcon = <&u2phy2>;
++};
++
++&usbhost3_0 {
++	status = "okay";
++};
++
++&usbhost_dwc3_0 {
++	status = "okay";
++};
++
++&vdpu {
++	status = "okay";
++};
++
++&vdpu_mmu {
++	status = "okay";
++};
++
++&vepu {
++	status = "okay";
++};
++
++&vop {
++	status = "okay";
++};
++
++&vop_mmu {
++	status = "okay";
++};
++
++&vp0 {
++	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER0 | 1 << ROCKCHIP_VOP2_ESMART0)>;
++	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER0>;
++	cursor-win-id = <ROCKCHIP_VOP2_ESMART0>;
++};
++
++&vp1 {
++	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER1 | 1 << ROCKCHIP_VOP2_ESMART1)>;
++	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER1>;
++	cursor-win-id = <ROCKCHIP_VOP2_ESMART1>;
++};
++
++&vp2 {
++	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER2 | 1 << ROCKCHIP_VOP2_ESMART2)>;
++	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER2>;
++	cursor-win-id = <ROCKCHIP_VOP2_ESMART2>;
++};
++
++&vp3 {
++	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER3 | 1 << ROCKCHIP_VOP2_ESMART3)>;
++	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER3>;
++	cursor-win-id = <ROCKCHIP_VOP2_ESMART3>;
++};
++
+-- 
+Created with Armbian build tools https://github.com/armbian/build
+
