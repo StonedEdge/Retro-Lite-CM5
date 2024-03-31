@@ -1,0 +1,195 @@
+diff --git a/config/kernel/linux-rk35xx-legacy.config b/config/kernel/linux-rk35xx-legacy.config
+index 0c46b8de8..d71a9e338 100644
+--- a/config/kernel/linux-rk35xx-legacy.config
++++ b/config/kernel/linux-rk35xx-legacy.config
+@@ -3086,8 +3086,8 @@ CONFIG_TOUCHSCREEN_GOODIX=y
+ CONFIG_TOUCHSCREEN_GSL3673=y
+ # CONFIG_TOUCHSCREEN_GSL3673_800X1280 is not set
+ # CONFIG_TOUCHSCREEN_GSLX680_PAD is not set
+-CONFIG_TOUCHSCREEN_GT1X=y
+-CONFIG_TOUCHSCREEN_GT9XX=y
++# CONFIG_TOUCHSCREEN_GT1X is not set
++# CONFIG_TOUCHSCREEN_GT9XX is not set
+ # CONFIG_TOUCHSCREEN_HIDEEP is not set
+ # CONFIG_TOUCHSCREEN_ILI210X is not set
+ # CONFIG_TOUCHSCREEN_S6SY761 is not set
+@@ -3662,7 +3662,7 @@ CONFIG_BATTERY_SBS=y
+ # CONFIG_MANAGER_SBS is not set
+ # CONFIG_BATTERY_BQ27XXX is not set
+ # CONFIG_BATTERY_MAX17040 is not set
+-# CONFIG_BATTERY_MAX17042 is not set
++CONFIG_BATTERY_MAX17042=y
+ # CONFIG_BATTERY_MAX1721X is not set
+ # CONFIG_CHARGER_ISP1704 is not set
+ # CONFIG_CHARGER_MAX8903 is not set
+@@ -5024,7 +5024,7 @@ CONFIG_DRM_PANEL_SIMPLE=y
+ # CONFIG_DRM_PANEL_FEIXIN_K101_IM2BA02 is not set
+ # CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D is not set
+ # CONFIG_DRM_PANEL_ILITEK_IL9322 is not set
+-# CONFIG_DRM_PANEL_ILITEK_ILI9881C is not set
++CONFIG_DRM_PANEL_ILITEK_ILI9881C=y
+ # CONFIG_DRM_PANEL_INNOLUX_P079ZCA is not set
+ CONFIG_DRM_PANEL_JADARD_JD9365DA_H3=y
+ # CONFIG_DRM_PANEL_JDI_LT070ME05000 is not set
+@@ -5624,7 +5624,7 @@ CONFIG_SND_SOC_TS3A227E=y
+ # CONFIG_SND_SOC_WM8804_SPI is not set
+ # CONFIG_SND_SOC_WM8903 is not set
+ # CONFIG_SND_SOC_WM8904 is not set
+-# CONFIG_SND_SOC_WM8960 is not set
++CONFIG_SND_SOC_WM8960=y
+ # CONFIG_SND_SOC_WM8962 is not set
+ # CONFIG_SND_SOC_WM8974 is not set
+ # CONFIG_SND_SOC_WM8978 is not set
+diff --git a/extensions/preset-firstrun.sh b/extensions/preset-firstrun.sh
+index 0c2044144..18167bffa 100644
+--- a/extensions/preset-firstrun.sh
++++ b/extensions/preset-firstrun.sh
+@@ -5,23 +5,23 @@ function post_family_tweaks__preset_configs() {
+ 
+ 	# Enable WiFi or Ethernet.
+ 	#      NB: If both are enabled, WiFi will take priority and Ethernet will be disabled.
+-	echo "PRESET_NET_ETHERNET_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
++#echo "PRESET_NET_ETHERNET_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
+ 	echo "PRESET_NET_WIFI_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	#Enter your WiFi creds
+ 	#      SECURITY WARN: Your wifi keys will be stored in plaintext, no encryption.
+-	echo "PRESET_NET_WIFI_SSID='MySSID'" >> "${SDCARD}"/root/.not_logged_in_yet
+-	echo "PRESET_NET_WIFI_KEY='MyWiFiKEY'" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "PRESET_NET_WIFI_SSID='MyWiFi'" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "PRESET_NET_WIFI_KEY='MyPassWord'" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	#      Country code to enable power ratings and channels for your country. eg: GB US DE | https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+-	echo "PRESET_NET_WIFI_COUNTRYCODE='GB'" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "PRESET_NET_WIFI_COUNTRYCODE='JP'" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	#If you want to use a static ip, set it here
+-	echo "PRESET_NET_USE_STATIC=1" >> "${SDCARD}"/root/.not_logged_in_yet
+-	echo "PRESET_NET_STATIC_IP='192.168.0.100'" >> "${SDCARD}"/root/.not_logged_in_yet
+-	echo "PRESET_NET_STATIC_MASK='255.255.255.0'" >> "${SDCARD}"/root/.not_logged_in_yet
+-	echo "PRESET_NET_STATIC_GATEWAY='192.168.0.1'" >> "${SDCARD}"/root/.not_logged_in_yet
+-	echo "PRESET_NET_STATIC_DNS='8.8.8.8 8.8.4.4'" >> "${SDCARD}"/root/.not_logged_in_yet
++#echo "PRESET_NET_USE_STATIC=1" >> "${SDCARD}"/root/.not_logged_in_yet
++#echo "PRESET_NET_STATIC_IP='192.168.0.100'" >> "${SDCARD}"/root/.not_logged_in_yet
++#echo "PRESET_NET_STATIC_MASK='255.255.255.0'" >> "${SDCARD}"/root/.not_logged_in_yet
++#echo "PRESET_NET_STATIC_GATEWAY='192.168.0.1'" >> "${SDCARD}"/root/.not_logged_in_yet
++#echo "PRESET_NET_STATIC_DNS='8.8.8.8 8.8.4.4'" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset user default shell, you can choose bash or  zsh
+ 	echo "PRESET_USER_SHELL=bash" >> "${SDCARD}"/root/.not_logged_in_yet
+@@ -30,23 +30,23 @@ function post_family_tweaks__preset_configs() {
+ 	echo "PRESET_CONNECT_WIRELESS=n" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Set SET_LANG_BASED_ON_LOCATION=n if you want to choose "Set user language based on your location?" with "n" at first login
+-	echo "SET_LANG_BASED_ON_LOCATION=y" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "SET_LANG_BASED_ON_LOCATION=n" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset default locale
+ 	echo "PRESET_LOCALE=en_US.UTF-8" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset timezone
+-	echo "PRESET_TIMEZONE=Etc/UTC" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "PRESET_TIMEZONE=Asia/Tokyo" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset root password
+ 	echo "PRESET_ROOT_PASSWORD=RootPassword" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset username
+-	echo "PRESET_USER_NAME=armbian" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "PRESET_USER_NAME=retrolite" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset user password
+ 	echo "PRESET_USER_PASSWORD=UserPassword" >> "${SDCARD}"/root/.not_logged_in_yet
+ 
+ 	# Preset user default realname
+-	echo "PRESET_DEFAULT_REALNAME=Armbian" >> "${SDCARD}"/root/.not_logged_in_yet
++	echo "PRESET_DEFAULT_REALNAME='Retro Lite CM5'" >> "${SDCARD}"/root/.not_logged_in_yet
+ }
+diff --git a/lib/functions/artifacts/artifacts-registry.sh b/lib/functions/artifacts/artifacts-registry.sh
+index 7fdb7e30e..4b978c839 100644
+--- a/lib/functions/artifacts/artifacts-registry.sh
++++ b/lib/functions/artifacts/artifacts-registry.sh
+@@ -22,6 +22,7 @@ function armbian_register_artifacts() {
+ 		["armbian-config"]="armbian-config"
+ 		["armbian-zsh"]="armbian-zsh"
+ 		["armbian-plymouth-theme"]="armbian-plymouth-theme"
++		["retrolite-plymouth-theme"]="retrolite-plymouth-theme"
+ 		["armbian-base-files"]="armbian-base-files"
+ 		["armbian-bsp-cli"]="armbian-bsp-cli"
+ 		["armbian-bsp-desktop"]="armbian-bsp-desktop"
+diff --git a/lib/functions/cli/commands.sh b/lib/functions/cli/commands.sh
+index 6cc89a4b7..6650d669a 100644
+--- a/lib/functions/cli/commands.sh
++++ b/lib/functions/cli/commands.sh
+@@ -81,6 +81,7 @@ function armbian_register_commands() {
+ 		["armbian-config"]="artifact"
+ 		["armbian-zsh"]="artifact"
+ 		["armbian-plymouth-theme"]="artifact"
++		["retrolite-plymouth-theme"]="artifact"
+ 		["fake-ubuntu-advantage-tools"]="artifact"
+ 
+ 		["armbian-base-files"]="artifact"
+@@ -141,6 +142,7 @@ function armbian_register_commands() {
+ 		["armbian-config"]="WHAT='armbian-config' ${common_cli_artifact_vars}"
+ 		["armbian-zsh"]="WHAT='armbian-zsh' ${common_cli_artifact_vars}"
+ 		["armbian-plymouth-theme"]="WHAT='armbian-plymouth-theme' ${common_cli_artifact_vars}"
++		["retrolite-plymouth-theme"]="WHAT='retrolite-plymouth-theme' ${common_cli_artifact_vars}"
+ 		["fake-ubuntu-advantage-tools"]="WHAT='fake_ubuntu_advantage_tools' ${common_cli_artifact_vars}"
+ 
+ 		["armbian-base-files"]="WHAT='armbian-base-files' ${common_cli_artifact_vars}"
+diff --git a/lib/functions/main/build-packages.sh b/lib/functions/main/build-packages.sh
+index e00b64f27..d712c6af9 100644
+--- a/lib/functions/main/build-packages.sh
++++ b/lib/functions/main/build-packages.sh
+@@ -44,7 +44,7 @@ function determine_artifacts_to_build_for_image() {
+ 	fi
+ 
+ 	if [[ $PLYMOUTH == yes ]]; then
+-		artifacts_to_build+=("armbian-plymouth-theme")
++		artifacts_to_build+=("retrolite-plymouth-theme")
+ 	fi
+ 
+ 	# Userspace, BOARD+BRANCH specific (not RELEASE)
+diff --git a/lib/functions/rootfs/distro-agnostic.sh b/lib/functions/rootfs/distro-agnostic.sh
+index 12fed5ff1..043fcba43 100644
+--- a/lib/functions/rootfs/distro-agnostic.sh
++++ b/lib/functions/rootfs/distro-agnostic.sh
+@@ -341,7 +341,7 @@ function install_distribution_agnostic() {
+ 
+ 	# install armbian-plymouth-theme
+ 	if [[ $PLYMOUTH == yes ]]; then
+-		install_artifact_deb_chroot "armbian-plymouth-theme"
++		install_artifact_deb_chroot "retrolite-plymouth-theme"
+ 	else
+ 		chroot_sdcard_apt_get_remove --auto-remove plymouth
+ 	fi
+diff --git a/lib/library-functions.sh b/lib/library-functions.sh
+index f970001fa..e9eff5c2e 100644
+--- a/lib/library-functions.sh
++++ b/lib/library-functions.sh
+@@ -51,9 +51,9 @@ source "${SRC}"/lib/functions/artifacts/artifact-armbian-desktop.sh
+ #set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable - one day will be enabled
+ set -o errtrace # trace ERR through - enabled
+ set -o errexit  ## set -e : exit the script if any statement returns a non-true return value - enabled
+-### lib/functions/artifacts/artifact-armbian-plymouth-theme.sh
+-# shellcheck source=lib/functions/artifacts/artifact-armbian-plymouth-theme.sh
+-source "${SRC}"/lib/functions/artifacts/artifact-armbian-plymouth-theme.sh
++### lib/functions/artifacts/artifact-retrolite-plymouth-theme.sh
++# shellcheck source=lib/functions/artifacts/artifact-retrolite-plymouth-theme.sh
++source "${SRC}"/lib/functions/artifacts/artifact-retrolite-plymouth-theme.sh
+ 
+ # no errors tolerated. invoked before each sourced file to make sure.
+ #set -o pipefail  # trace ERR through pipes - will be enabled "soon"
+@@ -438,9 +438,9 @@ source "${SRC}"/lib/functions/compilation/packages/armbian-desktop-deb.sh
+ #set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable - one day will be enabled
+ set -o errtrace # trace ERR through - enabled
+ set -o errexit  ## set -e : exit the script if any statement returns a non-true return value - enabled
+-### lib/functions/compilation/packages/armbian-plymouth-theme-deb.sh
+-# shellcheck source=lib/functions/compilation/packages/armbian-plymouth-theme-deb.sh
+-source "${SRC}"/lib/functions/compilation/packages/armbian-plymouth-theme-deb.sh
++### lib/functions/compilation/packages/retrolite-plymouth-theme-deb.sh
++# shellcheck source=lib/functions/compilation/packages/retrolite-plymouth-theme-deb.sh
++source "${SRC}"/lib/functions/compilation/packages/retrolite-plymouth-theme-deb.sh
+ 
+ # no errors tolerated. invoked before each sourced file to make sure.
+ #set -o pipefail  # trace ERR through pipes - will be enabled "soon"

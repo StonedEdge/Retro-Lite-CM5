@@ -1,0 +1,15 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&i2c8>;
+		__overlay__ {
+			gt9xx: gt9xx@14 {
+				touchscreen-size-x = <1080>;
+				touchscreen-size-y = <1920>;
+			};
+		};
+	};
+};
+
