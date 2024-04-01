@@ -47,8 +47,8 @@ Enclosure files have been uploaded in STL and STEP format [here.](https://github
 v1 Controller PCBs have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/rp2040_gamepad/PCB)
 Please note that you will not be able to assemble the unit with the UART/serial debug components soldered onto the boards, so make sure these aren't populated. 
 
-v1 X2.2 Carrier PCB gerber files have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_v1.0_Gerbers.zip) 
-Note that this iteration has not yet been physically tested, however is on order with the fab house currently, so order at your own risk for now. You have been warned! 
+v1 X2.2 Carrier PCB gerber files have been **removed** due to discovering major flaws in the v1 iteration. 
+I won't upload these until the design is fully tested and completed.  
 
 -------------------------------------------------------------------------------------------------------
 
@@ -70,9 +70,11 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Order v1 Power Management/DisplayPort/USB-C PD test board
 - [x] Design v2 prototype left/right controller PCBs (RP2040 based)
 - [x] Test v1 Power Management/DisplayPort Alternate Mode/USB-C PD test board functionality - works!
-- [x] Design CM5 carrier main board (v1.0.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe
-- [x] Order CM5 carrier board (v1.0.0) with desired fab house. (It's in production!)
-- [ ] Test CM5 carrier board (v1.0.0) hardware for a basic functioning prototype 
+- [x] Design CM5 carrier main board (v1.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe
+- [x] Order CM5 carrier board (v1.0) with desired fab house. (It's in production!)
+- [x] Test CM5 carrier board (v1.0) hardware for a basic functioning prototype
+- [ ] Redesign CM5 carrier board (v1.1) with fixes for 3rd connector polarity & other small fixes
+- [ ] Investigate RK806 PMIC issue
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
 - [x] Test and verify display functionality, including proper backlight & 60 FPS. Verify display works with Armbian 
