@@ -1,20 +1,20 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: John Doe <john.doe@somewhere.on.planet>
-Date: Wed, 20 Mar 2024 11:44:56 +0000
+Date: Mon, 1 Apr 2024 18:06:52 +0100
 Subject: Add dts and defconfig for Retro Lite CM5
 
 Signed-off-by: John Doe <john.doe@somewhere.on.planet>
 ---
- arch/arm/dts/rk3588s-retro-lite-cm5.dts  | 123 ++++++
+ arch/arm/dts/rk3588s-retro-lite-cm5.dts  | 134 ++++++
  configs/retro-lite-cm5-rk3588s_defconfig | 219 ++++++++++
- 2 files changed, 342 insertions(+)
+ 2 files changed, 353 insertions(+)
 
 diff --git a/arch/arm/dts/rk3588s-retro-lite-cm5.dts b/arch/arm/dts/rk3588s-retro-lite-cm5.dts
 new file mode 100644
-index 0000000000..3a1ac34f23
+index 0000000000..0e9c435159
 --- /dev/null
 +++ b/arch/arm/dts/rk3588s-retro-lite-cm5.dts
-@@ -0,0 +1,123 @@
+@@ -0,0 +1,134 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (c) 2024 StonedEdge and GinKage
@@ -28,6 +28,16 @@ index 0000000000..3a1ac34f23
 +	model = "Retro Lite CM5";
 +	compatible = "retro-lite,cm5", "radxa,cm5", "rockchip,rk3588";
 +
++	vcc12v_dcin: vcc12v-dcin {
++		u-boot,dm-pre-reloc;
++		compatible = "regulator-fixed";
++		regulator-name = "vcc12v_dcin";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
 +	vcc5v0_sys: vcc5v0-sys {
 +		u-boot,dm-pre-reloc;
 +		compatible = "regulator-fixed";
@@ -36,6 +46,7 @@ index 0000000000..3a1ac34f23
 +		regulator-boot-on;
 +		regulator-min-microvolt = <5000000>;
 +		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vcc12v_dcin>;
 +	};
 +
 +	adc-keys {
