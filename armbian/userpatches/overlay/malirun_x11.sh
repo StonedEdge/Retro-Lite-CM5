@@ -12,8 +12,8 @@ echo $HASRPATH
 if [ -z $HASRPATH ]
 then
     echo "Running ${APP} on X with libmali"
-    exec $APP $ARGS
+    eval "${@@Q}"
 else
     echo "Running ${APP} on X with libmali using linker"
-    exec /lib/ld-linux-aarch64.so.1 --inhibit-rpath :/usr/lib $APP $ARGS
+    eval "/lib/ld-linux-aarch64.so.1 --inhibit-rpath :/usr/lib ${@@Q}"
 fi
