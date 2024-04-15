@@ -47,7 +47,7 @@ Enclosure files have been uploaded in STL and STEP format [here.](https://github
 v1 Controller PCBs have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/tree/main/rp2040_gamepad/PCB)
 Please note that you will not be able to assemble the unit with the UART/serial debug components soldered onto the boards, so make sure these aren't populated. 
 
-v1 X2.2 Carrier PCB gerber files have been **removed** due to discovering major flaws in the v1 iteration. 
+v1 V2.2 Carrier PCB gerber files have been **removed** due to discovering major flaws in the v1 iteration. 
 I won't upload these until the design is fully tested and completed.  
 
 -------------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ v1 Right Controller PCB BOM have been uploaded [here.](https://github.com/Stoned
 
 v1 Left Controller PCB BOM is coming soon. I want to upload both a top & bottom DPAD version. 
 
-v1 X2.2 Carrier PCB BOM has been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_BOM.csv) 
+v1 V2.2 Carrier PCB BOM has been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_BOM.csv) 
 Note that this has not yet been physically tested, however is on order with the fab house currently, so order at your own risk. You have been warned! 
 
 -------------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Order CM5 carrier board (v1.0) with desired fab house. (It's in production!)
 - [x] Test CM5 carrier board (v1.0) hardware for a basic functioning prototype
 - [ ] Redesign CM5 carrier board (v1.1) with fixes for 3rd connector polarity & other small fixes
-- [ ] Investigate RK806 PMIC issue
+- [x] Investigate RK806 PMIC issue
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
 - [x] Test and verify display functionality, including proper backlight & 60 FPS. Verify display works with Armbian 
@@ -82,7 +82,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Integrate touch/verify via the GT911 controller 
 - [x] Test and verify emulators work correctly with Mali blobs and can be launched via EmulationStation front end
 - [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available (yet!)
-- [x] Write HID controller code for RP2040, based on GP2040-CE. Verify basic gamepad functionality works as intended
+- [x] Write HID controller code for RP2040. Verify basic gamepad functionality works as intended
 - [x] Integrate an IMU into the controller PCB for gyro functionality. Include EKF algorithm (MPU-6050 6-axis IMU) 
 - [x] Redesign housing (increase 3mm in all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
