@@ -74,6 +74,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Order CM5 carrier board (v1.0) with desired fab house. (It's in production!)
 - [x] Test CM5 carrier board (v1.0) hardware for a basic functioning prototype
 - [ ] Redesign CM5 carrier board (v1.1) with fixes for 3rd connector polarity & other small fixes
+- [ ] Reorder v1.1 carrier board
 - [x] Investigate RK806 PMIC issue
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
@@ -90,7 +91,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Power on/power off/sleep mode via ATtiny84 (Power control)
 - [x] Put together a fully functional dts for the CM5 IO Board (Device Tree Source) to understand hardware configuration 
 - [x] MAX17055 integration into device tree 
-- [ ] Prepare reference implementation for launching games via EmulationStation/some form of frontend (likely ES-DE/RetroPie)
+- [x] Prepare reference implementation for launching games via EmulationStation/some form of frontend (likely ES-DE/RetroPie)
 - [ ] Implement an on-screen indicator for volume, brightness control via GPIOs
 - [ ] Create a headphone icon to indicate headphones hotplugged 
 - [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. 
