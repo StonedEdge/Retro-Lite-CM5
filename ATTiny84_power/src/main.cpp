@@ -14,7 +14,7 @@ byte out_power_btn = PIN_PA0; // CM5 Power "button". Active Low
 #define txPin PIN_PB0     // Pin used for Serial transmit
 SoftwareSerial mySerial(rxPin, txPin);
 #else
-byte out_shutdown = PIN_PB0; // Signal to start CM5 Shutdown. Active High
+byte out_shutdown = PIN_PB0; // Signal to start CM5 Shutdown. Active Low
 byte in_shutdown = PIN_PB1;  // Signal from CM5 saying it's shutting down. Active Low
 #endif
 
@@ -98,7 +98,7 @@ void shutdownTimerCheck() {
         shutdownTimerStarted = true;
         shutdownTimer = millis() + shutdownDelay;
 #if (!SERIAL_DEBUG)
-        digitalWrite(out_shutdown, HIGH); // Tell CM5 to shut down
+        digitalWrite(out_shutdown, LOW); // Tell CM5 to shut down
 #endif
 #if TEST_FIXTURE
         digitalWrite(led_shutdown, HIGH);
@@ -109,13 +109,13 @@ void shutdownTimerCheck() {
         shutdownTimerStarted = false;
         digitalWrite(out_power_on, LOW);
 #if (!SERIAL_DEBUG)
-        digitalWrite(out_shutdown, LOW);
+        digitalWrite(out_shutdown, HIGH);
 #endif
 #if TEST_FIXTURE
         digitalWrite(led_power_on, LOW);
         digitalWrite(led_shutdown, LOW);
 #endif
-        powerState = 0;
+        powerState = false;
         shutdownInit = false;
     }
 }
@@ -131,9 +131,8 @@ void powerTimerCheck() {
     else if (millis() > powerBtnTimer) {
         btnTimerStarted = false;
         if (powerState) {
-            powerState = false;
 #if (!SERIAL_DEBUG)
-            digitalWrite(out_shutdown, HIGH);
+            digitalWrite(out_shutdown, LOW);
 #endif
 #if TEST_FIXTURE
             digitalWrite(led_shutdown, HIGH);
@@ -186,7 +185,7 @@ void setup() {
     digitalWrite(out_power_on, LOW);
     digitalWrite(out_power_btn, HIGH);
 #if (!SERIAL_DEBUG)
-    digitalWrite(out_shutdown, LOW);
+    digitalWrite(out_shutdown, HIGH);
 #endif
     digitalWrite(led_vbat_low, LOW);
 #if TEST_FIXTURE
