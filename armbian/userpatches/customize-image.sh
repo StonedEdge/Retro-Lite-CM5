@@ -266,6 +266,7 @@ InstallRetroLite()
     chmod 755 /usr/sbin/boost.sh
     cp /tmp/overlay/powersave.sh /usr/sbin/
     chmod 755 /usr/sbin/powersave.sh
+    sed -i 's/#HandleLidSwitch\(.*\)=.*/HandleLidSwitch\1=poweroff/g' /etc/systemd/logind.conf
     echo -e '\nexport SDL_GAMECONTROLLERCONFIG="03000000feca00000550000000000000,CM5 Gamepad,platform:Linux,a:b1,b:b0,x:b3,y:b2,back:b5,guide:b14,start:b4,leftstick:b12,rightstick:b13,leftshoulder:b11,rightshoulder:b10,dpup:h0.1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:b6,righttrigger:b7"\n' >> /etc/profile
 #cd /opt/RetroPie-Setup
 #__nodialog=1 ./retropie_packages.sh setup basic_install

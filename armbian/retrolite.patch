@@ -1,19 +1,8 @@
 diff --git a/config/kernel/linux-rk35xx-legacy.config b/config/kernel/linux-rk35xx-legacy.config
-index 0c46b8de8..d71a9e338 100644
+index 90d8c2a5e..f17d1e43d 100644
 --- a/config/kernel/linux-rk35xx-legacy.config
 +++ b/config/kernel/linux-rk35xx-legacy.config
-@@ -3086,8 +3086,8 @@ CONFIG_TOUCHSCREEN_GOODIX=y
- CONFIG_TOUCHSCREEN_GSL3673=y
- # CONFIG_TOUCHSCREEN_GSL3673_800X1280 is not set
- # CONFIG_TOUCHSCREEN_GSLX680_PAD is not set
--CONFIG_TOUCHSCREEN_GT1X=y
--CONFIG_TOUCHSCREEN_GT9XX=y
-+# CONFIG_TOUCHSCREEN_GT1X is not set
-+# CONFIG_TOUCHSCREEN_GT9XX is not set
- # CONFIG_TOUCHSCREEN_HIDEEP is not set
- # CONFIG_TOUCHSCREEN_ILI210X is not set
- # CONFIG_TOUCHSCREEN_S6SY761 is not set
-@@ -3662,7 +3662,7 @@ CONFIG_BATTERY_SBS=y
+@@ -3687,7 +3687,7 @@ CONFIG_BATTERY_SBS=y
  # CONFIG_MANAGER_SBS is not set
  # CONFIG_BATTERY_BQ27XXX is not set
  # CONFIG_BATTERY_MAX17040 is not set
@@ -22,19 +11,32 @@ index 0c46b8de8..d71a9e338 100644
  # CONFIG_BATTERY_MAX1721X is not set
  # CONFIG_CHARGER_ISP1704 is not set
  # CONFIG_CHARGER_MAX8903 is not set
-@@ -5024,7 +5024,7 @@ CONFIG_DRM_PANEL_SIMPLE=y
- # CONFIG_DRM_PANEL_FEIXIN_K101_IM2BA02 is not set
- # CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D is not set
- # CONFIG_DRM_PANEL_ILITEK_IL9322 is not set
--# CONFIG_DRM_PANEL_ILITEK_ILI9881C is not set
-+CONFIG_DRM_PANEL_ILITEK_ILI9881C=y
- # CONFIG_DRM_PANEL_INNOLUX_P079ZCA is not set
- CONFIG_DRM_PANEL_JADARD_JD9365DA_H3=y
- # CONFIG_DRM_PANEL_JDI_LT070ME05000 is not set
-@@ -5624,7 +5624,7 @@ CONFIG_SND_SOC_TS3A227E=y
+@@ -5526,7 +5526,7 @@ CONFIG_SND_SOC_TS3A227E=y
  # CONFIG_SND_SOC_WM8804_SPI is not set
  # CONFIG_SND_SOC_WM8903 is not set
  # CONFIG_SND_SOC_WM8904 is not set
+-# CONFIG_SND_SOC_WM8960 is not set
++CONFIG_SND_SOC_WM8960=y
+ # CONFIG_SND_SOC_WM8962 is not set
+ # CONFIG_SND_SOC_WM8974 is not set
+ # CONFIG_SND_SOC_WM8978 is not set
+diff --git a/config/kernel/linux-rk35xx-vendor.config b/config/kernel/linux-rk35xx-vendor.config
+index 446cccd9b..724043eb1 100644
+--- a/config/kernel/linux-rk35xx-vendor.config
++++ b/config/kernel/linux-rk35xx-vendor.config
+@@ -4018,7 +4018,7 @@ CONFIG_BATTERY_SBS=y
+ # CONFIG_MANAGER_SBS is not set
+ # CONFIG_BATTERY_BQ27XXX is not set
+ # CONFIG_BATTERY_MAX17040 is not set
+-# CONFIG_BATTERY_MAX17042 is not set
++CONFIG_BATTERY_MAX17042=y
+ # CONFIG_BATTERY_MAX1721X is not set
+ # CONFIG_CHARGER_ISP1704 is not set
+ # CONFIG_CHARGER_MAX8903 is not set
+@@ -6165,7 +6165,7 @@ CONFIG_SND_SOC_TS3A227E=y
+ # CONFIG_SND_SOC_WM8903 is not set
+ # CONFIG_SND_SOC_WM8904 is not set
+ # CONFIG_SND_SOC_WM8940 is not set
 -# CONFIG_SND_SOC_WM8960 is not set
 +CONFIG_SND_SOC_WM8960=y
  # CONFIG_SND_SOC_WM8962 is not set
@@ -49,7 +51,7 @@ index 0c2044144..18167bffa 100644
  	# Enable WiFi or Ethernet.
  	#      NB: If both are enabled, WiFi will take priority and Ethernet will be disabled.
 -	echo "PRESET_NET_ETHERNET_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
-+#echo "PRESET_NET_ETHERNET_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
++	#echo "PRESET_NET_ETHERNET_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
  	echo "PRESET_NET_WIFI_ENABLED=1" >> "${SDCARD}"/root/.not_logged_in_yet
  
  	#Enter your WiFi creds
@@ -69,11 +71,11 @@ index 0c2044144..18167bffa 100644
 -	echo "PRESET_NET_STATIC_MASK='255.255.255.0'" >> "${SDCARD}"/root/.not_logged_in_yet
 -	echo "PRESET_NET_STATIC_GATEWAY='192.168.0.1'" >> "${SDCARD}"/root/.not_logged_in_yet
 -	echo "PRESET_NET_STATIC_DNS='8.8.8.8 8.8.4.4'" >> "${SDCARD}"/root/.not_logged_in_yet
-+#echo "PRESET_NET_USE_STATIC=1" >> "${SDCARD}"/root/.not_logged_in_yet
-+#echo "PRESET_NET_STATIC_IP='192.168.0.100'" >> "${SDCARD}"/root/.not_logged_in_yet
-+#echo "PRESET_NET_STATIC_MASK='255.255.255.0'" >> "${SDCARD}"/root/.not_logged_in_yet
-+#echo "PRESET_NET_STATIC_GATEWAY='192.168.0.1'" >> "${SDCARD}"/root/.not_logged_in_yet
-+#echo "PRESET_NET_STATIC_DNS='8.8.8.8 8.8.4.4'" >> "${SDCARD}"/root/.not_logged_in_yet
++	#echo "PRESET_NET_USE_STATIC=1" >> "${SDCARD}"/root/.not_logged_in_yet
++	#echo "PRESET_NET_STATIC_IP='192.168.0.100'" >> "${SDCARD}"/root/.not_logged_in_yet
++	#echo "PRESET_NET_STATIC_MASK='255.255.255.0'" >> "${SDCARD}"/root/.not_logged_in_yet
++	#echo "PRESET_NET_STATIC_GATEWAY='192.168.0.1'" >> "${SDCARD}"/root/.not_logged_in_yet
++	#echo "PRESET_NET_STATIC_DNS='8.8.8.8 8.8.4.4'" >> "${SDCARD}"/root/.not_logged_in_yet
  
  	# Preset user default shell, you can choose bash or  zsh
  	echo "PRESET_USER_SHELL=bash" >> "${SDCARD}"/root/.not_logged_in_yet
