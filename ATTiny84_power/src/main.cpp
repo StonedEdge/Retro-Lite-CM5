@@ -2,34 +2,43 @@
 #include "SoftwareSerial.h"
 #include "bq24292i.h"
 
-byte power_btn = PIN_PA2;           // Power button connected to this pin. Low Active
-byte sys_on = PIN_PA1;              // Regulator power. Active High
-byte sht_dwn = PIN_PB0;             // Connected to GPIO25. Signal to start CM5 Shutdown. Active High
-byte low_volt_shutdown = PIN_PB1;   // Connected to GPIO16 on CM5. Used for low voltage shut down
-byte vbat_low = PIN_PB2;            // Low vbat detect pin
-//byte led1 = PIN_PB2;
-//byte led2 = PIN_PA7;
-//byte led3 = PIN_PA5;
+#define TEST_FIXTURE 0
+#define SERIAL_DEBUG 0
 
-//#define rxPin PIN_PB1   // Pin used for Serial receive
-//#define txPin PIN_PB0   // Pin used for Serial transmit
+byte in_power_btn = PIN_PA2;  // Power button connected to this pin. Active Low
+byte out_power_on = PIN_PA1;  // Regulator power. Active High
+byte out_power_btn = PIN_PA0; // CM5 Power "button". Active Low
 
-//SoftwareSerial mySerial(rxPin, txPin);
+#if SERIAL_DEBUG
+#define rxPin PIN_PB1     // Pin used for Serial receive
+#define txPin PIN_PB0     // Pin used for Serial transmit
+SoftwareSerial mySerial(rxPin, txPin);
+#else
+byte out_shutdown = PIN_PB0; // Signal to start CM5 Shutdown. Active High
+byte in_shutdown = PIN_PB1;  // Signal from CM5 saying it's shutting down. Active Low
+#endif
 
-bool lowVoltInState = false;
-bool lastLowVoltInState = false;
-bool systemState = false;
+byte led_vbat_low = PIN_PB2;
+#if TEST_FIXTURE
+byte led_power_on = PIN_PA7;
+byte led_shutdown = PIN_PA5;
+#endif
+
+bool shutdownState = false;
+bool lastShutdownState = false;
+bool powerState = false;
 bool shutdownInit = false;
 
 unsigned long powerBtnTimer;
-unsigned long shutDown;
+unsigned long shutdownTimer;
 long powerOnDelay = 1000;
 long powerOffDelay = 3000;
-long shutDownDelay = 10000;
+long shutdownDelay = 10000;
 bool btnTimerStarted = false;
-bool shutDownTimerStarted = false;
+bool shutdownTimerStarted = false;
+bool lastPowerBtnState = false;
 
-unsigned long lastLowVoltDebounce = 0;
+unsigned long lastShutdownDebounce = 0;
 unsigned long debounceDelay = 50;
 
 uint32_t vBatSum;
@@ -71,32 +80,42 @@ void BQ_INIT() {
     bq24292i_set_batfet_enabled(false);
 }
 
-void lowVoltShutdownDebounce() {
-    bool input = !digitalRead(low_volt_shutdown);
-    if (input != lastLowVoltInState)
-        lastLowVoltDebounce = millis() + debounceDelay;
+bool shutdownDebounce() {
+    bool input = !digitalRead(in_shutdown);
+    if (input != lastShutdownState)
+        lastShutdownDebounce = millis() + debounceDelay;
 
-    if (millis() > lastLowVoltDebounce)
-        lowVoltInState = input;
+    if (millis() > lastShutdownDebounce)
+        shutdownState = input;
 
-    lastLowVoltInState = input;
+    lastShutdownState = input;
+
+    return powerState && (shutdownState || shutdownInit);
 }
 
-void shutdownTimer() {
-    if (!shutDownTimerStarted) {
-        shutDown = millis() + shutDownDelay;
-        shutDownTimerStarted = true;
-        digitalWrite(sht_dwn, HIGH); // Tell CM5 to shut down
-        //digitalWrite(led3, HIGH); // For test fixture
+void shutdownTimerCheck() {
+    if (!shutdownTimerStarted) {
+        shutdownTimerStarted = true;
+        shutdownTimer = millis() + shutdownDelay;
+#if (!SERIAL_DEBUG)
+        digitalWrite(out_shutdown, HIGH); // Tell CM5 to shut down
+#endif
+#if TEST_FIXTURE
+        digitalWrite(led_shutdown, HIGH);
+#endif
         shutdownInit = true;
     }
-    else if (millis() > shutDown) {
-        digitalWrite(sys_on, LOW);
-        digitalWrite(sht_dwn, LOW);
-        //digitalWrite(led2, LOW); // For test fixture
-        //digitalWrite(led3, LOW); // For test fixture
-        systemState = 0;
-        shutDownTimerStarted = false;
+    else if (millis() > shutdownTimer) {
+        shutdownTimerStarted = false;
+        digitalWrite(out_power_on, LOW);
+#if (!SERIAL_DEBUG)
+        digitalWrite(out_shutdown, LOW);
+#endif
+#if TEST_FIXTURE
+        digitalWrite(led_power_on, LOW);
+        digitalWrite(led_shutdown, LOW);
+#endif
+        powerState = 0;
         shutdownInit = false;
     }
 }
@@ -107,32 +126,38 @@ void powerTimerCheck() {
         vBatReadCounter = 0;
         vBatSum = 0;
         powerBtnTimer = millis() +
-            ((systemState == 0) ? powerOnDelay : powerOffDelay);
+            (powerState ? powerOffDelay : powerOnDelay);
     }
     else if (millis() > powerBtnTimer) {
         btnTimerStarted = false;
-        if (systemState) {
-            systemState = false;
-            digitalWrite(sht_dwn, HIGH);
-            // digitalWrite(led3, HIGH); // For test fixture
+        if (powerState) {
+            powerState = false;
+#if (!SERIAL_DEBUG)
+            digitalWrite(out_shutdown, HIGH);
+#endif
+#if TEST_FIXTURE
+            digitalWrite(led_shutdown, HIGH);
+#endif
             shutdownInit = true;
         }
-        else if (readAvgVBAT() > 3200) { // Check battery voltage before allowing sys_on to go high
-            systemState = true;
-            digitalWrite(sys_on, HIGH);
-            // digitalWrite(led2, HIGH); // For test fixture
+        else if (readAvgVBAT() > 3200) { // Check battery voltage before allowing out_power_on to go high
+            powerState = true;
+            digitalWrite(out_power_on, HIGH);
+#if TEST_FIXTURE
+            digitalWrite(led_power_on, HIGH);
+#endif
         }
         else {
-            // Flash LED1 if the user presses the button down during low battery and system off state
+            // Flash LED if the user presses the button down during low battery and system off state
             for (int i = 0; i < 10; i++) {
-                digitalWrite(vbat_low, HIGH);
+                digitalWrite(led_vbat_low, HIGH);
                 delay(250);
-                digitalWrite(vbat_low, LOW);
+                digitalWrite(led_vbat_low, LOW);
                 delay(250);
             }
         }
     }
-    else if (!systemState)
+    else if (!powerState)
         readAvgVBAT();      // Keep reading voltage while button is pressed
 }
 
@@ -142,41 +167,61 @@ void setup() {
     CLKPR = 0x00;           // Clock division factor
     sei();                  // Enable interrupts
 
-    pinMode(power_btn, INPUT_PULLUP);
-    pinMode(sys_on, OUTPUT);
-    pinMode(sht_dwn, OUTPUT);
-    pinMode(low_volt_shutdown, INPUT_PULLUP);
-    pinMode(vbat_low, OUTPUT);
-    //pinMode(led1, OUTPUT);   // For test fixture
-    //pinMode(led2, OUTPUT);   // For test fixture
-    //pinMode(led3, OUTPUT);   // For test fixture
+    pinMode(in_power_btn, INPUT_PULLUP);
+    pinMode(out_power_on, OUTPUT);
+    pinMode(out_power_btn, OUTPUT);
+#if (!SERIAL_DEBUG)
+    pinMode(out_shutdown, OUTPUT);
+    pinMode(in_shutdown, INPUT_PULLUP);
+#endif
+    pinMode(led_vbat_low, OUTPUT);
+#if TEST_FIXTURE
+    pinMode(led_power_on, OUTPUT);
+    pinMode(led_shutdown, OUTPUT);
+#endif
 
     pinMode(A3, INPUT);
     analogReference(INTERNAL);  // Setup the ADC voltage ref as 1.1V
-    digitalWrite(vbat_low, LOW);
-    //digitalWrite(led1, LOW);  // For test fixture
-    //digitalWrite(led2, LOW);  // For test fixture
-    //digitalWrite(led3, LOW);  // For test fixture
+
+    digitalWrite(out_power_on, LOW);
+    digitalWrite(out_power_btn, HIGH);
+#if (!SERIAL_DEBUG)
+    digitalWrite(out_shutdown, LOW);
+#endif
+    digitalWrite(led_vbat_low, LOW);
+#if TEST_FIXTURE
+    digitalWrite(led_power_on, LOW);
+    digitalWrite(led_shutdown, LOW);
+#endif
 
     i2c_master_init();
 
-    // digitalWrite(led1, bq24292i_is_present()); // For test fixture
-
     BQ_INIT();
 
-    //mySerial.begin(9600);
-    //delay(2000);
-    //mySerial.println("SETUP Complete - SoftwareSerial Example");
+#if SERIAL_DEBUG
+    mySerial.begin(9600);
+    delay(2000);
+    mySerial.println("SETUP Complete");
+    if (bq24292i_is_present())
+        mySerial.println("bq24292i is present")
+#endif
 }
 
 void loop() {
-    bool powerBtnState = !digitalRead(power_btn);
-    lowVoltShutdownDebounce();
+    bool powerBtnState = !digitalRead(in_power_btn);
 
-    if (shutdownInit || lowVoltInState)
-        shutdownTimer();
+    if (shutdownDebounce())
+        shutdownTimerCheck();
     else if (powerBtnState)
         powerTimerCheck();
+    else if (lastPowerBtnState && btnTimerStarted) {
+        // User released the power button before timer elapsed, pass it on.
+        digitalWrite(out_power_btn, LOW);
+        delay(200);
+        digitalWrite(out_power_btn, HIGH);
+    }
     else
         btnTimerStarted = false;
+
+    lastPowerBtnState = powerBtnState;
 }
