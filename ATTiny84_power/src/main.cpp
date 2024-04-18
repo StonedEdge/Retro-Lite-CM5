@@ -90,6 +90,12 @@ bool shutdownDebounce() {
 
     lastShutdownState = input;
 
+    if (shutdownState && shutdownTimerStarted) {
+        unsigned long time = millis() + powerOffDelay;
+        if (shutdownTimer > time)
+            shutdownTimer = time;
+    }
+
     return powerState && (shutdownState || shutdownInit);
 }
 
