@@ -129,7 +129,7 @@ bool send_mouse_report()
             tracking_begin();
         }
         else {
-            mpu.setSleepEnabled(false);
+            mpu.setSleepEnabled(true);
             sleep_ms(100);
             tracking_end();
         }
