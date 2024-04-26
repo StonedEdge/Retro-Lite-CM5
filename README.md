@@ -7,13 +7,13 @@
 </div>
 
 
-The Retro Lite CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86.  
+The Retro Lite CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86. It has a relatively large battery (10000mAh) so run time should be excellent, considering it is ARM based. 
 
-Powered by the RK3588s compute module from Radxa, which is an SBC SOM module with an ARMv8 64-bit processor. Features 8 cores/threads - 4 x ARM Cortex-A55/A76 cores with A55 cores clocked at 1.8GHz, and A76 cores clocked at 2.4GHz. 
+Powered by the RK3588s compute module from Radxa, which is an SBC SOM module with an ARMv8 64-bit processor. Features 8 cores/threads - 4 x ARM Cortex-A55/A76 cores with A55 cores clocked at 1.8GHz, and A76 cores clocked at 2.4GHz. It also has a built-in Mali G610 GPU. 
 
 The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via USB Type-C, USB 3.0 & HDMI 2.1. Built-in PCIe WiFI 6.0 & BT 5.2, as well as a new 720p IPS display @ 5.5" with touchscreen support & dual tact trigger buttons for GameCube support, make this a much more viable low-powered ARM SBC gaming PC than the Raspberry Pi 4. 
 
-The operating system will be based on Armbian, with a custom device tree for hardware interfacing & RetroPie pre-installed. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux. Android is currently more performant due to Vulkan drivers however Linux Vulkan blobs should come soon (or someday, who knows). 
+The operating system will be based on Armbian, with a custom device tree for hardware interfacing & RetroPie pre-installed. However, the user can use it however they would like, either in a Linux desktop environment or with other Linux based frontends, such as ES-DE. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux with OpenGLES drivers. Android is currently more performant due to Vulkan drivers, however Linux Vulkan blobs should come soon (or someday, who knows). 
 
 For regular updates/following progress on the build, please check out the forum post here:
 https://bitbuilt.net/forums/index.php?threads/retro-lite-cm5.5815/
@@ -73,8 +73,8 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Design CM5 carrier main board (v1.0) that implements new hardware features, such as DisplayPort, USB3 and PCIe
 - [x] Order CM5 carrier board (v1.0) with desired fab house. (It's in production!)
 - [x] Test CM5 carrier board (v1.0) hardware for a basic functioning prototype
-- [ ] Redesign CM5 carrier board (v1.1) with fixes for 3rd connector polarity & other small fixes
-- [ ] Reorder v1.1 carrier board
+- [x] Redesign CM5 carrier board (v1.1) with fixes for 3rd connector polarity & other small fixes
+- [x] Reorder v1.1 carrier board
 - [x] Investigate RK806 PMIC issue
 - [x] Prepare an Armbian based OS image, including the BSP (bootloader, dtb and kernel) for the RK3588s Armbian rootfs. DTB should include the ILI9881C/WM8960 drivers
 - [x] Integrate new 5.5 inch MIPI DSI display. This includes enabling the ILI9881C display driver, device tree customizations for the display
@@ -92,7 +92,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Put together a fully functional dts for the CM5 IO Board (Device Tree Source) to understand hardware configuration 
 - [x] MAX17055 integration into device tree 
 - [x] Prepare reference implementation for launching games via EmulationStation/some form of frontend (likely ES-DE/RetroPie)
-- [ ] Implement an on-screen indicator for volume, brightness control via GPIOs
+- [x] Implement an on-screen indicator for volume, brightness control via GPIOs
 - [ ] Create a headphone icon to indicate headphones hotplugged 
 - [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. 
 - [ ] Other optimizations/improvements/bug fixes
