@@ -85,7 +85,9 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Setup Mali Open GL blob drivers to work with PS2 (AetherSX2) & GC (Dolphin) emulators due to no Vulkan backend available (yet!)
 - [x] Write HID controller code for RP2040. Verify basic gamepad functionality works as intended
 - [x] Integrate an IMU into the controller PCB for gyro functionality. Include EKF algorithm (MPU-6050 6-axis IMU) 
-- [x] Redesign housing (increase 3mm in all directions) in Solidworks. Improve trigger feel and add battery mounting bracket 
+- [x] Redesign housing (increase 3mm in all directions) in Solidworks. Improve trigger feel and add battery mounting bracket
+- [ ] Redesign housing v2 (increase thickness to accomodate 10000mAh battery cell at 3.8v, mount battery and fan to front housing)
+- [ ] Adjust BQ24292i registers to charge to 4.35v max instead of 4.2v due to using LiHv cell
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
 - [x] Power on/power off/sleep mode via ATtiny84 (Power control)
