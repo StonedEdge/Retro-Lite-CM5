@@ -1,0 +1,1 @@
+v1 STLs include files used for the v1 alpha build. The design has a few things mounted to the rear shell which were improved in v1 (i.e the battery, fan and volume/power flex board). v1 uses a 5000mAh battery, whereas v2 has upgraded to a 10000mAh battery and has no components mounted to the rear shell.  
