@@ -3,17 +3,20 @@
 </div>
 
 <div align="center">
-  <img src="https://i.imgur.com/VhgvOEU.png" alt="Image of Retro Lite CM5">
+  <img src="https://i.imgur.com/v9KPeW5.png" alt="Image of Retro Lite CM5">
 </div>
 
+<div align="center">
+  <img src="https://i.imgur.com/daHOwZD.png" alt="Image of Retro Lite CM5">
+</div>
 
-The Retro Lite CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86. It has a relatively large battery (10000mAh) so run time should be excellent, considering it is ARM based. 
+The Retro Lite CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86. It has a relatively large battery so run time should be excellent, considering it is ARM based. 
 
 Powered by the RK3588s compute module from Radxa, which is an SBC SOM module with an ARMv8 64-bit processor. Features 8 cores/threads - 4 x ARM Cortex-A55/A76 cores with A55 cores clocked at 1.8GHz, and A76 cores clocked at 2.4GHz. It also has a built-in Mali G610 GPU. 
 
 The Retro Lite CM5 offers a more modern gaming experience with DisplayPort via USB Type-C, USB 3.0 & HDMI 2.1. Built-in PCIe WiFI 6.0 & BT 5.2, as well as a new 720p IPS display @ 5.5" with touchscreen support & dual tact trigger buttons for GameCube support, make this a much more viable low-powered ARM SBC gaming PC than the Raspberry Pi 4. 
 
-The operating system will be based on Armbian, with a custom device tree for hardware interfacing & RetroPie pre-installed. However, the user can use it however they would like, either in a Linux desktop environment or with other Linux based frontends, such as ES-DE. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux with OpenGLES drivers. Android is currently more performant due to Vulkan drivers, however Linux Vulkan blobs should come soon (or someday, who knows). 
+The operating system will be based on Armbian, with a custom device tree for hardware interfacing & RetroPie pre-installed. However, the user can use it however they would like, either in a Linux desktop environment or with other Linux based frontends, such as ES-DE. This handheld should be able to play the entire PS2 library at least 1x native resolution for all games, as well as GameCube at 1x on Linux with OpenGLES drivers. Android is currently more performant due to Vulkan drivers, however Linux Vulkan blobs should come soon (or someday, who knows). We also now have succesfully compiled ROCKNIX as well, so that will be an option to use as well. 
 
 For regular updates/following progress on the build, please check out the forum post here:
 https://bitbuilt.net/forums/index.php?threads/retro-lite-cm5.5815/
@@ -86,7 +89,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Write HID controller code for RP2040. Verify basic gamepad functionality works as intended
 - [x] Integrate an IMU into the controller PCB for gyro functionality. Include EKF algorithm (MPU-6050 6-axis IMU) 
 - [x] Redesign housing (increase 3mm in all directions) in Solidworks. Improve trigger feel and add battery mounting bracket
-- [ ] Redesign housing v2 (increase thickness to accomodate 10000mAh battery cell at 3.8v, mount battery and fan to front housing)
+- [x] Redesign housing v2 (increase thickness to accomodate 6Ah battery cell at 3.8v, mount battery and fan to front housing)
 - [ ] Adjust BQ24292i registers to charge to 4.35v max instead of 4.2v due to using LiHv cell
 - [x] Redesign housing with injection molding in mind - include appropriate draft angles, ribs, gussets, radiused corners & bosses
 - [x] Redesign housing to use original switch lite fan enclosure 
@@ -96,7 +99,7 @@ Note that this has not yet been physically tested, however is on order with the 
 - [x] Prepare reference implementation for launching games via EmulationStation/some form of frontend (likely ES-DE/RetroPie)
 - [x] Implement an on-screen indicator for volume, brightness control via GPIOs
 - [ ] Create a headphone icon to indicate headphones hotplugged 
-- [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. 
+- [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. (Maybe we bit off more than we could chew here). 
 - [ ] Other optimizations/improvements/bug fixes
 - [ ] Create prototype showcase video for YouTube
 - [ ] Final GitHub open source release & announcement!
