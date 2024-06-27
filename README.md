@@ -41,13 +41,14 @@ Arm Mali-G610 MP4 “Odin” GPU Video decoder – 8Kp60 H.265, VP9, AVS2, 8Kp30
 - USB 2.0/3.1 capable USB-C data transfer
 - USB-C dual role port functionality (sink/source)
 - Brightness and volume HUD adjustment. Brightness is adjusted by holding plus hotkey + down/up. Volume controlled either by volume buttons or plus hotkey + left right DPAD
-- USB-C PD sink profiles supporting 5V/3A, 9V/3A, 12V/2A & 15V/2.6A (switch charger) via TPS65987D PD controller (see binary in TPS65987D folder
+- USB-C PD charging support via sink profiles supporting 5V/3A, 9V/3A, 12V/2A & 15V/2.6A (switch charger) via TPS65987D PD controller (see binary in TPS65987D folder). Recommended to use <12V for best charge and play performacne 
 - Stereo Audio Output via i2s. Dual stereo speakers with ported chambers
 - Headphone jack, with automatic switching
 - 5000mAh lipo, providing around 1.5-5 hours of gameplay depending on load (to be upgraded soon to >8000mAh)
 - Dual stacked shoulder buttons (L, R, LZ, RZ) with dual tact buttons for GameCube functionality (LR analog/LR digital)
 - 2x hall effect analog sticks running at 3v3
 - Resin casted ABXY, DPAD, start+select, shoulder buttons
+- Silicone membranes for nice button feel 
 
 Software specifications:
 
