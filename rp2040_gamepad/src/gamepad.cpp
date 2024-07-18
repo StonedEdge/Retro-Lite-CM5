@@ -2,6 +2,7 @@
 #include "hardware/adc.h"
 #include "hardware/flash.h"
 #include "pico/stdlib.h"
+#include "pico/bootrom.h"
 #include <algorithm>
 
 #define PIN_A 0
@@ -320,7 +321,12 @@ bool send_gamepad_report()
             calibrationStep = 1;
             calibrationMode = true;
         }
-        else if (memcmp(&lastState, &joystick, sizeof(joystick))) {
+        else if (buttonState[BTN_HOTKEY_PLUS] && buttonState[BTN_HOTKEY_MINUS]
+                && buttonState[BTN_SELECT] && buttonState[BTN_START]) {
+            // Ctrl+Alt+Del
+            reset_usb_boot(0, 0);
+        }
+        else if (memcmp(&lastState, &joystick, sizeof(joystick)) && !buttonState[BTN_R3]) {
             tud_hid_report(REPORT_ID_GAMEPAD, &joystick, sizeof(joystick));
             lastState = joystick;
             return true;
