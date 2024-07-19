@@ -262,6 +262,8 @@ InstallRetroLite()
     chmod 755 /usr/sbin/malirunW
     cp /tmp/overlay/malirun_x11.sh /usr/sbin/malirunX
     chmod 755 /usr/sbin/malirunX
+    cp /tmp/overlay/malirun.sh /usr/sbin/malirun
+    chmod 755 /usr/sbin/malirun
     cp /tmp/overlay/boost.sh /usr/sbin/
     chmod 755 /usr/sbin/boost.sh
     cp /tmp/overlay/powersave.sh /usr/sbin/
