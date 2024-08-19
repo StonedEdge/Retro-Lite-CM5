@@ -23,7 +23,7 @@ index 75a4d8d6bb0f..3a4914e8ef24 100644
  			suffix = "Wireless Radio Control";
  			break;
 +		case HID_GD_MULTIAXIS:
-+			if ((hid->vendor == 0x2341 && hid->product == 0x8037) || (hid->vendor == 0xcafe && hid->product == 0x5004)) {
++			if ((hid->vendor == 0x2341 && hid->product == 0x8037) || (hid->vendor == 0xcafe && hid->product == 0x5005)) {
 +				// __set_bit(EV_MSC, input_dev->evbit);
 +				// __set_bit(MSC_TIMESTAMP, input_dev->mscbit);
 +				__set_bit(INPUT_PROP_ACCELEROMETER, input_dev->propbit);
