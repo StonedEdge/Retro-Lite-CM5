@@ -118,12 +118,12 @@ The board has been verified and fully functional with Radxa V2.2 CM5 modules! I 
 - [x] MAX17055 integration into device tree 
 - [x] Prepare reference implementation for launching games via EmulationStation/some form of frontend (likely ES-DE/RetroPie)
 - [x] Implement an on-screen indicator for volume, brightness control via GPIOs
-- [ ] Main Boss: The Ultimate Menu Mode! Toggle gyro, adjust brightness, adjust volume, and some other cool stuff. Courtesy of GinKage. (Maybe we bit off more than we could chew here).
 - [x] Rocknix upstream support
+- [x] Android 13 support 
 - [ ] Adjust BQ24292i registers to charge to 4.35v max instead of 4.2v due to using LiHv cell
-- [ ] Other optimizations/improvements/bug fixes
-- [ ] Create prototype showcase video for YouTube
-- [ ] Final GitHub open source release & announcement!
+- [x] Other optimizations/improvements/bug fixes
+- [x] Create prototype showcase video for YouTube
+- [x] Final GitHub open source release & announcement!
 
 -------------------------------------------------------------------------------------------------------
 
