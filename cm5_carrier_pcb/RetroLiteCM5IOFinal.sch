@@ -52990,7 +52990,7 @@ Based on the following source:
 <part name="U$64" library="LCD Driver" deviceset="VSYS" device=""/>
 <part name="NEXTRST" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="GPIO14_HPD" library="testpad" deviceset="TP" device="TP07R"/>
-<part name="GPIO1_B1_V-" library="testpad" deviceset="TP" device="TP07R"/>
+<part name="GPIO0_C2_V+" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="U21" library="TPS65987DDHRSHR" deviceset="TPS65987DDHRSHR" device=""/>
 <part name="U23" library="TUSB546-DCIRNQT" deviceset="TUSB546-DCIRNQT" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
@@ -53258,7 +53258,7 @@ Based on the following source:
 <part name="R90" library="rcl" deviceset="R-EU_" device="R0402" package3d_urn="urn:adsk.eagle:package:23547/3" value="10K"/>
 <part name="P+17" library="supply1" deviceset="VCC" device=""/>
 <part name="GND108" library="supply1" deviceset="GND" device=""/>
-<part name="GPIO0_C2_V+" library="testpad" deviceset="TP" device="TP07R"/>
+<part name="GPIO1_B1_V-" library="testpad" deviceset="TP" device="TP07R"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0402-YVELTAL" package3d_urn="urn:adsk.eagle:package:2745540/2" value="100nF"/>
 <part name="C78" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="10uF"/>
 <part name="GND109" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -53551,7 +53551,7 @@ GPIO4_D0 to D5</text>
 <instance part="GPIO14_HPD" gate="G$1" x="426.72" y="292.1" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="427.99" y="293.37" size="1.778" layer="97" rot="R90"/>
 </instance>
-<instance part="GPIO1_B1_V-" gate="G$1" x="426.72" y="297.18" smashed="yes" rot="R90">
+<instance part="GPIO0_C2_V+" gate="G$1" x="426.72" y="297.18" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="427.99" y="298.45" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="CONNECTOR3" gate="G$1" x="452.12" y="467.36" smashed="yes" rot="MR180">
@@ -53879,7 +53879,7 @@ GPIO4_D0 to D5</text>
 <instance part="GND108" gate="1" x="828.04" y="208.28" smashed="yes">
 <attribute name="VALUE" x="825.5" y="205.74" size="1.778" layer="96" font="vector"/>
 </instance>
-<instance part="GPIO0_C2_V+" gate="G$1" x="426.72" y="281.94" smashed="yes" rot="R90">
+<instance part="GPIO1_B1_V-" gate="G$1" x="426.72" y="281.94" smashed="yes" rot="R90">
 <attribute name="TP_SIGNAL_NAME" x="427.99" y="283.21" size="1.778" layer="97" rot="R90"/>
 </instance>
 <instance part="WIFI_PWR_EN" gate="G$1" x="396.24" y="287.02" smashed="yes" rot="R90">
@@ -55404,7 +55404,7 @@ GPIO4_D0 to D5</text>
 <pinref part="CONNECTOR3" gate="G$1" pin="7"/>
 </segment>
 <segment>
-<pinref part="GPIO0_C2_V+" gate="G$1" pin="TP"/>
+<pinref part="GPIO1_B1_V-" gate="G$1" pin="TP"/>
 <label x="431.8" y="281.94" size="1.778" layer="95" font="vector"/>
 <wire x1="429.26" y1="281.94" x2="439.42" y2="281.94" width="0.1524" layer="91"/>
 </segment>
@@ -55774,6 +55774,11 @@ GPIO4_D0 to D5</text>
 <label x="396.24" y="449.58" size="1.778" layer="95" font="vector"/>
 <pinref part="CONNECTOR3" gate="G$1" pin="35"/>
 </segment>
+<segment>
+<wire x1="728.98" y1="144.78" x2="751.84" y2="144.78" width="0.1524" layer="91"/>
+<label x="744.22" y="144.78" size="1.778" layer="95" font="vector" rot="MR180"/>
+<pinref part="J12" gate="A" pin="19"/>
+</segment>
 </net>
 <net name="USB20_HOST0_D_P" class="13">
 <segment>
@@ -55785,6 +55790,11 @@ GPIO4_D0 to D5</text>
 <wire x1="439.42" y1="452.12" x2="406.4" y2="452.12" width="0.1524" layer="91"/>
 <label x="396.24" y="452.12" size="1.778" layer="95" font="vector"/>
 <pinref part="CONNECTOR3" gate="G$1" pin="37"/>
+</segment>
+<segment>
+<wire x1="728.98" y1="142.24" x2="751.84" y2="142.24" width="0.1524" layer="91"/>
+<label x="744.22" y="142.24" size="1.778" layer="95" font="vector" rot="MR180"/>
+<pinref part="J12" gate="A" pin="18"/>
 </segment>
 </net>
 <net name="CM5_3.3V(OUTPUT)" class="0">
@@ -56472,22 +56482,12 @@ GPIO4_D0 to D5</text>
 <label x="243.84" y="525.78" size="1.778" layer="95" font="vector" rot="R180"/>
 <wire x1="271.78" y1="525.78" x2="246.38" y2="525.78" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<wire x1="728.98" y1="144.78" x2="751.84" y2="144.78" width="0.1524" layer="91"/>
-<label x="744.22" y="144.78" size="1.778" layer="95" font="vector" rot="MR180"/>
-<pinref part="J12" gate="A" pin="19"/>
-</segment>
 </net>
 <net name="TYPEC0_OTG_P" class="1">
 <segment>
 <pinref part="CONNECTOR2" gate="G$1" pin="5"/>
 <wire x1="271.78" y1="523.24" x2="246.38" y2="523.24" width="0.1524" layer="91"/>
 <label x="243.84" y="523.24" size="1.778" layer="95" font="vector" rot="R180"/>
-</segment>
-<segment>
-<wire x1="728.98" y1="142.24" x2="751.84" y2="142.24" width="0.1524" layer="91"/>
-<label x="744.22" y="142.24" size="1.778" layer="95" font="vector" rot="MR180"/>
-<pinref part="J12" gate="A" pin="18"/>
 </segment>
 </net>
 <net name="PCIE20X1_2_PERSTN_M0" class="0">
@@ -57479,7 +57479,7 @@ GPIO4_D0 to D5</text>
 </net>
 <net name="GPIO1_B1" class="0">
 <segment>
-<pinref part="GPIO1_B1_V-" gate="G$1" pin="TP"/>
+<pinref part="GPIO0_C2_V+" gate="G$1" pin="TP"/>
 <label x="431.8" y="297.18" size="1.778" layer="95" font="vector"/>
 <wire x1="429.26" y1="297.18" x2="439.42" y2="297.18" width="0.1524" layer="91"/>
 </segment>
@@ -61907,30 +61907,6 @@ SPI Mode</text>
 <pinref part="U16" gate="G$1" pin="FB"/>
 </segment>
 </net>
-<net name="USB20_HOST0_D_N" class="13">
-<segment>
-<pinref part="J7" gate="G$1" pin="D2-"/>
-<wire x1="139.7" y1="535.94" x2="147.32" y2="535.94" width="0.1524" layer="91"/>
-<wire x1="147.32" y1="535.94" x2="147.32" y2="541.02" width="0.1524" layer="91"/>
-<pinref part="J7" gate="G$1" pin="D1-"/>
-<wire x1="147.32" y1="541.02" x2="139.7" y2="541.02" width="0.1524" layer="91"/>
-<label x="147.32" y="535.94" size="1.778" layer="95" font="vector"/>
-<wire x1="147.32" y1="535.94" x2="154.94" y2="535.94" width="0.1524" layer="91"/>
-<junction x="147.32" y="535.94"/>
-</segment>
-</net>
-<net name="USB20_HOST0_D_P" class="13">
-<segment>
-<pinref part="J7" gate="G$1" pin="D1+"/>
-<wire x1="139.7" y1="543.56" x2="144.78" y2="543.56" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="543.56" x2="144.78" y2="538.48" width="0.1524" layer="91"/>
-<pinref part="J7" gate="G$1" pin="D2+"/>
-<wire x1="144.78" y1="538.48" x2="139.7" y2="538.48" width="0.1524" layer="91"/>
-<label x="147.32" y="543.56" size="1.778" layer="95" font="vector"/>
-<wire x1="144.78" y1="543.56" x2="154.94" y2="543.56" width="0.1524" layer="91"/>
-<junction x="144.78" y="543.56"/>
-</segment>
-</net>
 <net name="EINT_CTP1" class="0">
 <segment>
 <pinref part="J10" gate="A" pin="3"/>
@@ -61996,6 +61972,30 @@ SPI Mode</text>
 <wire x1="495.3" y1="441.96" x2="518.16" y2="441.96" width="0.1524" layer="91"/>
 <junction x="518.16" y="441.96"/>
 <pinref part="R60" gate="G$1" pin="2"/>
+</segment>
+</net>
+<net name="TYPEC0_OTG_N" class="1">
+<segment>
+<pinref part="J7" gate="G$1" pin="D2-"/>
+<wire x1="139.7" y1="535.94" x2="147.32" y2="535.94" width="0.1524" layer="91"/>
+<wire x1="147.32" y1="535.94" x2="147.32" y2="541.02" width="0.1524" layer="91"/>
+<pinref part="J7" gate="G$1" pin="D1-"/>
+<wire x1="147.32" y1="541.02" x2="139.7" y2="541.02" width="0.1524" layer="91"/>
+<label x="147.32" y="535.94" size="1.778" layer="95" font="vector"/>
+<wire x1="147.32" y1="535.94" x2="154.94" y2="535.94" width="0.1524" layer="91"/>
+<junction x="147.32" y="535.94"/>
+</segment>
+</net>
+<net name="TYPEC0_OTG_P" class="1">
+<segment>
+<pinref part="J7" gate="G$1" pin="D1+"/>
+<wire x1="139.7" y1="543.56" x2="144.78" y2="543.56" width="0.1524" layer="91"/>
+<wire x1="144.78" y1="543.56" x2="144.78" y2="538.48" width="0.1524" layer="91"/>
+<pinref part="J7" gate="G$1" pin="D2+"/>
+<wire x1="144.78" y1="538.48" x2="139.7" y2="538.48" width="0.1524" layer="91"/>
+<label x="147.32" y="543.56" size="1.778" layer="95" font="vector"/>
+<wire x1="144.78" y1="543.56" x2="154.94" y2="543.56" width="0.1524" layer="91"/>
+<junction x="144.78" y="543.56"/>
 </segment>
 </net>
 </nets>
