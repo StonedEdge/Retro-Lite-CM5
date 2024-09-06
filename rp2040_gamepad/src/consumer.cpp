@@ -2,6 +2,16 @@
 
 static uint16_t lastKey = 0;
 
+uint16_t get_consumer_report(uint8_t* buffer, uint16_t reqlen)
+{
+    if (reqlen >= 2) {
+        *(uint16_t*)buffer = 0;
+        return 2;
+    }
+
+    return 0;
+}
+
 bool send_consumer_report()
 {
     // Poll every 10ms

@@ -38,7 +38,6 @@ uint8_t dpadPins[4] = { PIN_D_UP, PIN_D_RIGHT, PIN_D_DOWN, PIN_D_LEFT };
 // Button state arrays
 bool dpadPinState[4];
 bool buttonState[buttonCount];
-bool newButtonState[buttonCount];
 
 const int joystickPins[4] = { 26, 27, 28, 29 };
 
@@ -47,7 +46,7 @@ const int joystickPins[4] = { 26, 27, 28, 29 };
 bool invertOutput[4] = { true, true, false, false };
 
 // Joystick deadband settings. Deadband is the same for both axis on each joystick.
-int axisDeadband[4] = { 40, 40, 40, 40 };
+int axisDeadband[4] = { 64, 64, 64, 64 };
 
 // Distance from end of travel to achieve full axis movement.
 // This helps square out each axis response to allow full movement speed with direction input.
@@ -115,12 +114,18 @@ void buttonRead()
 
 void joypadButtons()
 { // Set joystick buttons for USB output
-    for (int i = 0; i < buttonCount; i++) {
-        if (newButtonState[i] != buttonState[i]) {
-            joystick.buttons = (joystick.buttons & ~(1 << i)) | ((uint32_t)buttonState[i] << i);
-            newButtonState[i] = buttonState[i];
-        }
-    }
+    uint32_t buttons = 0;
+    for (int i = 0; i < buttonCount; i++)
+        buttons |= ((uint32_t)buttonState[i] << i);
+    joystick.buttons = buttons;
+}
+
+bool checkButtons()
+{
+    for (int i = 0; i < buttonCount; i++)
+        if (!gpio_get(buttonPins[i]))
+            return true;
+    return false;
 }
 
 void dPadInput()
@@ -297,6 +302,16 @@ void gamepad_init()
     readJoystickConfig(); // Check for stored joystick settings and load if applicable.
 }
 
+uint16_t get_gamepad_report(uint8_t* buffer, uint16_t reqlen)
+{
+    if (reqlen >= sizeof(joystick)) {
+        memcpy(buffer, &joystick, sizeof(joystick));
+        return sizeof(joystick);
+    }
+
+    return 0;
+}
+
 bool send_gamepad_report()
 {
     // Poll every 5ms
@@ -326,7 +341,7 @@ bool send_gamepad_report()
             // Ctrl+Alt+Del
             reset_usb_boot(0, 0);
         }
-        else if (memcmp(&lastState, &joystick, sizeof(joystick)) && !buttonState[BTN_R3]) {
+        else if (memcmp(&lastState, &joystick, sizeof(joystick)) && !buttonState[BTN_HOTKEY_PLUS]) {
             tud_hid_report(REPORT_ID_GAMEPAD, &joystick, sizeof(joystick));
             lastState = joystick;
             return true;

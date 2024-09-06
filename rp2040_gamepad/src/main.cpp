@@ -15,6 +15,14 @@ bool send_consumer_report();
 bool send_gamepad_report();
 bool send_multiaxis_report();
 
+uint16_t get_keyboard_report(uint8_t* buffer, uint16_t reqlen);
+uint16_t get_mouse_report(uint8_t* buffer, uint16_t reqlen);
+uint16_t get_consumer_report(uint8_t* buffer, uint16_t reqlen);
+uint16_t get_gamepad_report(uint8_t* buffer, uint16_t reqlen);
+uint16_t get_multiaxis_report(uint8_t* buffer, uint16_t reqlen);
+
+static uint8_t kbd_leds = 0;
+
 // Invoked when device is mounted
 void tud_mount_cb(void) { }
 
@@ -69,15 +77,18 @@ static void send_hid_report(uint8_t report_id)
     }
 }
 
-// Every 10ms, we will sent 1 report for each HID profile (keyboard, mouse etc ..)
+// Every 10ms, we will send 1 report for each HID profile (keyboard, mouse etc ..)
 // tud_hid_report_complete_cb() is used to send the next report after previous one is complete
 void hid_task(void)
 {
     // Remote wakeup
-    if (tud_suspended() && joystick.buttons) {
+    if (tud_suspended()) {
         // Wake up host if we are in suspend mode
         // and REMOTE_WAKEUP feature is enabled by host
-        tud_remote_wakeup();
+        if (checkButtons())
+            tud_remote_wakeup();
+        else
+            sleep_ms(10);
     } else {
         // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
         send_hid_report(REPORT_ID_KEYBOARD);
@@ -105,12 +116,35 @@ void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_
 uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type,
     uint8_t* buffer, uint16_t reqlen)
 {
-    // TODO not Implemented
     (void)instance;
-    (void)report_id;
-    (void)report_type;
-    (void)buffer;
-    (void)reqlen;
+
+    if (report_type == HID_REPORT_TYPE_OUTPUT) {
+        if (report_id == REPORT_ID_KEYBOARD && reqlen >= 1) {
+            buffer[0] = kbd_leds;
+            return 1;
+        }
+        return 0;
+    }
+
+    switch (report_id) {
+    case REPORT_ID_KEYBOARD:
+        return get_keyboard_report(buffer, reqlen);
+
+    case REPORT_ID_MOUSE:
+        return get_mouse_report(buffer, reqlen);
+
+    case REPORT_ID_CONSUMER_CONTROL:
+        return get_consumer_report(buffer, reqlen);
+
+    case REPORT_ID_GAMEPAD:
+        return get_gamepad_report(buffer, reqlen);
+
+    case REPORT_ID_MULTI_AXIS:
+        return get_multiaxis_report(buffer, reqlen);
+
+    default:
+        break;
+    }
 
     return 0;
 }
@@ -129,7 +163,7 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             if (bufsize < 1)
                 return;
 
-            uint8_t const kbd_leds = buffer[0];
+            kbd_leds = buffer[0];
 
             if (kbd_leds & KEYBOARD_LED_CAPSLOCK) {
                 // Capslock On
