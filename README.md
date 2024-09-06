@@ -130,9 +130,7 @@ The board has been verified and fully functional with Radxa V2.2 CM5 modules! I 
 ### Frequently Asked Questions (FAQ) 
 Q: How can I get my hand on a Retro Lite CM5? Do you sell them or will you sell them?
 
-A: We are currently in discussions with Radxa Ltd to mass produce this device. You can follow Radxa's twitter or my own in order to get updates:
-https://twitter.com/RadxaComputer
-https://twitter.com/StonedEdgeMods
+A: Radxa have advised that **this device will not be mass produced**. There is no method to get your hands on one of these at this time. 
 
 Q: Why dont you use an OLED screen? 
 
