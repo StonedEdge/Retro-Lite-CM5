@@ -130,8 +130,9 @@ The board has been verified and fully functional with Radxa V2.2 CM5 modules! I 
 ### Frequently Asked Questions (FAQ) 
 Q: How can I get my hand on a Retro Lite CM5? Do you sell them or will you sell them?
 
-A: The handheld is still in the design phase and is not ready to be sold. I won't rule out selling these in the future as they are a lot easier to make than the previous CM4 version, especially with 3D printing becoming an option now.
-We'll see where it takes us! And besides, the Radxa CM5 SOM still isn't even available to the general public yet for sale. The benefit of open source is to learn to DIY. I do agree though that a bulk buy makes more sense to reduce the costs of production. 
+A: We are currently in discussions with Radxa Ltd to mass produce this device. You can follow Radxa's twitter or my own in order to get updates:
+https://twitter.com/RadxaComputer
+https://twitter.com/StonedEdgeMods
 
 Q: Why dont you use an OLED screen? 
 

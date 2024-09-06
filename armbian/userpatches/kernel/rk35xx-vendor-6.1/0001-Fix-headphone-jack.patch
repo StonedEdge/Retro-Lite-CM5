@@ -1,0 +1,25 @@
+From adda2dba51d6b7cbbe6a14c622ff25a5295448cc Mon Sep 17 00:00:00 2001
+From: Ivan Podogov <ginkage@yandex.ru>
+Date: Mon, 8 Jul 2024 10:22:28 +0100
+Subject: [PATCH] Retro Lite CM5: Fix headphone detection
+
+---
+ sound/soc/generic/simple-card-utils.c         |  2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 8811321717fb..28ef1f0e2888 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -757,7 +757,7 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
+ 
+ 	if (is_hp) {
+ 		snprintf(prop, sizeof(prop), "%shp-det", prefix);
+-		pin_name	= pin ? pin : "Headphones";
++		pin_name	= pin ? pin : "Headphone Jack";
+ 		gpio_name	= "Headphone detection";
+ 		mask		= SND_JACK_HEADPHONE;
+ 	} else {
+-- 
+2.34.1
+
