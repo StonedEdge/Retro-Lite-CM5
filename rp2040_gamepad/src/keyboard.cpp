@@ -61,6 +61,16 @@ void menuMode()
     }
 }
 
+uint16_t get_keyboard_report(uint8_t* buffer, uint16_t reqlen)
+{
+    if (reqlen >= 6) {
+        memset(buffer, 0, 6);
+        return 6;
+    }
+
+    return 0;
+}
+
 bool send_keyboard_report()
 {
     // Poll every 10ms

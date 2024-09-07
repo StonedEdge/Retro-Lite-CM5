@@ -111,6 +111,24 @@ void mouse_cb(int8_t x, int8_t y) {
     tud_hid_mouse_report(REPORT_ID_MOUSE, mouseButtons, x, y, 0, 0);
 }
 
+uint16_t get_mouse_report(uint8_t* buffer, uint16_t reqlen)
+{
+    hid_mouse_report_t report = {
+        .buttons = (uint8_t)(buttonState[BTN_L1] | (buttonState[BTN_R1] << 1)),
+        .x       = 0,
+        .y       = 0,
+        .wheel   = 0,
+        .pan     = 0
+    };
+
+    if (reqlen >= sizeof(report)) {
+        memcpy(buffer, &report, sizeof(report));
+        return sizeof(report);
+    }
+
+    return 0;
+}
+
 bool send_mouse_report()
 {
     // Poll every 10ms
@@ -154,6 +172,16 @@ bool send_mouse_report()
     // mouseControl();
 
     return true;
+}
+
+uint16_t get_multiaxis_report(uint8_t* buffer, uint16_t reqlen)
+{
+    if (reqlen >= 12) {
+        memcpy(buffer, g_imu, 12);
+        return 12;
+    }
+
+    return 0;
 }
 
 bool send_multiaxis_report()

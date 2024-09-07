@@ -60,6 +60,7 @@ extern bool dpadPinState[4];
 
 int8_t mapJoystick(int axis);
 void writeJoystickConfig();
+bool checkButtons();
 
 // All variables below general use, not used for configuration.
 extern bool calibrationMode;
