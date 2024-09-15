@@ -36,7 +36,10 @@ Main() {
 			# your code here
 			;;
 		jammy)
-			InstallRetroLite
+			InstallRetroLiteJammy
+			;;
+		noble)
+			InstallRetroLiteNoble
 			;;
 	esac
 } # Main
@@ -244,13 +247,13 @@ InstallAdvancedDesktop()
 	apt clean
 } # InstallAdvancedDesktop
 
-InstallRetroLite()
+InstallRetroLiteJammy()
 {
     add-apt-repository -y ppa:liujianfeng1994/panfork-mesa
     add-apt-repository -y ppa:liujianfeng1994/rockchip-multimedia
     apt-get update
     apt-get dist-upgrade -y
-    apt-get install -yy mali-g610-firmware rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev
+    apt-get install -yy mali-g610-firmware rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev chromium-browser libwidevinecdm
 	[[ -f /usr/share/doc/avahi-daemon/examples/sftp-ssh.service ]] && cp /usr/share/doc/avahi-daemon/examples/sftp-ssh.service /etc/avahi/services/
 	[[ -f /usr/share/doc/avahi-daemon/examples/ssh.service ]] && cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services/
     git clone --depth=1 https://github.com/RetroPie/RetroPie-Setup.git /opt/RetroPie-Setup
@@ -270,8 +273,26 @@ InstallRetroLite()
     chmod 755 /usr/sbin/powersave.sh
     sed -i 's/#HandleLidSwitch\(.*\)=.*/HandleLidSwitch\1=poweroff/g' /etc/systemd/logind.conf
     echo -e '\nexport SDL_GAMECONTROLLERCONFIG="03000000feca00000550000000000000,CM5 Gamepad,platform:Linux,a:b1,b:b0,x:b3,y:b2,back:b5,guide:b14,start:b4,leftstick:b12,rightstick:b13,leftshoulder:b11,rightshoulder:b10,dpup:h0.1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:b6,righttrigger:b7"\nMUTTER_ALLOW_HYBRID_GPUS=1\n' >> /etc/profile
-#cd /opt/RetroPie-Setup
-#__nodialog=1 ./retropie_packages.sh setup basic_install
-} # InstallRetroLite
+} # InstallRetroLiteJammy
+
+InstallRetroLiteNoble()
+{
+    add-apt-repository -y ppa:liujianfeng1994/rockchip-multimedia
+    apt-get update
+    apt-get dist-upgrade -y
+    apt-get install -yy rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev chromium-browser libwidevinecdm0 vulkan-tools
+    dpkg -i /tmp/overlay/vulkan/libmali-valhall-g610-g13p0-wayland-gbm_1.9-1_arm64.deb
+    cp -dr /tmp/overlay/vulkan/usr/* /usr/
+    cp -dr /tmp/overlay/vulkan/etc/* /etc/
+	[[ -f /usr/share/doc/avahi-daemon/examples/sftp-ssh.service ]] && cp /usr/share/doc/avahi-daemon/examples/sftp-ssh.service /etc/avahi/services/
+	[[ -f /usr/share/doc/avahi-daemon/examples/ssh.service ]] && cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services/
+    git clone --depth=1 https://github.com/RetroPie/RetroPie-Setup.git /opt/RetroPie-Setup
+    cp /tmp/overlay/boost.sh /usr/sbin/
+    chmod 755 /usr/sbin/boost.sh
+    cp /tmp/overlay/powersave.sh /usr/sbin/
+    chmod 755 /usr/sbin/powersave.sh
+    sed -i 's/#HandleLidSwitch\(.*\)=.*/HandleLidSwitch\1=poweroff/g' /etc/systemd/logind.conf
+    echo -e '\nexport SDL_GAMECONTROLLERCONFIG="03000000feca00000550000000000000,CM5 Gamepad,platform:Linux,a:b1,b:b0,x:b3,y:b2,back:b5,guide:b14,start:b4,leftstick:b12,rightstick:b13,leftshoulder:b11,rightshoulder:b10,dpup:h0.1,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,leftx:a0,lefty:a1,rightx:a2,righty:a3,lefttrigger:b6,righttrigger:b7"\nMUTTER_ALLOW_HYBRID_GPUS=1\n' >> /etc/profile
+} # InstallRetroLiteNoble
 
 Main "$@"
