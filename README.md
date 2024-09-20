@@ -134,7 +134,7 @@ A: Radxa have advised that **this device will not be mass produced**. There is n
 
 Q: Why dont you use an OLED screen? 
 
-A: We may eventually, however the panel we chose was one that we knew we could get working in Linux for now. An upgrade may come in the future, if we can find a good panel that works with Linux. 
+A: We are working on this! We have a 5.5" OLED panel that will be integrated into a new front shell. Be sure to make sure you print the right one and use the right image. I expect to have this ready in the next couple of months. 
 
 Q: Why do this when you can get an equivalent handheld from Aliexpress for $150? This is stupid and DOA! Makes no sense! Non-sensical! I'm going to buy myself a better handheld. 
 
@@ -142,7 +142,7 @@ A: Because it's fun to build something awesome. The End. Thanks for visiting & f
 
 Q: Is Vulkan working yet on Linux?
 
-A: Not yet, but eventually it will, thanks to the efforts from Collabora and ARM. We'll be sure to integrate it into our Linux image once it's available. 
+A: We have a temporarily solution for Vulkan on Linux, but the driver is not conformant yet. PanVk is on its way though. 
 
 Q: Can you please make me one for exposure on YouTube? I promise to give incredible reviews!
 
