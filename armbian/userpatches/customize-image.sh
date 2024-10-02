@@ -253,10 +253,11 @@ InstallRetroLiteJammy()
     add-apt-repository -y ppa:liujianfeng1994/rockchip-multimedia
     apt-get update
     apt-get dist-upgrade -y
-    apt-get install -yy mali-g610-firmware rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev chromium-browser libwidevinecdm
+    apt-get install -yy mali-g610-firmware rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev chromium-browser libwidevinecdm kodi
 	[[ -f /usr/share/doc/avahi-daemon/examples/sftp-ssh.service ]] && cp /usr/share/doc/avahi-daemon/examples/sftp-ssh.service /etc/avahi/services/
 	[[ -f /usr/share/doc/avahi-daemon/examples/ssh.service ]] && cp /usr/share/doc/avahi-daemon/examples/ssh.service /etc/avahi/services/
     git clone --depth=1 https://github.com/RetroPie/RetroPie-Setup.git /opt/RetroPie-Setup
+    cp /tmp/overlay/goodix_cfg_group.bin /lib/firmware
     cp /tmp/overlay/fhdtouch.dts /usr/lib/
     cp /tmp/overlay/libdri2to3.so /usr/lib/
     cp -r /tmp/overlay/libmali /usr/lib/
@@ -280,7 +281,7 @@ InstallRetroLiteNoble()
     add-apt-repository -y ppa:liujianfeng1994/rockchip-multimedia
     apt-get update
     apt-get dist-upgrade -y
-    apt-get install -yy rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev chromium-browser libwidevinecdm0 vulkan-tools
+    apt-get install -yy rockchip-multimedia-config avahi-daemon git dialog unzip xmlstarlet glmark2-es2-wayland chrpath vim libelf-dev chromium-browser libwidevinecdm0 vulkan-tools kodi
     dpkg -i /tmp/overlay/vulkan/libmali-valhall-g610-g13p0-wayland-gbm_1.9-1_arm64.deb
     cp -dr /tmp/overlay/vulkan/usr/* /usr/
     cp -dr /tmp/overlay/vulkan/etc/* /etc/
