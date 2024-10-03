@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Retro Lite/RetrOLED CM5: RK3588s Gaming Handheld (IPS)</h1>
+  <h1>Retro Lite/RetrOLED CM5: RK3588s Gaming Handheld</h1>
 </div>
 
 <div align="center">
@@ -131,18 +131,18 @@ The board has been verified and fully functional with Radxa V2.2 CM5 modules! I 
 -------------------------------------------------------------------------------------------------------
 
 ### Frequently Asked Questions (FAQ) 
-Q: How can I get my hand on a Retro Lite CM5? Do you sell them or will you sell them?
+Q: How can I get my hand on a Retro Lite/RetrOLED CM5? Do you sell them or will you sell them?
 
-A: Radxa have advised that **this device will not be mass produced**. There is no method to get your hands on one of these at this time. 
+A: Radxa have advised that **this device will not be mass produced**. There is no method to get your hands on one of these at this time. This project is mainly for fun, cost is not a huge consideration here. 
 
 Q: Why dont you use an OLED screen? 
 
 A: **Funny you ask. We now have OLED support!** The OLED screen is functioning with touch integration. We are using this OLED screen here: https://www.alibaba.com/product-detail/oled-display-module-5-44inch-oled_60726980273.html
-Make sure you confirm the model number is ET055FH06-GT. You will also need to order the flex PCB with JLCPCB (costs around $10). 2 layer is fine, make sure to send them the production files as a reference. It works with the current carrier board. 
+Make sure you confirm the model number is ET055FH06-GT. You will also need to order the flex PCB with JLCPCB (costs around $10). 2 layer is fine, make sure to send them the production files as a reference. I have verified that it works with the current carrier board. 
 
 Q: Why do this when you can get an equivalent handheld from Aliexpress for $150? This is stupid and DOA! Makes no sense! Non-sensical! I'm going to buy myself a better handheld. 
 
-A: Because it's fun to build something awesome. It's not about the end result, its the process. Thanks for visiting & farewell, this project probably isn't for you. 
+A: Because it's fun to build something awesome. It's not about the end result, its the process for me. Thanks for visiting & farewell, this project probably isn't for you. 
 
 Q: Is Vulkan working yet on Linux?
 
@@ -150,7 +150,7 @@ A: We have a temporarily solution for Vulkan on Linux, but the driver is not con
 
 Q: Can you please make me one for exposure on YouTube? I promise to give incredible reviews!
 
-A: Nope. I simply don't have time. 
+A: Nope. I simply don't have time. Sorry. 
 
 ### License
 
