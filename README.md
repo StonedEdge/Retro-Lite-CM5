@@ -35,7 +35,8 @@ Arm Mali-G610 MP4 “Odin” GPU Video decoder – 8Kp60 H.265, VP9, AVS2, 8Kp30
 - 6 layer carrier board with 3 B2B mezzanine connectors to interface with any Radxa CM5 module 
 - 5v boost rated at 3.5A continuous current
 - RP2040 gamepad - complete with SDL mappings and evdev gyro support/mouse control via MPU6050
-- 1280 x 720 (5.5" DSI IPS LCD): DSI video output on internal display
+- 1280 x 720p (5.5" DSI IPS LCD): DSI video output on internal display
+**- New: Optional 1920 x 1080p (5.44" AMOLED): DSI video output on internal display** 
 - Up to 4k HDMI video output via HDMI output
 - Up to 4k DisplayPort Alternate Mode via Type-C
 - USB 2.0/3.1 capable USB-C data transfer
@@ -124,6 +125,8 @@ The board has been verified and fully functional with Radxa V2.2 CM5 modules! I 
 - [x] Other optimizations/improvements/bug fixes
 - [x] Create prototype showcase video for YouTube
 - [x] Final GitHub open source release & announcement!
+- [ ] Integrate OLED RM67199 patches
+- [ ] Integrate goodix gtx8 patches (GT9886)  
 
 -------------------------------------------------------------------------------------------------------
 
@@ -134,7 +137,8 @@ A: Radxa have advised that **this device will not be mass produced**. There is n
 
 Q: Why dont you use an OLED screen? 
 
-A: We are working on this! We have a 5.5" OLED panel that will be integrated into a new front shell. Be sure to make sure you print the right one and use the right image. I expect to have this ready in the next couple of months. 
+A: We now have OLED support! The OLED screen is now functioning with touch integration. We are using this OLED screen here: https://www.alibaba.com/product-detail/oled-display-module-5-44inch-oled_60726980273.html
+Make sure you confirm the model number is ET055FH06-GT. You will also need to order the flex PCB with JLCPCB (costs around $10). 2 layer is fine, make sure to send them the production files as a reference. 
 
 Q: Why do this when you can get an equivalent handheld from Aliexpress for $150? This is stupid and DOA! Makes no sense! Non-sensical! I'm going to buy myself a better handheld. 
 
