@@ -5,7 +5,7 @@
 </p>
 
 ## What is this folder?
-Note: The current files are now tested and verified to work with Radxa v2.2 carrier boards. I have not tested the latest v2.21 modules yet however they should work fine as well. 
+Note: The current files are now tested and verified to work with Radxa v2.2 carrier boards. **Also now verified to work Radxa V2.21 boards!**
 
 This folder contains the BOM, EAGLE schematic (.sch) and board (.brd) files, as well as pick & place files to order the board with JLCPCB or your fab of choice. 
 The main carrier board is a 6-layer board and you should order the board with impedance matching, according to the JLC06081H-2116 (Standard) stackup offering (0.8mm thickness). 
