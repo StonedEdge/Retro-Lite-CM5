@@ -143,8 +143,8 @@ index 000000000000..b4b38a881a40
 +	fan0: pwm-fan {
 +		compatible = "pwm-fan";
 +		#cooling-cells = <2>;
-+		cooling-levels = <15 55 95 135 175 215 255>;
-+		pwms = <&pwm11 0 10000 0>;
++		cooling-levels = <15 35 55 75 100 140 160>;
++		pwms = <&pwm11 0 40000 0>;
 +	};
 +
 +	wm8960_mclk: wm8960-mclk {
