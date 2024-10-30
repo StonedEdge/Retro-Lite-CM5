@@ -126,8 +126,24 @@ The board has been verified and fully functional with Radxa V2.2 CM5 modules! I 
 - [x] Create prototype showcase video for YouTube
 - [x] Final GitHub open source release & announcement!
 - [x] Integrate OLED RM67199 patches
-- [x] Integrate goodix gtx8 patches (GT9886)  
+- [x] Integrate goodix gtx8 patches (GT9886)
+-------------------------------------------------------------------------------------------------------
 
+### Firmware 
+At the moment, there are a couple of options for firmware which I will separate out into two devices, the Retro Lite CM5 and the RetrOLED CM5. 
+We are continuing to work on these - few developers will be getting units soon which should accelerate the process of development as well.  
+
+**Retro Lite CM5**
+- [x] ROCKNIX
+- [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
+- [x] Armbian Gnome Desktop (OpenGLES/Vulkan)
+- [x] Android 13 (Beta)
+
+**RetrOLED CM5**
+- [ ] ROCKNIX
+- [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
+- [ ] Armbian Gnome Desktop (OpenGLES/Vulkan)
+- [ ] Android 13 (Beta)
 -------------------------------------------------------------------------------------------------------
 
 ### Frequently Asked Questions (FAQ) 
