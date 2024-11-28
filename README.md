@@ -140,7 +140,7 @@ We are continuing to work on these - few developers will be getting units soon w
 - [x] Android 13 (Beta)
 
 **RetrOLED CM5**
-- [ ] ROCKNIX
+- [x] ROCKNIX
 - [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
 - [ ] Armbian Gnome Desktop (OpenGLES/Vulkan)
 - [ ] Android 13 (Beta)
