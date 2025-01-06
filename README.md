@@ -5,12 +5,27 @@
 <div align="center">
   <img src="https://i.imgur.com/ZPLBWC7.jpeg" alt="Image of Retro Lite CM5" width="50%">
 </div>
-<p align="center">This is the RetroLED CM5, a handheld console designed by GinKage and StonedEdge.</p>
+<p align="center">This is the RetroLED CM5, a handheld console designed by GinKage, notime2d8 and StonedEdge.</p>
 
 <div align="center">
   <img src="https://i.imgur.com/okeUgK3.jpeg" alt="Image of Retro Lite CM5" width="50%">
 </div>
-<p align="center">Running Hollow Knight via Box64 and Steam.</p>
+<p align="center">Running Hollow Knight via Box64 and Steam on upstream Armbian kernel.</p>
+
+<div align="center">
+  <img src="https://i.imgur.com/yMEzdtc.jpeg" alt="Image of Retro Lite CM5" width="50%">
+</div>
+<p align="center">Official Android support, thanks to the work of notime2d8.</p>
+
+<div align="center">
+  <img src="https://i.imgur.com/kFhauRE.jpeg" alt="Image of Retro Lite CM5" width="50%">
+</div>
+<p align="center">Latest ROCKNIX images available with Vulkan driver support.</p>
+
+<div align="center">
+  <img src="https://i.imgur.com/212uPR0.jpeg" alt="Image of Retro Lite CM5" width="50%">
+</div>
+<p align="center">Open source hardware files available for download.</p>
 
 The Retro Lite/RetrOLED CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86. It has a relatively large battery so run time should be excellent, considering it is ARM based. **Now with an optional OLED upgrade!**
 
@@ -140,18 +155,24 @@ We are continuing to work on these - few developers will be getting units soon w
 - [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
 - [x] Armbian Gnome Desktop (OpenGLES/Vulkan)
 - [x] Android 13 (Beta)
+- [ ] Android 14 
 
 **RetrOLED CM5**
 - [x] ROCKNIX
 - [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
 - [ ] Armbian Gnome Desktop (OpenGLES/Vulkan)
 - [ ] Android 13 (Beta)
+- [ ] Android 14
 -------------------------------------------------------------------------------------------------------
 
 ### Frequently Asked Questions (FAQ) 
 Q: How can I get my hand on a Retro Lite/RetrOLED CM5? Do you sell them or will you sell them?
 
 A: Radxa have advised that **this device will not be mass produced**. There is no method to get your hands on one of these at this time. This project is mainly for fun, cost is not a huge consideration here. 
+
+Q: How much does it cost in parts to build one of these?
+
+A: Expect to spend at minimum around $350-400 for a single one-off build. 
 
 Q: Why dont you use an OLED screen? 
 
