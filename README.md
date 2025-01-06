@@ -3,12 +3,15 @@
 </div>
 
 <div align="center">
-  <img src="https://i.imgur.com/v9KPeW5.png" alt="Image of Retro Lite CM5">
+  <img src="https://i.imgur.com/ZPLBWC7.jpeg" alt="Image of Retro Lite CM5">
 </div>
+<p align="center">This is the RetroLED CM5, a handheld console designed by GinKage and StonedEdge.</p>
 
 <div align="center">
-  <img src="https://i.imgur.com/daHOwZD.png" alt="Image of Retro Lite CM5">
+  <img src="https://i.imgur.com/okeUgK3.jpeg" alt="Image of Retro Lite CM5">
 </div>
+<p align="center">Running Hollow Knight via Box64 and Steam.</p>
+
 
 The Retro Lite/RetrOLED CM5 is an upgrade to the Retro Lite CM4 handheld. The project goal is to create a more powerful handheld that can handle 3DS, PS2 and GC emulation (none of which the Pi can do). I also would like to be able to play some games via Box64/86. It has a relatively large battery so run time should be excellent, considering it is ARM based. **Now with an optional OLED upgrade!**
 
