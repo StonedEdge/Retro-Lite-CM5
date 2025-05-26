@@ -160,7 +160,7 @@ We are continuing to work on these - few developers will be getting units soon w
 **RetrOLED CM5**
 - [x] ROCKNIX
 - [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
-- [ ] Armbian Gnome Desktop (OpenGLES/Vulkan)
+- [x] Armbian Gnome Desktop (OpenGLES/Vulkan)
 - [ ] Android 13 (Beta)
 - [ ] Android 14
 -------------------------------------------------------------------------------------------------------
