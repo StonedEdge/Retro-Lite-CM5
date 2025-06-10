@@ -60034,9 +60034,9 @@ SPI Mode</text>
 <label x="248.92" y="335.28" size="1.778" layer="95" font="vector" rot="R90"/>
 </segment>
 <segment>
-<pinref part="R70" gate="G$1" pin="2"/>
-<wire x1="266.7" y1="358.14" x2="266.7" y2="365.76" width="0.1524" layer="91"/>
-<label x="266.7" y="358.14" size="1.778" layer="95" font="vector" rot="R90"/>
+<pinref part="R73" gate="G$1" pin="2"/>
+<wire x1="274.32" y1="358.14" x2="274.32" y2="365.76" width="0.1524" layer="91"/>
+<label x="274.32" y="358.14" size="1.778" layer="95" font="vector" rot="R90"/>
 </segment>
 </net>
 <net name="I2C1_SDA" class="0">
@@ -60051,9 +60051,9 @@ SPI Mode</text>
 <label x="256.54" y="335.28" size="1.778" layer="95" font="vector" rot="R90"/>
 </segment>
 <segment>
-<pinref part="R73" gate="G$1" pin="2"/>
-<wire x1="274.32" y1="358.14" x2="274.32" y2="365.76" width="0.1524" layer="91"/>
-<label x="274.32" y="358.14" size="1.778" layer="95" font="vector" rot="R90"/>
+<pinref part="R70" gate="G$1" pin="2"/>
+<wire x1="266.7" y1="358.14" x2="266.7" y2="365.76" width="0.1524" layer="91"/>
+<label x="266.7" y="358.14" size="1.778" layer="95" font="vector" rot="R90"/>
 </segment>
 </net>
 <net name="N$4" class="0">
@@ -62033,6 +62033,32 @@ SPI Mode</text>
 <pinref part="R76" gate="G$1" pin="1"/>
 <wire x1="238.76" y1="347.98" x2="238.76" y2="340.36" width="0.1524" layer="91"/>
 <label x="241.3" y="335.28" size="1.778" layer="95" font="vector" rot="R90"/>
+</segment>
+</net>
+<net name="I2C2_IRQ" class="0">
+<segment>
+<pinref part="U21" gate="G$1" pin="!I2C2_IRQ"/>
+<wire x1="167.64" y1="363.22" x2="187.96" y2="363.22" width="0.1524" layer="91"/>
+<label x="182.88" y="363.22" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$69" class="0">
+<segment>
+<pinref part="U21" gate="G$1" pin="I2C2_SCL"/>
+<wire x1="167.64" y1="360.68" x2="187.96" y2="360.68" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$70" class="0">
+<segment>
+<pinref part="U21" gate="G$1" pin="I2C2_SDA"/>
+<wire x1="167.64" y1="358.14" x2="187.96" y2="358.14" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="I2C3_IRQ" class="0">
+<segment>
+<pinref part="U21" gate="G$1" pin="!I2C3_IRQ!(GPIO7)"/>
+<wire x1="167.64" y1="350.52" x2="187.96" y2="350.52" width="0.1524" layer="91"/>
+<label x="182.88" y="350.52" size="1.778" layer="95" font="vector"/>
 </segment>
 </net>
 </nets>
