@@ -97,10 +97,10 @@ v1.1 CM5 carrier boards have been uploaded [here.](https://github.com/StonedEdge
 ### BOM (Bill of Materials) 
 v1 Right Controller PCB BOM have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/rp2040_gamepad/PCB/Retro_Lite_CM5_Right_PCB_v1%20-%20BOM.csv)
 
-v1 Left Controller PCB BOM is coming soon. I want to upload both a top & bottom DPAD version. 
+v1 Left Controller PCB BOM have been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/rp2040_gamepad/PCB/v1/Retro_Lite_CM5_Left_PCB_v1%20-%20BOM.csv)
 
 v1 V2.2 Carrier PCB BOM has been uploaded [here.](https://github.com/StonedEdge/Retro-Lite-CM5/blob/main/cm5_carrier_pcb/Retro_Lite_CM5_IO_X2.2_BOM.csv) 
-The board has been verified and fully functional with Radxa V2.2 CM5 modules! I have not tested V2.21 with success yet, however I will check soon. 
+The board has been verified and fully functional with Radxa V2.2 CM5 modules! V2.21 also works fine. 
 
 -------------------------------------------------------------------------------------------------------
 
@@ -155,14 +155,14 @@ We are continuing to work on these - few developers will be getting units soon w
 - [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
 - [x] Armbian Gnome Desktop (OpenGLES/Vulkan)
 - [x] Android 13 (Beta)
-- [ ] Android 14 
+- [ ] Android 14 (kind of lost interest in Android, probably not likely to happen anytime soon). 
 
 **RetrOLED CM5**
 - [x] ROCKNIX
 - [x] Armbian Gnome Desktop (OpenGL/OpenGLES)
 - [x] Armbian Gnome Desktop (OpenGLES/Vulkan)
-- [ ] Android 13 (Beta)
-- [ ] Android 14
+- [ ] Android 13 (Beta - shit is broken, like brightness control which we never got working)
+- [ ] Android 14 (kind of lost interest in Android, probably not likely to happen anytime soon). 
 -------------------------------------------------------------------------------------------------------
 
 ### Frequently Asked Questions (FAQ) 
